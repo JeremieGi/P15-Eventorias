@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">P15-Eventorias</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="no_network">No network</string>
 </resources>

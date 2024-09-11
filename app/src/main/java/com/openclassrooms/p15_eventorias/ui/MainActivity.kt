@@ -17,7 +17,9 @@ import com.openclassrooms.p15_eventorias.ui.eventAdd.EventAddScreen
 import com.openclassrooms.p15_eventorias.ui.launchScreen.LaunchScreen
 import com.openclassrooms.p15_eventorias.ui.screen.eventsList.EventsListScreen
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
