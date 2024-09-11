@@ -12,10 +12,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.openclassrooms.p15_eventorias.ui.EventItemScreen.EventItemScreen
-import com.openclassrooms.p15_eventorias.ui.eventAdd.EventAddScreen
-import com.openclassrooms.p15_eventorias.ui.launchScreen.LaunchScreen
+import com.openclassrooms.p15_eventorias.ui.screen.eventItem.EventItemScreen
+import com.openclassrooms.p15_eventorias.ui.screen.eventAdd.EventAddScreen
+import com.openclassrooms.p15_eventorias.ui.screen.launch.LaunchScreen
 import com.openclassrooms.p15_eventorias.ui.screen.eventsList.EventsListScreen
+import com.openclassrooms.p15_eventorias.ui.screen.userProfile.UserProfileScreen
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import dagger.hilt.android.AndroidEntryPoint
 

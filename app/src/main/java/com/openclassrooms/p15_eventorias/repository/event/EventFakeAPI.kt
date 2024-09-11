@@ -1,12 +1,13 @@
-package com.openclassrooms.p15_eventorias.repository
+package com.openclassrooms.p15_eventorias.repository.event
 
 import com.openclassrooms.p15_eventorias.model.Event
+import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 
-class EventFireStoreAPI : EventApi {
+class EventFakeAPI : EventApi {
 
     private var events = MutableStateFlow(
         mutableListOf(

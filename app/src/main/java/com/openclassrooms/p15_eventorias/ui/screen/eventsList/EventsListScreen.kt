@@ -8,7 +8,7 @@ import com.openclassrooms.p15_eventorias.model.Event
 
 @Composable
 fun EventsListScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     viewModel: EventsListViewModel = hiltViewModel(),
     onEventClickP : (Event) -> Unit = {}
 ) {

@@ -1,7 +1,9 @@
-package com.openclassrooms.p15_eventorias.repository
+package com.openclassrooms.p15_eventorias.repository.event
 
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.Event
+import com.openclassrooms.p15_eventorias.repository.InjectedContext
+import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -26,7 +28,11 @@ class EventRepository @Inject constructor(
         _flowEvents = if (!injectedContext.isInternetAvailable()) {
             // Créer un flux d'erreur si Internet n'est pas disponible
             flow {
-                emit(ResultCustom.Failure(injectedContext.getInjectedContext().getString(R.string.no_network)))
+                emit(
+                    ResultCustom.Failure(
+                        injectedContext.getInjectedContext().getString(R.string.no_network)
+                    )
+                )
             }
         } else {
             // si Internet est disponible
@@ -55,7 +61,11 @@ class EventRepository @Inject constructor(
 
         if (!injectedContext.isInternetAvailable()){
             return flow {
-                emit(ResultCustom.Failure(injectedContext.getInjectedContext().getString(R.string.no_network)))
+                emit(
+                    ResultCustom.Failure(
+                        injectedContext.getInjectedContext().getString(R.string.no_network)
+                    )
+                )
             }
         }
         else{

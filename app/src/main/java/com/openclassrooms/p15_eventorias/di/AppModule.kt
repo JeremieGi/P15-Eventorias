@@ -1,9 +1,11 @@
 package com.openclassrooms.p15_eventorias.di
 
 import android.content.Context
-import com.openclassrooms.p15_eventorias.repository.EventApi
-import com.openclassrooms.p15_eventorias.repository.EventFireStoreAPI
+import com.openclassrooms.p15_eventorias.repository.event.EventApi
+import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
+import com.openclassrooms.p15_eventorias.repository.user.UserApi
+import com.openclassrooms.p15_eventorias.repository.user.UserFakeAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +25,15 @@ class AppModule {
     @Provides
     @Singleton
     fun provideEventAPI(): EventApi {
-        return EventFireStoreAPI() // Utilisation de FireStore
+        return EventFakeAPI()
+        //return EventFireStoreAPI() // TODO JG Utilisation de FireStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserAPI(): UserApi {
+        return UserFakeAPI() // Utilisation de FireStore
+        //return UserFireStoreAPI() // TODO JG Utilisation de FireStore
     }
 
 
