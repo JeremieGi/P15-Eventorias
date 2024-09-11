@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    //alias(libs.plugins.ksp)
+    //alias(libs.plugins.hilt)
 }
 
 android {
@@ -69,4 +71,31 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+//    //DI
+//    implementation(libs.hilt)
+//    ksp(libs.hilt.compiler)
+//    implementation(libs.hilt.navigation.compose)
+
+    // Coil = affichage d'URL dans un champ Image (comme Glide)
+    implementation(libs.coil.compose)
+
+    // Firebase
+
+    // Import the Firebase BoM
+    // garantit que toutes les bibliothèques Firebase utilisées dans un projet sont compatibles entre elles.
+    implementation(platform(libs.firebase.bom))
+
+    // Authentification
+    implementation(libs.firebase.ui.auth)
+
+    // Firestore = base de données NoSQL
+    implementation(libs.firebase.firestore)
+
+    // Firebase Storage (Stockage des images)
+    implementation(libs.firebase.storage)
+
+    // Firebase -> système de notification
+    implementation(libs.firebase.messaging)
+
 }
