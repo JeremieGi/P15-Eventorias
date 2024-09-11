@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    //alias(libs.plugins.ksp)
-    //alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
     packaging {
         resources {
@@ -53,8 +53,11 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
+    //kotlin
+    implementation(platform(libs.kotlin.bom))
+
+//    implementation(libs.androidx.core.ktx)
+//    implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -72,10 +75,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-//    //DI
-//    implementation(libs.hilt)
-//    ksp(libs.hilt.compiler)
-//    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.coroutines.android)
+
+    //DI
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Coil = affichage d'URL dans un champ Image (comme Glide)
     implementation(libs.coil.compose)
