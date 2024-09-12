@@ -5,5 +5,5 @@
     <string name="loading">Loading</string>
     <string name="unknown_error">Unknown error</string>
     <string name="error">Error</string>
-    <string name="creator_avatar_not_find">Creator avatar not find</string>
+    <string name="not_find">Image not find</string>
 </resources>

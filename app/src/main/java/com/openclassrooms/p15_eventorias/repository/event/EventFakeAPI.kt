@@ -15,9 +15,9 @@ class EventFakeAPI : EventApi {
 
     private var events = MutableStateFlow(
         mutableListOf(
-            Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://fr.wikipedia.org/wiki/Fichier:Logo_OpenClassrooms.png", "", userTest1),
-            Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://fr.wikipedia.org/wiki/Stade_de_la_Mosson#/media/Fichier:Australie-Fidji.4.JPG", "", userTest2),
-            Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "https://fr.wikipedia.org/wiki/Orchestre#/media/Fichier:Orquesta_Filarmonica_de_Jalisco.jpg", "", null)
+            Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "", userTest1),
+            Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "", userTest2),
+            Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", null),
         )
     )
 

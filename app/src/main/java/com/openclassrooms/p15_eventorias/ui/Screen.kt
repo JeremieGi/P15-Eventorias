@@ -7,7 +7,7 @@ sealed class Screen(
 
     data object EventsList : Screen("eventsList")
 
-    data object EventItem : Screen("eventItem/{eventId}"){
+    data object EventItem : Screen("eventItem/{$CTE_PARAM_ID_EVENT}"){
         // Configurer la Route avec des Arguments
         fun createRoute(postId: String) = "eventItem/$postId"
     }

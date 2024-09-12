@@ -70,7 +70,11 @@ fun NavGraph(
 
             StructureComposable{ modifier ->
                 LaunchScreen(
-                    modifier = modifier
+                    modifier = modifier,
+                    onEventClickP = { event ->
+                        //Le clic sur un Post, ouvre le Post
+                        navController.navigate(Screen.EventItem.createRoute(event.id))
+                    }
                 )
             }
 

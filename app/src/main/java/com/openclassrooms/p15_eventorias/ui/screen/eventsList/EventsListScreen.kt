@@ -1,12 +1,12 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventsList
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,18 +22,17 @@ import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.openclassrooms.p15_eventorias.model.User
+import com.openclassrooms.p15_eventorias.ui.URLImageComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import com.openclassrooms.p15_eventorias.utils.longToFormatedDate
+import androidx.compose.ui.Alignment
+
+
 
 @Composable
 fun EventsListScreen(
@@ -136,63 +135,56 @@ fun EventItemListComposable(
         modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
+            .clickable()
+            {
+                onEventClickP(eventP)
+            }
     ){
 
         // 3 lignes
         Row(
-
+            // Eléments de l'item centrés verticallement
+            verticalAlignment = Alignment.CenterVertically
         ){
 
             // 1er élément de la ligne : Avatar du créateur
-            UserAvatarComposable(eventP.userCreatorEvent?.sURLAvatar)
-
+            URLImageComposable(
+                modifier = Modifier
+                    .weight(2f) // 20% de la largeur
+                    ,
+                sURLP = eventP.userCreatorEvent?.sURLAvatar,
+                nIDResssourceIfNotFoundP = R.drawable.baseline_face_24
+            )
 
             // 2ème élément de la ligne : Titre de l'évènement + date
-            Text(eventP.sTitle)
+            Column(
+                modifier = Modifier.weight(4f), // 40% de la largeur
+            ) {
+                Text(
+                    text = eventP.sTitle,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text =longToFormatedDate(eventP.lDatetime),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
 
             // 3ème élément de la ligne : Photo de l'évènement
-
+            URLImageComposable(
+                modifier = Modifier
+                    .weight(4f) // 40% de la largeur
+                    .fillMaxSize(),
+                sURLP = eventP.sURLEventPicture,
+                nIDResssourceIfNotFoundP = R.drawable.baseline_image_not_supported,
+            )
         }
 
 
-
-
     }
 
 }
 
-@Composable
-fun UserAvatarComposable(sURLAvatar: String?) {
-
-    val modifierRound = Modifier
-        .size(50.dp)
-        .clip(RoundedCornerShape(percent = 100))
-
-    if (sURLAvatar.isNullOrEmpty()) {
-        // Pas d'avatar utilisateur
-
-        Image(
-            modifier = modifierRound,
-            painter = painterResource(id = R.drawable.baseline_face_24),
-            contentDescription = stringResource(R.string.creator_avatar_not_find)
-        )
-
-    }
-    else{
-
-        AsyncImage(
-            modifier = modifierRound,
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(sURLAvatar)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-
-        )
-    }
-
-
-}
 
 
 @Preview("Events list")
@@ -202,10 +194,11 @@ fun EventListComposablePreview() {
     val userTest1 = User("1","Didier","didier@free.fr","https://xsgames.co/randomusers/assets/avatars/male/71.jpg")
     val userTest2 = User("2","Laetitia","laetitia@free.fr","https://xsgames.co/randomusers/assets/avatars/female/1.jpg")
 
+    // Coil n'affiche pas les images dans les previews... Ok à l'exec
     val listEvents = listOf(
-        Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://fr.wikipedia.org/wiki/Fichier:Logo_OpenClassrooms.png", "", userTest1),
-        Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://fr.wikipedia.org/wiki/Stade_de_la_Mosson#/media/Fichier:Australie-Fidji.4.JPG", "", userTest2),
-        Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "https://fr.wikipedia.org/wiki/Orchestre#/media/Fichier:Orquesta_Filarmonica_de_Jalisco.jpg", "", null)
+        Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "", userTest1),
+        Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "", userTest2),
+        Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", null),
     )
 
     P15EventoriasTheme {
