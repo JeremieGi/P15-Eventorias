@@ -1,13 +1,30 @@
 package com.openclassrooms.p15_eventorias.ui
 
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+
+import androidx.compose.material3.Icon
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Text
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+
 
 
 /**
- * Error in DialogAlert
+ * Composant d'erreur : Affiche un message d'erreur et un bouton "Try Again"
  */
 @Composable
 fun ErrorComposable(
@@ -16,10 +33,34 @@ fun ErrorComposable(
     onClickRetryP: () -> Unit
 ) {
 
-    // TODO JG : Fenêtre d'erreur
-
-
-
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.baseline_error_black_36),
+            contentDescription = null // Libellé Error ci-dessous sufisant
+        )
+//        Icon(
+//            imageVector = Icons.Default., // TODO Denis : Comment être sur que
+//            contentDescription = null // Libellé Error ci-dessous sufisant
+//        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.error),
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = sErrorMessage,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onClickRetryP) {
+            Text("Try again")
+        }
+    }
 }
 
 @Preview(showBackground = true)
