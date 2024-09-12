@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,7 +23,6 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 /**
  * Composable qui s'affiche lors du chargement
  */
-
 @Composable
 fun LoadingComposable(modifier: Modifier = Modifier){
 
@@ -31,9 +31,6 @@ fun LoadingComposable(modifier: Modifier = Modifier){
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(
-                top = 100.dp // Espace en haut
-            )
             // "En chargement" soit annoncé par talkBack
             .semantics(mergeDescendants = true) {}
             .clearAndSetSemantics {
@@ -41,9 +38,8 @@ fun LoadingComposable(modifier: Modifier = Modifier){
                     currentContext.getString(R.string.loading)
             }
         ,
-        //.background(Color.Red),
-        //verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text(
@@ -53,7 +49,7 @@ fun LoadingComposable(modifier: Modifier = Modifier){
 
         CircularProgressIndicator(
             modifier = modifier.padding(
-                top = 10.dp
+                top = 10.dp // Espace avec le texte
             )
         )
 
