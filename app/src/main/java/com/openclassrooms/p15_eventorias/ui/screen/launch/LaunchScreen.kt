@@ -12,6 +12,9 @@ fun LaunchScreen(
     viewModel: LaunchViewModel = hiltViewModel(),
 ) {
 
+    // TODO JG : Si utilisateur connecté => Firebase Auth UI
+
+    //  Utilisateur connecté
     EventsListScreen(modifier = modifier)
 
 }
