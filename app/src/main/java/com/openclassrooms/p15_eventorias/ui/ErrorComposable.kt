@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.material3.Icon
 
 import androidx.compose.ui.unit.dp
@@ -42,10 +41,6 @@ fun ErrorComposable(
             painter = painterResource(R.drawable.baseline_error_black_36),
             contentDescription = null // Libellé Error ci-dessous sufisant
         )
-//        Icon(
-//            imageVector = Icons.Default., // TODO Denis : Comment être sur que
-//            contentDescription = null // Libellé Error ci-dessous sufisant
-//        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.error),

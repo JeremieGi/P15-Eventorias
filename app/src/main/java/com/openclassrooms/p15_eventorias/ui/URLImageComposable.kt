@@ -39,6 +39,7 @@ fun URLImageComposable(
     }
     else{
 
+        // TODO Denis / JG : Voir ici la possibilité d'intégrer l'image de secours + dans ce cas, pas besoin de factoriser dans un composant
         AsyncImage(
             modifier = modifierRound,
             model = ImageRequest.Builder(LocalContext.current)

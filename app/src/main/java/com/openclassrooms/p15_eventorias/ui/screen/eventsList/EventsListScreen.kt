@@ -162,11 +162,11 @@ fun EventItemListComposable(
             ) {
                 Text(
                     text = eventP.sTitle,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text =longToFormatedDate(eventP.lDatetime),
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
 

@@ -1,6 +1,5 @@
 package com.openclassrooms.p15_eventorias.model
 
-import java.util.Date
 
 data class Event (
 
@@ -24,7 +23,7 @@ data class Event (
     /**
      * Adresse de l'évènement.
      */
-    val sAdress : String = "", // TODO Denis : Type ?
+    val sAdress : String = "",
 
     /**
      * User object representing the creator of the event.
