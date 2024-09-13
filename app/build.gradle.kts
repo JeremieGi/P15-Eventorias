@@ -77,6 +77,9 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
+    // Google Fonts certificates (consider alternatives if this approach changes)
+    //implementation("androidx.compose.material:material-icons-extended:1.7.1")
+
     //DI
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)

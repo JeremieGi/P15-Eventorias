@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
 
-    primary = Purple40,
+    primary = ColorButtonBackground,    // Fond des boutons par défaut
     secondary = PurpleGrey40,
     tertiary = Pink40,
 
@@ -27,7 +27,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Color.White,
     onTertiary = Color.White,
     onBackground = Color.White,
-    onSurface = Color.White,
+    onSurface = ColorCard,
 
 )
 
