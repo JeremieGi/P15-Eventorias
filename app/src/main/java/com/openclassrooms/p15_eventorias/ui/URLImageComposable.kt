@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.openclassrooms.p15_eventorias.R
 
@@ -21,32 +21,27 @@ fun URLImageComposable(
     nIDResssourceIfNotFoundP: Int,
 ) {
 
-    val modifierRound = modifier
-        .size(50.dp)
 
-    if (sURLP.isNullOrEmpty()) {
-        // URL vide
-
-        Image(
-            modifier = modifierRound,
-            painter = painterResource(id = nIDResssourceIfNotFoundP),
-            contentDescription = stringResource(R.string.not_find)
-        )
-
-    }
-    else{
-
-        // TODO Denis / JG : Voir ici la possibilité d'intégrer l'image de secours + dans ce cas, pas besoin de factoriser dans un composant
-        AsyncImage(
-            modifier = modifierRound,
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(sURLP)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-
+    // SubcomposeAsyncImage => permet d'afficher un composant pour le chargement et pour l'erreur
+    SubcomposeAsyncImage(
+        modifier = modifier
+            .size(50.dp),
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(sURLP)
+            .build(),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        loading = {
+            LoadingComposable()
+        },
+        error = {
+            Image(
+                painter = painterResource(id = nIDResssourceIfNotFoundP),
+                contentDescription = stringResource(R.string.not_find)
             )
-    }
+        }
+    )
+
 
 
 }
