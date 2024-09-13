@@ -3,6 +3,8 @@ package com.openclassrooms.p15_eventorias.ui.screen.eventsList
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +24,10 @@ import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +36,8 @@ import com.openclassrooms.p15_eventorias.ui.URLImageComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import com.openclassrooms.p15_eventorias.utils.longToFormatedDate
 import androidx.compose.ui.Alignment
-
+import androidx.compose.ui.draw.clip
+import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCard
 
 
 @Composable
@@ -131,6 +137,7 @@ fun EventItemListComposable(
     onEventClickP: (Event) -> Unit,
     ) {
 
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -138,7 +145,11 @@ fun EventItemListComposable(
             .clickable()
             {
                 onEventClickP(eventP)
-            }
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = ColorCard // sinon pardéfaut MaterialTheme.colorScheme.surfaceContainer
+        ),
+        shape = RoundedCornerShape(8.dp)
     ){
 
         // 3 lignes
@@ -151,6 +162,10 @@ fun EventItemListComposable(
             URLImageComposable(
                 modifier = Modifier
                     .weight(2f) // 20% de la largeur
+                    .padding(10.dp)
+                    .aspectRatio(1f) // Ajustez le rapport selon vos besoins
+                    .clip(CircleShape)
+
                     ,
                 sURLP = eventP.userCreatorEvent?.sURLAvatar,
                 nIDResssourceIfNotFoundP = R.drawable.baseline_face_24
@@ -161,8 +176,12 @@ fun EventItemListComposable(
                 modifier = Modifier.weight(4f), // 40% de la largeur
             ) {
                 Text(
+                    //modifier = Modifier.padding(end= 10.dp),
                     text = eventP.sTitle,
                     style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier
+                    .height(10.dp)
                 )
                 Text(
                     text =longToFormatedDate(eventP.lDatetime),

@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventItem
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,17 +15,21 @@ fun EventItemScreen(
     onBackClick: () -> Boolean,
     eventId: Int) {
 
-    Text(
-        modifier = modifier,
-        text = "ID = $eventId"
-    )
-
-    Button(
-        onClick = {}
+    Column(
+        modifier = modifier
     ){
         Text(
-            text = "test style"
+            text = "ID = $eventId"
         )
+
+        Button(
+            onClick = {}
+        ){
+            Text(
+                text = "test style"
+            )
+        }
     }
+
 
 }

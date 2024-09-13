@@ -3,16 +3,34 @@ package com.openclassrooms.p15_eventorias.ui.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-//val fontProject = FontFamily(
-//    Font(R.font.inter_regular, style = FontWeight.Normal),
-//    Font(R.font.inter_italic, style = FontStyle.Italic),
-//    Font(R.font.inter_bold, style = FontWeight.Bold)
-//)
+/*
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.googlefonts.Font
+
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val bodyFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Roboto"),
+        fontProvider = provider,
+    )
+)
+
+val displayFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Inter"),
+        fontProvider = provider,
+    )
+)
+*/
 
 val fontProject = FontFamily.Default // TODO Denis : Comment mettre la font "Inter" ici ? (Voir tentative ci-dessus)
 

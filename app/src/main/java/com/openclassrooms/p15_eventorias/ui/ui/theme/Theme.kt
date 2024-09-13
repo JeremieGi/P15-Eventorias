@@ -4,7 +4,6 @@ package com.openclassrooms.p15_eventorias.ui.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 
 //// Pas de thème sombre dans le cahier des charges
@@ -18,16 +17,10 @@ import androidx.compose.ui.graphics.Color
 private val LightColorScheme = lightColorScheme(
 
     primary = ColorButtonBackground,    // Fond des boutons par défaut
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-
+    secondary = ColorButtonBackground,
+    tertiary = ColorButtonBackground,
     background = ColorBackground,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color.White,
-    onSurface = ColorCard,
+
 
 )
 
