@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 //val PurpleGrey80 = Color(0xFFCCC2DC)
 //val Pink80 = Color(0xFFEFB8C8)
 
+val ColorTitleWhite = Color(0xFFFFFFFF)
 val ColorBackground = Color(0xFF1d1b20)
 val ColorCustomGrey = Color(0xFFE6E0E9)
 val ColorInputHead = Color(0xFFCAC4D0)

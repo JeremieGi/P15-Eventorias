@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventsList
 
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,10 +27,21 @@ import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.model.User
 import com.openclassrooms.p15_eventorias.ui.URLImageComposable
@@ -37,61 +49,130 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import com.openclassrooms.p15_eventorias.utils.longToFormatedDate
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCard
+import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsListScreen(
-    modifier: Modifier = Modifier,
+    //modifier: Modifier = Modifier,
     viewModel: EventsListViewModel = hiltViewModel(),
-    onEventClickP : (Event) -> Unit = {}
+    onEventClickP : (Event) -> Unit,
+    onClickAddP : () -> Unit
 ) {
 
-    // Recharger les évents quand l'écran est visible
-    LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-        viewModel.loadAllEvents()
-    }
+    Scaffold(
 
-    // lorsque la valeur uiState est modifiée,
-    // la recomposition a lieu pour les composables utilisant la valeur uiState.
-    val uiStateList by viewModel.uiState.collectAsState()
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(stringResource(id = R.string.event_list))
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            // TODO JG : Recherche
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(id = R.string.search),
+                            tint = ColorTitleWhite
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            // TODO JG : Tri
+                        }
+                    ) {
+                        Icon(
+                            // TODO Denis : Faire une rotation de 90 degrés
+                            painter = painterResource(R.drawable.baseline_compare_arrows_24),
+                            contentDescription = stringResource(id = R.string.search),
+                            tint = ColorTitleWhite
+                        )
 
-    when (uiStateList) {
+                    }
 
-        // Chargement
-        is EventListUIState.IsLoading -> {
-            LoadingComposable(modifier)
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = ColorBackground,
+                )
+            )
+        },
+
+        floatingActionButtonPosition = FabPosition.End,
+
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    onClickAddP()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(id = R.string.addEvent)
+                )
+            }
+        },
+
+        content = { innerPadding ->
+
+            val modifierScaffold =  Modifier.padding(innerPadding)
+
+            // Recharger les évents quand l'écran est visible
+            LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
+                viewModel.loadAllEvents()
+            }
+
+            // lorsque la valeur uiState est modifiée,
+            // la recomposition a lieu pour les composables utilisant la valeur uiState.
+            val uiStateList by viewModel.uiState.collectAsState()
+
+            when (uiStateList) {
+
+                // Chargement
+                is EventListUIState.IsLoading -> {
+                    LoadingComposable(modifierScaffold)
+                }
+
+                // Récupération des données avec succès
+                is EventListUIState.Success -> {
+
+                    val listEvents = (uiStateList as EventListUIState.Success).listEvents
+
+                    EventListComposable(
+                        modifier = modifierScaffold,
+                        listEvents = listEvents,
+                        onEventClickP = onEventClickP
+                    )
+
+                }
+
+                // Exception
+                is EventListUIState.Error -> {
+
+                    val error = (uiStateList as EventListUIState.Error).exception.message ?: stringResource(
+                        R.string.unknown_error
+                    )
+
+                    ErrorComposable(
+                        modifier=modifierScaffold,
+                        sErrorMessage = error,
+                        onClickRetryP = { viewModel.loadAllEvents() }
+                    )
+
+
+                }
+            }
         }
 
-        // Récupération des données avec succès
-        is EventListUIState.Success -> {
-
-            val listEvents = (uiStateList as EventListUIState.Success).listEvents
-
-            EventListComposable(
-                modifier = modifier,
-                listEvents = listEvents,
-                onEventClickP = onEventClickP
-            )
-
-        }
-
-        // Exception
-        is EventListUIState.Error -> {
-
-            val error = (uiStateList as EventListUIState.Error).exception.message ?: stringResource(
-                R.string.unknown_error
-            )
-
-            ErrorComposable(
-                modifier=modifier,
-                sErrorMessage = error,
-                onClickRetryP = { viewModel.loadAllEvents() }
-            )
+    )
 
 
-        }
-    }
 
 
 }

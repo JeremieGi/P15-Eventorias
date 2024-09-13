@@ -21,8 +21,8 @@ fun URLImageComposable(
     nIDResssourceIfNotFoundP: Int,
 ) {
 
-
     // SubcomposeAsyncImage => permet d'afficher un composant pour le chargement et pour l'erreur
+    // Doc : https://coil-kt.github.io/coil/compose/
     SubcomposeAsyncImage(
         modifier = modifier
             .size(50.dp),
@@ -41,7 +41,5 @@ fun URLImageComposable(
             )
         }
     )
-
-
 
 }

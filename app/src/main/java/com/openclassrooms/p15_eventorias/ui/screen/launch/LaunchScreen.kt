@@ -9,16 +9,18 @@ import com.openclassrooms.p15_eventorias.ui.screen.eventsList.EventsListScreen
 
 @Composable
 fun LaunchScreen(
-    modifier: Modifier = Modifier,
+    //modifier: Modifier = Modifier,
     viewModel: LaunchViewModel = hiltViewModel(),
     onEventClickP : (Event) -> Unit = {},
+    onClickAddP : () -> Unit
 ) {
 
     // TODO JG : Si utilisateur connecté => Firebase Auth UI
 
     //  Utilisateur connecté
     EventsListScreen(
-        modifier = modifier,
-        onEventClickP = onEventClickP)
-
+        //modifier = modifier,
+        onEventClickP = onEventClickP,
+        onClickAddP = onClickAddP
+    )
 }

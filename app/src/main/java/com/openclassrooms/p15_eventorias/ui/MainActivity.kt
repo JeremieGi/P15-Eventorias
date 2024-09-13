@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -68,32 +65,35 @@ fun NavGraph(
         // Fenêtre de lancement (Login ou directement liste des évènènements)
         composable(route = Screen.Launch.route) {
 
-            StructureComposable{ modifier ->
-                LaunchScreen(
-                    modifier = modifier,
-                    onEventClickP = { event ->
-                        //Le clic sur un Post, ouvre le Post
-                        navController.navigate(Screen.EventItem.createRoute(event.id))
-                    }
-                )
-            }
+            LaunchScreen(
+                onEventClickP = { event ->
+                    //Le clic sur un Post, ouvre le Post
+                    navController.navigate(Screen.EventItem.createRoute(event.id))
+                },
+                onClickAddP = {
+                    navController.navigate(Screen.EventAdd.route)
+                }
+            )
 
         }
 
 
-        // Liste des évènements
+        // Liste des évènements // TODO JG : Vérifier qu'on utilise bien ce chemin (on lance jamais ,
+        //                    onClickAddPP = {
+        //                        navController.navigate(Screen.EventAdd.route)
+        //                    } pour le moment)
         composable(Screen.EventsList.route) {
 
-            StructureComposable{ modifier ->
                 EventsListScreen(
-                    //navController = navController,
-                    modifier = modifier,
                     onEventClickP = { event ->
                         //Le clic sur un Post, ouvre le Post
                         navController.navigate(Screen.EventItem.createRoute(event.id))
+                    },
+                    onClickAddP = {
+                        navController.navigate(Screen.EventAdd.route)
                     }
                 )
-            }
+
 
         }
 
@@ -103,15 +103,12 @@ fun NavGraph(
             val eventId = backStackEntry.arguments?.getString(Screen.CTE_PARAM_ID_EVENT)?.toIntOrNull()
                 ?: error("Missing required argument eventId") // pour lever une exception de type IllegalArgumentException avec le message spécifié.
 
-            StructureComposable{ modifier ->
-
                 EventItemScreen(
-                    modifier = modifier,
                     onBackClick = { navController.navigateUp() },
                     eventId = eventId,
                 )
 
-            }
+
 
         }
 
@@ -132,23 +129,23 @@ fun NavGraph(
 
 
 
-// Structuration de toutes les fenêtres de l'application
-// avec application du thème et padding pour ne pas se superposer à la bar Android
-@Composable
-fun StructureComposable(
-    functionComposableParam : @Composable (modifier: Modifier) -> Unit
-){
-
-    Scaffold(
-
-        content = { innerPadding ->
-
-            functionComposableParam(
-                Modifier.padding(innerPadding) // Named arguments in composable function types are deprecated. This will become an error in Kotlin 2.0
-            )
-        }
-
-    )
-
-}
+//// Structuration de toutes les fenêtres de l'application
+//// avec application du thème et padding pour ne pas se superposer à la bar Android
+//@Composable
+//fun StructureComposable(
+//    functionComposableParam : @Composable (modifier: Modifier) -> Unit
+//){
+//
+//    Scaffold(
+//
+//        content = { innerPadding ->
+//
+//            functionComposableParam(
+//                Modifier.padding(innerPadding) // Named arguments in composable function types are deprecated. This will become an error in Kotlin 2.0
+//            )
+//        }
+//
+//    )
+//
+//}
 
