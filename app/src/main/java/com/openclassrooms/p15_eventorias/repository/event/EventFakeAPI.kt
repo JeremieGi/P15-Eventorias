@@ -10,14 +10,17 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class EventFakeAPI : EventApi {
 
-    private val userTest1 = User("1","Didier","didier@free.fr","https://xsgames.co/randomusers/assets/avatars/male/71.jpg")
-    private val userTest2 = User("2","Laetitia","laetitia@free.fr","https://xsgames.co/randomusers/assets/avatars/female/1.jpg")
+    private val sPhotoUser1 = "https://xsgames.co/randomusers/assets/avatars/male/71.jpg"
+    private val sPhotoUser2 = "https://xsgames.co/randomusers/assets/avatars/female/1.jpg"
+
+    //private val userTest1 = User("1","Didier","didier@free.fr",sPhotoUser1)
+    //private val userTest2 = User("2","Laetitia","laetitia@free.fr",sPhotoUser2)
 
     private var events = MutableStateFlow(
         mutableListOf(
-            Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "", userTest1),
-            Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "", userTest2),
-            Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", null),
+            Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "1 grand rue, 34000 Montpellier", sPhotoUser1),
+            Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "10 rue du pic, 34270 Saint Mathieu", sPhotoUser2),
+            Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", ""),
         )
     )
 

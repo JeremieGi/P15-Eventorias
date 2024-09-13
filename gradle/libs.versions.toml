@@ -16,6 +16,7 @@ activityCompose = "1.9.1"
 navigationCompose = "2.7.7"
 ksp = "1.9.23-1.0.20"
 lifecycleRuntimeCompose = "2.8.4"
+lifecycleRuntimeComposeAndroid = "2.8.5"
 
 
 [libraries]
@@ -49,6 +50,7 @@ firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "
 
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

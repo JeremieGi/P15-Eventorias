@@ -43,16 +43,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.tooling.preview.Preview
-import com.openclassrooms.p15_eventorias.model.User
-import com.openclassrooms.p15_eventorias.ui.URLImageComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
-import com.openclassrooms.p15_eventorias.utils.longToFormatedDate
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import com.openclassrooms.p15_eventorias.ui.Screen
+import com.openclassrooms.p15_eventorias.ui.URLImageAvatarComposable
+import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCard
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
+import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -188,8 +188,8 @@ fun EventListComposable(
         modifier = modifier
             .fillMaxSize()
             .padding(
-                horizontal = 26.dp,
-                vertical = 5.dp
+                horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
+                vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
             )
     ) {
 
@@ -240,16 +240,12 @@ fun EventItemListComposable(
         ){
 
             // 1er élément de la ligne : Avatar du créateur
-            URLImageComposable(
+            URLImageAvatarComposable(
                 modifier = Modifier
                     .weight(2f) // 20% de la largeur
-                    .padding(10.dp)
-                    .aspectRatio(1f) // Ajustez le rapport selon vos besoins
-                    .clip(CircleShape)
-
+                    .padding(10.dp) // Pour pas que le rond prenne toute la place
                     ,
-                sURLP = eventP.userCreatorEvent?.sURLAvatar,
-                nIDResssourceIfNotFoundP = R.drawable.baseline_face_24
+                sURLP = eventP.sURLPhotoAuthor
             )
 
             // 2ème élément de la ligne : Titre de l'évènement + date
@@ -265,18 +261,17 @@ fun EventItemListComposable(
                     .height(10.dp)
                 )
                 Text(
-                    text =longToFormatedDate(eventP.lDatetime),
+                    text = longToFormatedString(eventP.lDatetime,"MMMM dd, yyyy"),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
 
             // 3ème élément de la ligne : Photo de l'évènement
-            URLImageComposable(
+            URLImageEventComposable(
                 modifier = Modifier
                     .weight(4f) // 40% de la largeur
-                    .fillMaxSize(),
-                sURLP = eventP.sURLEventPicture,
-                nIDResssourceIfNotFoundP = R.drawable.baseline_image_not_supported,
+                    ,
+                sURLP = eventP.sURLEventPicture
             )
         }
 
@@ -291,14 +286,14 @@ fun EventItemListComposable(
 @Composable
 fun EventListComposablePreview() {
 
-    val userTest1 = User("1","Didier","didier@free.fr","https://xsgames.co/randomusers/assets/avatars/male/71.jpg")
-    val userTest2 = User("2","Laetitia","laetitia@free.fr","https://xsgames.co/randomusers/assets/avatars/female/1.jpg")
+    val sPhotoUser1 = "https://xsgames.co/randomusers/assets/avatars/male/71.jpg"
+    val sPhotoUser2 = "https://xsgames.co/randomusers/assets/avatars/female/1.jpg"
 
     // Coil n'affiche pas les images dans les previews... Ok à l'exec
     val listEvents = listOf(
-        Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "", userTest1),
-        Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "", userTest2),
-        Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", null),
+        Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "1 grand rue, 34000 Montpellier", sPhotoUser1),
+        Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "10 rue du pic, 34270 Saint Mathieu", sPhotoUser2),
+        Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", ""),
     )
 
     P15EventoriasTheme {

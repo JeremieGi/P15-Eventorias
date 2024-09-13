@@ -28,6 +28,9 @@ data class Event (
     /**
      * User object representing the creator of the event.
      */
-    val userCreatorEvent : User? = null,
+    //val userCreatorEvent : User? = null,
+    // Seule la photo est utile
+    // De plus dans Firebase, on expose pas tous les champs d'un profil
+    val sURLPhotoAuthor : String = ""
 
 )

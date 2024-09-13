@@ -9,4 +9,6 @@
     <string name="event_list">Event list</string>
     <string name="search">Search an event by title</string>
     <string name="addEvent">Add an event</string>
+    <string name="event_creation">Creation of an event</string>
+    <string name="back">Back</string>
 </resources>

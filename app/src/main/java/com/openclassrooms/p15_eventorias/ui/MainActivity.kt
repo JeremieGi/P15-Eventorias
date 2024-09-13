@@ -100,7 +100,7 @@ fun NavGraph(
         // Fenêtre d'un evènement
         composable(Screen.EventItem.route) { backStackEntry -> // BackStackEntry ici permet de récupérer les paramètres
 
-            val eventId = backStackEntry.arguments?.getString(Screen.CTE_PARAM_ID_EVENT)?.toIntOrNull()
+            val eventId = backStackEntry.arguments?.getString(Screen.CTE_PARAM_ID_EVENT)
                 ?: error("Missing required argument eventId") // pour lever une exception de type IllegalArgumentException avec le message spécifié.
 
                 EventItemScreen(
