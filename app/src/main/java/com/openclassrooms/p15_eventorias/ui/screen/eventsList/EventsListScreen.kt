@@ -49,7 +49,7 @@ import com.openclassrooms.p15_eventorias.ui.Screen
 import com.openclassrooms.p15_eventorias.ui.URLImageAvatarComposable
 import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
-import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCard
+import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 
@@ -227,7 +227,7 @@ fun EventItemListComposable(
                 onEventClickP(eventP)
             },
         colors = CardDefaults.cardColors(
-            containerColor = ColorCard // sinon pardéfaut MaterialTheme.colorScheme.surfaceContainer
+            containerColor = ColorCardAndInput // sinon pardéfaut MaterialTheme.colorScheme.surfaceContainer
         ),
         shape = RoundedCornerShape(8.dp)
     ){

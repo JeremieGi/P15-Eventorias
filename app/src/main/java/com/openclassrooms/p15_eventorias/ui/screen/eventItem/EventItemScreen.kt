@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventItem
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -145,10 +146,9 @@ fun EventItemComposable(
                 .padding(
                     horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                     vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-                )
+                ),
+            verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
         ){
-
-            val nVerticalSpaceBetweenComposable = 16
 
 
             URLImageEventComposable(
@@ -158,12 +158,12 @@ fun EventItemComposable(
                     .clip(RoundedCornerShape(12.dp)),
                 sURLP = eventP.sURLEventPicture )
 
-            // Espace entre les 2 champs
-            Spacer(modifier = Modifier.height(nVerticalSpaceBetweenComposable.dp))
 
             Column(
                 modifier = Modifier
                     .weight(5f)     // L'autre moitié de l'écran pour les autres infos
+                ,
+                verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
             ){
 
                 // Ligne avec date / heure et avatar de l'auteur
@@ -187,17 +187,11 @@ fun EventItemComposable(
 
                 }
 
-                // Espace entre les 2 champs
-                Spacer(modifier = Modifier.height(nVerticalSpaceBetweenComposable.dp))
 
                 Text(
                     text = eventP.sDescription,
                     style = MaterialTheme.typography.bodyMedium
                 )
-
-                // Espace entre les 2 champs
-                Spacer(modifier = Modifier.height(nVerticalSpaceBetweenComposable.dp))
-
 
                 AdresseComposable(eventP)
 

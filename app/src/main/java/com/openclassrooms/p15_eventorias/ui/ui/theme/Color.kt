@@ -11,7 +11,7 @@ val ColorBackground = Color(0xFF1d1b20)
 val ColorCustomGrey = Color(0xFFE6E0E9)
 val ColorInputHead = Color(0xFFCAC4D0)
 val ColorButtonBackground = Color(0xFFD0021B)
-val ColorCard = Color(0xFF49454F)
+val ColorCardAndInput = Color(0xFF49454F)
 
 
 //val PurpleGrey40 = Color(0xFF625b71)

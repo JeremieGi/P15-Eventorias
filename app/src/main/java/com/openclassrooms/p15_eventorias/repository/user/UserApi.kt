@@ -1,12 +1,11 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
-import android.content.Context
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.CollectionReference
 
 interface UserApi {
-/*
+
+    fun getCurrentUserAvatar() : String
+
+    /*
     /**
      * Return current user
      */

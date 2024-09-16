@@ -8,6 +8,8 @@ class UserRepository @Inject constructor(
     private val userApi: UserApi
 ) {
 
-
+    fun getCurrentUserAvatar() : String {
+        return userApi.getCurrentUserAvatar()
+    }
 
 }

@@ -17,8 +17,8 @@ import androidx.compose.runtime.Composable
 private val LightColorScheme = lightColorScheme(
 
     primary = ColorButtonBackground,    // Fond des boutons par défaut
-    secondary = ColorButtonBackground,
-    tertiary = ColorButtonBackground,
+//    secondary = ColorButtonBackground,
+//    tertiary = ColorButtonBackground,
     background = ColorBackground,
 
 
