@@ -8,15 +8,23 @@ import java.util.*
  * @param timestamp : Date in long format
  * @param sPattern : Pattern Ex "MMMM dd, yyyy" ou "hh:mm" :  https://developer.android.com/reference/android/icu/text/SimpleDateFormat
  */
-fun longToFormatedString(timestamp: Long, sPattern : String): String {
+fun longToFormatedString(timestampInMs: Long, sPattern : String): String {
 
-    // Créer un objet Date à partir du timestamp
-    val date = Date(timestamp * 1000) // Multiplier par 1000 car le timestamp est en seconde, et Date utilise les millisecondes
+    // Si timestamp = 0
+    if (timestampInMs==0L){
+        // On affiche chaine vide, au lieu de 1er janvier 1970 12h
+        return ""
+    }
+    else{
+        // Créer un objet Date à partir du timestamp
+        val date = Date(timestampInMs)
 
-    // Formater la date selon le modèle souhaité
-    val formatter = SimpleDateFormat(sPattern, Locale.US)
+        // Formater la date selon le modèle souhaité
+        val formatter = SimpleDateFormat(sPattern, Locale.US)
 
-    return formatter.format(date)
+        return formatter.format(date)
+    }
+
 
 }
 

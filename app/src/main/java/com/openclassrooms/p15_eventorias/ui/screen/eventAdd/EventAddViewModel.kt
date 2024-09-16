@@ -53,7 +53,9 @@ class EventAddViewModel @Inject constructor (
                 )
             }
             is FormDataAddEvent.DateTimeChanged -> {
-
+                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
+                    lDatetime = formDataAddEvent.lDatetimeValue
+                )
             }
 
             is FormDataAddEvent.AdressChanged -> {
@@ -78,6 +80,11 @@ class EventAddViewModel @Inject constructor (
 
         if (_uiStateCurrentEvent.value.sDescription.isNullOrEmpty()){
             return FormErrorAddEvent.DescriptionError
+        }
+
+
+        if (_uiStateCurrentEvent.value.lDatetime == 0L){
+            return FormErrorAddEvent.DatetimeError
         }
 
         return null

@@ -48,6 +48,7 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import java.sql.Time
 import java.time.LocalDateTime
 import java.util.Calendar
@@ -215,11 +216,6 @@ fun ComposableDateTime(
     onValueChangeDateTimeChanged : (Long) -> Unit
 ) {
 
-    // State pour la date et l'heure
-    var dateState by remember { mutableStateOf("") }
-    var timeState by remember { mutableStateOf("") }
-
-
     // Pour obtenir le contexte
     val context = LocalContext.current
 
@@ -230,8 +226,9 @@ fun ComposableDateTime(
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            // Mettre à jour l'état avec la date sélectionnée (format JJ/MM/YYYY)
-            dateState = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)
+            // Mettre à jour le ViewModel avec la date sélectionnée
+            calendar.set(year, month, dayOfMonth)
+            onValueChangeDateTimeChanged(calendar.timeInMillis)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
@@ -243,7 +240,9 @@ fun ComposableDateTime(
         context,
         { _, hourOfDay, minute ->
             // Mettre à jour l'état avec l'heure sélectionnée (format HH:MM)
-            timeState = String.format("%02d:%02d", hourOfDay, minute)
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calendar.set(Calendar.MINUTE, minute)
+            onValueChangeDateTimeChanged(calendar.timeInMillis)
         },
         calendar.get(Calendar.HOUR_OF_DAY),
         calendar.get(Calendar.MINUTE),
@@ -265,7 +264,7 @@ fun ComposableDateTime(
                 .clickable() {
                     datePickerDialog.show() // Affiche le picker au clic
                 },
-            value = dateState,
+            value = longToFormatedString(datetimeValue,"mm/dd/yyyy"),
             onValueChange = { },
             label = {
                 Text(
@@ -294,7 +293,7 @@ fun ComposableDateTime(
                 .clickable() {
                     timePickerDialog.show()
                 },
-            value = timeState,
+            value = longToFormatedString(datetimeValue,"hh:mm"),
             onValueChange = { },
             label = {
                 Text(
