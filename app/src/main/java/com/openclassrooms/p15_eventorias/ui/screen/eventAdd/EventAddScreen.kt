@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -92,13 +95,12 @@ fun EventAddScreen(
                     horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                     vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
                 ),
-            verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
+            //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
         ){
 
 
             OutlinedTextField(
                 modifier = Modifier
-                    .padding(top = 16.dp)
                     .fillMaxWidth()
                     .background(ColorCardAndInput),
                 value = uiStateCurrentEvent.sTitle,
@@ -129,6 +131,46 @@ fun EventAddScreen(
                     color = MaterialTheme.colorScheme.error,
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(ColorCardAndInput),
+//                    .onFocusChanged {
+//
+//                    },
+                value = uiStateCurrentEvent.sDescription,
+                textStyle = MaterialTheme.typography.labelLarge,
+                isError = (uiStateError is FormErrorAddEvent.DescriptionError),
+                onValueChange =  {
+                    viewModel.onAction(FormDataAddEvent.DescriptionChanged(it))
+                },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.description),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                maxLines = 3,
+                // On peut toujours personnaliser les autres éléments,
+                // comme les couleurs des indicateurs et des labels,
+                // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                )
+            )
+            if (uiStateError is FormErrorAddEvent.DescriptionError) {
+                Text(
+                    text = stringResource(id = R.string.mandatorydescription),
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 modifier = Modifier

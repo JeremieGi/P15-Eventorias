@@ -48,7 +48,9 @@ class EventAddViewModel @Inject constructor (
             }
 
             is FormDataAddEvent.DescriptionChanged -> {
-
+                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
+                    sDescription = formDataAddEvent.description
+                )
             }
             is FormDataAddEvent.DateChanged -> {
 
@@ -63,6 +65,37 @@ class EventAddViewModel @Inject constructor (
 
             }
 
+        }
+
+        checkFormError()
+
+    }
+
+
+    private fun displayError(): FormErrorAddEvent? {
+
+        if (_uiStateCurrentEvent.value.sTitle.isNullOrEmpty()){
+            return FormErrorAddEvent.TitleError
+        }
+
+        if (_uiStateCurrentEvent.value.sDescription.isNullOrEmpty()){
+            return FormErrorAddEvent.DescriptionError
+        }
+
+        return null
+
+    }
+
+    // Vérifie les erreurs du formaulaire en cours de saisi
+    fun checkFormError() {
+
+        // Mise à jour des erreurs
+        val formError = displayError()
+        if(formError==null){
+            _uiStateFormError.value = null // Pas d'erreur dans la saisie de formulaire
+        }
+        else{
+            _uiStateFormError.value = formError
         }
 
     }
