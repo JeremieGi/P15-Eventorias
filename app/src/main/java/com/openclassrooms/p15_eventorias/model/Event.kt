@@ -24,6 +24,8 @@ data class Event (
      * Adresse de l'évènement.
      */
     val sAdress : String = "",
+    // On va stocker les coordonnées GPS à la création de l'évènement (çà évitera d'appeler geocode à chaque affichage de l'écran de détail)
+    val coordGPS  : CoordinatesGPS? = null,
 
     /**
      * User object representing the creator of the event.

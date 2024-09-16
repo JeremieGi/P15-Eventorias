@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +24,6 @@ import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -46,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
+import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.Screen
 import com.openclassrooms.p15_eventorias.ui.URLImageAvatarComposable
 import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
@@ -286,20 +285,13 @@ fun EventItemListComposable(
 @Composable
 fun EventListComposablePreview() {
 
-    val sPhotoUser1 = "https://xsgames.co/randomusers/assets/avatars/male/71.jpg"
-    val sPhotoUser2 = "https://xsgames.co/randomusers/assets/avatars/female/1.jpg"
 
-    // Coil n'affiche pas les images dans les previews... Ok à l'exec
-    val listEvents = listOf(
-        Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "1 grand rue, 34000 Montpellier", sPhotoUser1),
-        Event("2","Event2","Description de l'évent 2",1451638679 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "10 rue du pic, 34270 Saint Mathieu", sPhotoUser2),
-        Event("3","Event3","sans avatar créateur",1451638679 /* 01/01/2016 */, "", "", ""),
-    )
+    val listFakeEvent = EventFakeAPI.initFakeEvents()
 
     P15EventoriasTheme {
 
         EventListComposable(
-            listEvents = listEvents,
+            listEvents = listFakeEvent,
             onEventClickP = {}
         )
     }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,18 +21,25 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.Event
+import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
@@ -40,10 +48,10 @@ import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import com.openclassrooms.p15_eventorias.utils.googleAPIDrawCard
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventItemScreen(
     modifier: Modifier = Modifier,
@@ -191,7 +199,7 @@ fun EventItemComposable(
                 Spacer(modifier = Modifier.height(nVerticalSpaceBetweenComposable.dp))
 
 
-                AdresseComposable(eventP.sAdress)
+                AdresseComposable(eventP)
 
 
             }
@@ -206,18 +214,42 @@ fun EventItemComposable(
 }
 
 @Composable
-fun AdresseComposable(sAdress: String) {
+fun AdresseComposable(event : Event) {
 
-    Row(){
+    Row {
 
         Text(
             modifier = Modifier.weight(1f), // Chaque champ utilise la moitié de l'écran
-            text = sAdress
+            text = event.sAdress
         )
 
-        Text(
-            modifier = Modifier.weight(1f),
-            text = "A remplacer par le champ carte"
+        // https://developers.google.com/maps/documentation/maps-static/overview?hl=fr
+
+        var sURLCompose by remember { mutableStateOf("") }
+
+        // Obtenir la localisation actuelle
+        LaunchedEffect(event) {
+            // Ici, on est dans une coroutine
+            sURLCompose = googleAPIDrawCard(event.coordGPS)
+        }
+
+        SubcomposeAsyncImage(
+            modifier = Modifier
+                .weight(1f)
+        ,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(sURLCompose)
+                .build(),
+            contentDescription = null,
+            //contentScale = ContentScale.Crop,
+            loading = {
+                CircularProgressIndicator()
+            },
+            error = {
+                Text(
+                    text = stringResource(R.string.impossible_to_load_a_map)
+                )
+            }
         )
     }
 
@@ -238,7 +270,7 @@ fun FormatedDateComposant(
 
         val nSpaceBetweenPictoAnDate = 15
 
-        Row(){
+        Row {
 
             Icon(
                 modifier = Modifier.padding(
@@ -259,7 +291,7 @@ fun FormatedDateComposant(
         // Espace entre les 2 lignes
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(){
+        Row {
 
             Icon(
                 modifier = Modifier.padding(
@@ -291,16 +323,16 @@ fun FormatedDateComposant(
 @Composable
 fun EventListComposablePreview() {
 
-    val sPhotoUser1 = "https://xsgames.co/randomusers/assets/avatars/male/71.jpg"
 
     // Coil n'affiche pas les images dans les previews... Ok à l'exec
-    val event = Event("1","Event1","Description de l'évent 1",1629858873 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "", sPhotoUser1)
+
+    val listFakeEvent = EventFakeAPI.initFakeEvents()
 
 
     P15EventoriasTheme {
 
         EventItemComposable(
-            eventP = event,
+            eventP = listFakeEvent[0],
             onBackClick = {}
         )
 
