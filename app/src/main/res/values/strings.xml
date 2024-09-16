@@ -17,4 +17,8 @@
     <string name="validate">Validate</string>
     <string name="description">Description</string>
     <string name="mandatorydescription">Mandatory description</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="dateformat">MM/DD/YYYY</string>
+    <string name="timeformat">HH:MM</string>
 </resources>

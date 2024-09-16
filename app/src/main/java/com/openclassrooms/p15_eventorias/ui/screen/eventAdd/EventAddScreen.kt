@@ -1,9 +1,14 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,18 +25,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,13 +43,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.openclassrooms.p15_eventorias.R
-import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.Screen
-import com.openclassrooms.p15_eventorias.ui.screen.eventItem.EventItemComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import java.sql.Time
+import java.time.LocalDateTime
+import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -172,6 +179,15 @@ fun EventAddScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            ComposableDateTime(
+                datetimeValue = uiStateCurrentEvent.lDatetime,
+                onValueChangeDateTimeChanged = {
+                    viewModel.onAction(FormDataAddEvent.DateTimeChanged(it))
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -189,6 +205,118 @@ fun EventAddScreen(
     }
 
 
+
+}
+
+@Composable
+fun ComposableDateTime(
+    modifier: Modifier = Modifier,
+    datetimeValue: Long,
+    onValueChangeDateTimeChanged : (Long) -> Unit
+) {
+
+    // State pour la date et l'heure
+    var dateState by remember { mutableStateOf("") }
+    var timeState by remember { mutableStateOf("") }
+
+
+    // Pour obtenir le contexte
+    val context = LocalContext.current
+
+    // Obtenir l'instance du calendrier
+    val calendar = Calendar.getInstance()
+
+    // DatePickerDialog pour sélectionner la date
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, year, month, dayOfMonth ->
+            // Mettre à jour l'état avec la date sélectionnée (format JJ/MM/YYYY)
+            dateState = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
+
+    // TimePickerDialog pour sélectionner l'heure
+    val timePickerDialog = TimePickerDialog(
+        context,
+        { _, hourOfDay, minute ->
+            // Mettre à jour l'état avec l'heure sélectionnée (format HH:MM)
+            timeState = String.format("%02d:%02d", hourOfDay, minute)
+        },
+        calendar.get(Calendar.HOUR_OF_DAY),
+        calendar.get(Calendar.MINUTE),
+        true // Utilisation du format 24h
+    )
+
+    // Interface utilisateur avec les champs de saisie
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+            //.padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Champ de date (JJ/MM/YYYY)
+
+        OutlinedTextField(
+            modifier = Modifier
+                .weight(1f)
+                .clickable() {
+                    datePickerDialog.show() // Affiche le picker au clic
+                },
+            value = dateState,
+            onValueChange = { },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.date),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.dateformat),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            readOnly = true, // Empêche la modification manuelle
+            enabled = false, // Obligatoire sinon .clickable() { n'est pas appelé
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+            )
+        )
+
+        // Champ de temps (HH:MM)
+        OutlinedTextField(
+            modifier = Modifier
+                .weight(1f)
+                .clickable() {
+                    timePickerDialog.show()
+                },
+            value = timeState,
+            onValueChange = { },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.time),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.timeformat),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            readOnly = true, // Empêche la modification manuelle
+            enabled = false, // Obligatoire sinon .clickable() { n'est pas appelé
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+            )
+        )
+
+    }
 
 }
 

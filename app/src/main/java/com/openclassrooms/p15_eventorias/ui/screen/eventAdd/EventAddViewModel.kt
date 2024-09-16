@@ -52,12 +52,10 @@ class EventAddViewModel @Inject constructor (
                     sDescription = formDataAddEvent.description
                 )
             }
-            is FormDataAddEvent.DateChanged -> {
+            is FormDataAddEvent.DateTimeChanged -> {
 
             }
-            is FormDataAddEvent.TimeChanged -> {
 
-            }
             is FormDataAddEvent.AdressChanged -> {
 
             }
