@@ -25,4 +25,6 @@
     <string name="enterfulladdress">Enter full address</string>
     <string name="mandatoryaddress">Mandatory address</string>
     <string name="eventNoAddress">Event has not address</string>
+    <string name="takeapicture">Take a picture</string>
+    <string name="selectphotoingallery">Select a photo in your gallery</string>
 </resources>
