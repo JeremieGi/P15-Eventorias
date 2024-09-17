@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,9 +41,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.openclassrooms.p15_eventorias.R
@@ -319,30 +324,47 @@ fun PhotoSelectorComposable(
 
             val nIconSize = 52
 
-            Icon(
+            IconButton(
                 modifier = Modifier
                     .size(nIconSize.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(ColorTitleWhite)
-                    .padding(16.dp),
-                painter = painterResource(R.drawable.baseline_photo_camera_24),
-                contentDescription = stringResource(id = R.string.takeapicture),
-                tint = ColorCardAndInput
-            )
+                    .background(ColorTitleWhite),
+                onClick = {
+
+                }
+
+            ) {
+                Icon(
+                    modifier = Modifier.padding(16.dp),
+                    painter = painterResource(R.drawable.baseline_photo_camera_24),
+                    contentDescription = stringResource(id = R.string.takeapicture),
+                    tint = ColorCardAndInput
+                )
+            }
 
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Icon(
+
+
+            IconButton(
                 modifier = Modifier
                     .size(nIconSize.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
-                painter = painterResource(R.drawable.baseline_attach_file_24),
-                contentDescription = stringResource(id = R.string.selectphotoingallery),
-                tint = ColorTitleWhite
-            )
+                ,
+                onClick = {
+
+                }
+
+            ) {
+               Icon(
+                    modifier = Modifier.padding(16.dp),
+                    painter = painterResource(R.drawable.baseline_attach_file_24),
+                    contentDescription = stringResource(id = R.string.selectphotoingallery),
+                    tint = ColorTitleWhite
+               )
+            }
 
         }
 
