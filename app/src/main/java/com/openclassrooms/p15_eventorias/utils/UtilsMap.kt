@@ -59,6 +59,8 @@ suspend fun getCoordinatesFromAddress(
     return withContext(Dispatchers.IO) {
         try {
 
+            // https://developers.google.com/maps/documentation/geocoding/overview?hl=fr
+
             val client = OkHttpClient()
             val url = "https://maps.googleapis.com/maps/api/geocode/json?" +
                     "address=${address.replace(" ", "+")}" +
@@ -66,10 +68,21 @@ suspend fun getCoordinatesFromAddress(
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
 
+            if (!response.isSuccessful) {
+                throw Exception("API request failed with code: ${response.code} : ${response.body}")
+            }
+
             response.body?.let { body ->
                 val jsonResponse = JSONObject(body.string())
-                val location = jsonResponse
-                    .getJSONArray("results")
+
+                val results = jsonResponse.getJSONArray("results")
+                // Si aucun résultat, on lève une exception
+                if (results.length() == 0) {
+                    throw Exception("No GPS coordinates found for the address: $address")
+                }
+
+                // Renvoie le 1er résultat (le plus pertinent selon google)
+                val location = results
                     .getJSONObject(0)
                     .getJSONObject("geometry")
                     .getJSONObject("location")

@@ -82,11 +82,11 @@ class EventAddViewModel @Inject constructor (
 
     private fun displayError(): FormErrorAddEvent? {
 
-        if (_uiStateCurrentEvent.value.sTitle.isNullOrEmpty()){
+        if (_uiStateCurrentEvent.value.sTitle.isEmpty()){
             return FormErrorAddEvent.TitleError
         }
 
-        if (_uiStateCurrentEvent.value.sDescription.isNullOrEmpty()){
+        if (_uiStateCurrentEvent.value.sDescription.isEmpty()){
             return FormErrorAddEvent.DescriptionError
         }
 

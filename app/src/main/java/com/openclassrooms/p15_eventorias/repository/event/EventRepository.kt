@@ -4,8 +4,10 @@ import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -59,22 +61,46 @@ class EventRepository @Inject constructor(
     }
 
     // Ajoute un évènement
-    fun addEvent(event: Event): Flow<ResultCustom<String>> {
+    fun addEvent(event: Event): Flow<ResultCustom<String>> = flow {
+
+        emit(ResultCustom.Loading)
+        //delay(2000) // To test Loading mode
 
         if (!injectedContext.isInternetAvailable()){
-            return flow {
-                emit(
-                    ResultCustom.Failure(
-                        injectedContext.getInjectedContext().getString(R.string.no_network)
-                    )
+
+            emit(
+                ResultCustom.Failure(
+                    injectedContext.getInjectedContext().getString(R.string.no_network)
                 )
-            }
+            )
+
         }
         else{
-            return eventApi.addEvent(event)
+
+            // Géolocation de l'adresse
+            val sErrorGeolocation = event.geolocate( injectedContext.getInjectedContext() )
+            if (sErrorGeolocation.isNotEmpty()) {
+
+                    emit(
+                        ResultCustom.Failure(
+                            sErrorGeolocation
+                        )
+                    )
+
+            }
+            else{
+
+                // Emettre son propre Flow (avec les éventuelles erreurs ou succès)
+                eventApi.addEvent(event).collect { result ->
+                    emit(result)
+                }
+
+            }
+
+
         }
 
-    }
+    }.flowOn(Dispatchers.IO)  // Exécuter sur un thread d'entrée/sortie (IO)
 
 
 

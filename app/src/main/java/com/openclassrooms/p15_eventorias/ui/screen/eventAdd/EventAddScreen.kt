@@ -283,7 +283,6 @@ fun EventAddScreen(
  */
 @Composable
 fun ComposableDateTime(
-    modifier: Modifier = Modifier,
     datetimeValueInMs: Long,
     onValueChangeDateTimeChanged : (Long) -> Unit
 ) {
@@ -332,7 +331,7 @@ fun ComposableDateTime(
         OutlinedTextField(
             modifier = Modifier
                 .weight(1f)
-                .clickable() {
+                .clickable {
                     datePickerDialog.show() // Affiche le picker au clic
                 },
             value = longToFormatedString(datetimeValueInMs,"MM/dd/yyyy"),
@@ -361,7 +360,7 @@ fun ComposableDateTime(
         OutlinedTextField(
             modifier = Modifier
                 .weight(1f)
-                .clickable() {
+                .clickable {
                     timePickerDialog.show()
                 },
             value = longToFormatedString(datetimeValueInMs,"HH:mm"),
