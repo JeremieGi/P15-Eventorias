@@ -96,6 +96,14 @@ class EventAddViewModel @Inject constructor (
             return FormErrorAddEvent.DatetimeError
         }
 
+        if (_uiStateCurrentEvent.value.sAdress.isEmpty()){
+            return FormErrorAddEvent.AddressError("Mandatory Adress") // TODO JG : Utiliser les ressources de chaines
+        }
+
+        if (_uiStateCurrentEvent.value.sURLEventPicture.isEmpty()){
+            return FormErrorAddEvent.PhotoError
+        }
+
         return null
 
     }
@@ -130,10 +138,18 @@ class EventAddViewModel @Inject constructor (
 
                     // Transmission au UIState dédié
 
-                    // Echec
-                    is ResultCustom.Failure ->
-                        // Propagation du message d'erreur
-                        _uiStateAddEventResult.value = EventAddUIState.Error(resultFlow.errorMessage)
+                    // Echec de l'ajout
+                    is ResultCustom.Failure -> {
+                        // Récupération du message d'erreur
+                        val sErrorAddress = EventAddUIState.Error(resultFlow.errorMessage).sError
+
+                        // J'affiche l'erreur sous le champ Adresse pour que l'utilisateur puisse la corriger
+                        _uiStateFormError.value = FormErrorAddEvent.AddressError(sErrorAddress)
+
+                        // Raffiche le formulaire
+                        _uiStateAddEventResult.value = null
+                    }
+
 
                     // En chargement
                     is ResultCustom.Loading -> {
@@ -165,6 +181,7 @@ class EventAddViewModel @Inject constructor (
                 && currentEvent.sDescription.isNotEmpty()
                 && (currentEvent.lDatetime != 0L)
                 && currentEvent.sAdress.isNotEmpty()
+                && currentEvent.sURLEventPicture.isNotEmpty()
     }
 
 }

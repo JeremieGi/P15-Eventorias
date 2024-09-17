@@ -16,12 +16,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -234,7 +232,7 @@ fun EventAddScreen(
                             .background(ColorCardAndInput),
                         value = uiStateCurrentEvent.sAdress,
                         textStyle = MaterialTheme.typography.labelLarge,
-                        isError = (uiStateError is FormErrorAddEvent.AdressError),
+                        isError = (uiStateError is FormErrorAddEvent.AddressError),
                         onValueChange =  {
                             viewModel.onAction(FormDataAddEvent.AdressChanged(it))
                         },
@@ -260,9 +258,11 @@ fun EventAddScreen(
                             unfocusedBorderColor = Color.Transparent,
                         )
                     )
-                    if (uiStateError is FormErrorAddEvent.AdressError) {
+                    if (uiStateError is FormErrorAddEvent.AddressError) {
                         Text(
-                            text = stringResource(id = R.string.mandatoryaddress),
+                            text = (uiStateError as FormErrorAddEvent.AddressError).errorAddress?: stringResource(
+                                R.string.unknown_error
+                            ),/*stringResource(id = R.string.mandatoryaddress)*/
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
@@ -274,7 +274,8 @@ fun EventAddScreen(
                         sURLValue = uiStateCurrentEvent.sURLEventPicture,
                         onPhotoChanged = {
                             viewModel.onAction(FormDataAddEvent.PhotoChanged(it))
-                        }
+                        },
+                        uiStateError = uiStateError,
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -311,6 +312,7 @@ fun PhotoSelectorComposable(
     modifier: Modifier,
     sURLValue: String,
     onPhotoChanged: (String) -> Unit,
+    uiStateError: FormErrorAddEvent?,
 )
 {
 
@@ -395,17 +397,27 @@ fun PhotoSelectorComposable(
 
             }
 
+            if (uiStateError is FormErrorAddEvent.PhotoError) {
+                Text(
+                    text = stringResource(id = R.string.mandatoryphoto),
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+
 
             //2 ème élément la photo si elle existe
 
-            sURLValue?.let { uri ->
+            if (sURLValue.isNotEmpty()){
                 Image(
-                    painter = rememberAsyncImagePainter(uri), //  l'image est chargée et affichée à l'aide de Coil
+                    painter = rememberAsyncImagePainter(sURLValue), //  l'image est chargée et affichée à l'aide de Coil
                     contentDescription = null,
                     modifier = Modifier.size(200.dp),
                     contentScale = ContentScale.Crop
                 )
             }
+//            sURLValue?.let { uri ->
+//
+//            }
         }
 
 

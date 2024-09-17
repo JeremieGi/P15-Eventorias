@@ -57,7 +57,7 @@ suspend fun getCoordinatesFromAddress(
 
     // Thread d'entrée/sortie
     return withContext(Dispatchers.IO) {
-        try {
+        //try {
 
             // https://developers.google.com/maps/documentation/geocoding/overview?hl=fr
 
@@ -95,10 +95,10 @@ suspend fun getCoordinatesFromAddress(
 
             return@withContext null
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return@withContext null
-        }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            return@withContext null
+//        }
 
     }
 }
