@@ -72,6 +72,9 @@ fun NavGraph(
                 },
                 onClickAddP = {
                     navController.navigate(Screen.EventAdd.route)
+                },
+                onClickProfileP = {
+                    navController.navigate(Screen.UserProfile.route)
                 }
             )
 
@@ -91,6 +94,9 @@ fun NavGraph(
                     },
                     onClickAddP = {
                         navController.navigate(Screen.EventAdd.route)
+                    },
+                    onClickProfileP = {
+                        navController.navigate(Screen.UserProfile.route)
                     }
                 )
 

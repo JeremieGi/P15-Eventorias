@@ -45,6 +45,7 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
+import com.openclassrooms.p15_eventorias.ui.BottomBarComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
 import com.openclassrooms.p15_eventorias.ui.URLImageAvatarComposable
 import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
@@ -59,8 +60,9 @@ import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 fun EventsListScreen(
     //modifier: Modifier = Modifier,
     viewModel: EventsListViewModel = hiltViewModel(),
-    onEventClickP : (Event) -> Unit,
-    onClickAddP : () -> Unit
+    onEventClickP: (Event) -> Unit,
+    onClickAddP: () -> Unit,
+    onClickProfileP : () -> Unit
 ) {
 
     Scaffold(
@@ -167,14 +169,21 @@ fun EventsListScreen(
 
                 }
             }
+        },
+
+        bottomBar = {
+            BottomBarComposable(
+                onClickEventsP = {},
+                onClickProfileP = onClickProfileP
+            )
         }
 
     )
 
 
-
-
 }
+
+
 
 @Composable
 fun EventListComposable(

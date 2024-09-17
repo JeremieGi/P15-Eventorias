@@ -326,7 +326,7 @@ fun PhotoSelectorComposable(
         onPhotoChanged(uri.toString())
     }
 
-    // Box utile pour centrer horizontalement le Row
+    // Box utile pour centrer horizontalement le contenu
     Box(
         modifier = modifier
             .fillMaxWidth()

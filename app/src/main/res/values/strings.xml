@@ -28,4 +28,6 @@
     <string name="takeapicture">Take a picture</string>
     <string name="selectphotoingallery">Select a photo in your gallery</string>
     <string name="mandatoryphoto">Mandatory photo</string>
+    <string name="events">Events</string>
+    <string name="profile">Profile</string>
 </resources>
