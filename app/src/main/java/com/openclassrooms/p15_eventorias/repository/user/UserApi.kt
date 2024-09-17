@@ -1,9 +1,15 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
+import com.openclassrooms.p15_eventorias.model.User
+import com.openclassrooms.p15_eventorias.repository.ResultCustom
+import kotlinx.coroutines.flow.Flow
+
 
 interface UserApi {
 
     fun getCurrentUserAvatar() : String
+
+    fun loadCurrentUser(): Flow<ResultCustom<User>>
 
     /*
     /**

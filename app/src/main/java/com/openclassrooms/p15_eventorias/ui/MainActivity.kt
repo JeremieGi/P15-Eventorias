@@ -81,10 +81,7 @@ fun NavGraph(
         }
 
 
-        // Liste des évènements // TODO JG : Vérifier qu'on utilise bien ce chemin (on lance jamais ,
-        //                    onClickAddPP = {
-        //                        navController.navigate(Screen.EventAdd.route)
-        //                    } pour le moment)
+        // Liste des évènements
         composable(Screen.EventsList.route) {
 
                 EventsListScreen(
@@ -115,7 +112,6 @@ fun NavGraph(
                 )
 
 
-
         }
 
         composable(route = Screen.EventAdd.route) {
@@ -126,32 +122,11 @@ fun NavGraph(
 
         composable(route = Screen.UserProfile.route) {
             UserProfileScreen(
-                onBackClick = { navController.navigateUp() }
+                onBackClick = { navController.navigateUp() },
+                onClickEventsP = { navController.navigate(Screen.EventsList.route) }
             )
         }
 
     }
 }
-
-
-
-//// Structuration de toutes les fenêtres de l'application
-//// avec application du thème et padding pour ne pas se superposer à la bar Android
-//@Composable
-//fun StructureComposable(
-//    functionComposableParam : @Composable (modifier: Modifier) -> Unit
-//){
-//
-//    Scaffold(
-//
-//        content = { innerPadding ->
-//
-//            functionComposableParam(
-//                Modifier.padding(innerPadding) // Named arguments in composable function types are deprecated. This will become an error in Kotlin 2.0
-//            )
-//        }
-//
-//    )
-//
-//}
 

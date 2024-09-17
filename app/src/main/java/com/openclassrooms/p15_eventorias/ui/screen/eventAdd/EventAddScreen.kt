@@ -62,7 +62,6 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.MyButtonStyle
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import java.util.Calendar
-import androidx.compose.material3.Icon as Icon1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,7 +91,7 @@ fun EventAddScreen(
                     IconButton(onClick = {
                         onBackClick()
                     }) {
-                        Icon1(
+                        Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.back),
                             tint = ColorTitleWhite

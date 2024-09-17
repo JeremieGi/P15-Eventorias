@@ -30,4 +30,8 @@
     <string name="mandatoryphoto">Mandatory photo</string>
     <string name="events">Events</string>
     <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="mandatoryname">Mandatory name</string>
+    <string name="email">E-mail</string>
+    <string name="userprofile">User profile</string>
 </resources>

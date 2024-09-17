@@ -173,6 +173,7 @@ fun EventsListScreen(
 
         bottomBar = {
             BottomBarComposable(
+                sActiveScreenP = Screen.CTE_EVENTS_LIST_SCREEN,
                 onClickEventsP = {},
                 onClickProfileP = onClickProfileP
             )

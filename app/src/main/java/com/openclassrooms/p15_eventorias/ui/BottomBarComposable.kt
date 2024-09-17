@@ -26,9 +26,11 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 
 @Composable
 fun BottomBarComposable(
+    sActiveScreenP : String,
     onClickEventsP  : () -> Unit,
     onClickProfileP : () -> Unit
 ) {
+
 
     // Box utile pour centrer horizontalement le contenu
     Box(
@@ -47,7 +49,7 @@ fun BottomBarComposable(
                     onClick = {
                         onClickEventsP()
                     },
-                    enabled = onClickEventsP == {} ,// pas actif si on est déjà sur l'écran de liste des évènements
+                    enabled = (sActiveScreenP!=Screen.CTE_EVENTS_LIST_SCREEN) ,// pas actif si on est déjà sur l'écran de liste des évènements
                     colors = IconButtonDefaults.iconButtonColors(
                         disabledContainerColor = ColorCardAndInput
                     )
@@ -73,7 +75,7 @@ fun BottomBarComposable(
                     onClick = {
                         onClickProfileP()
                     },
-                    enabled = onClickProfileP != {}, // pas actif si on est déjà sur l'écran de profil
+                    enabled = (sActiveScreenP!=Screen.CTE_USER_PROFILE_SCREEN), // pas actif si on est déjà sur l'écran de profil
                     colors = IconButtonDefaults.iconButtonColors(
                         disabledContainerColor = ColorCardAndInput
                     )
@@ -112,6 +114,7 @@ fun BottomBarComposablePreview() {
 
     P15EventoriasTheme {
         BottomBarComposable(
+            sActiveScreenP = Screen.CTE_USER_PROFILE_SCREEN,
             onClickEventsP = {},
             onClickProfileP = {}
         )
