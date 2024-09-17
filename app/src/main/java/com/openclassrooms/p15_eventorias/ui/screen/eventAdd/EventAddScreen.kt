@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +16,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,11 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -43,16 +37,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.openclassrooms.p15_eventorias.R
+import com.openclassrooms.p15_eventorias.ui.ErrorComposable
+import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
+import com.openclassrooms.p15_eventorias.ui.ui.theme.MyButtonStyle
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
-import java.sql.Time
-import java.time.LocalDateTime
 import java.util.Calendar
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,109 +90,186 @@ fun EventAddScreen(
         }
     ) { contentPadding ->
 
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .padding(
-                    horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
-                    vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-                ),
-            //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
-        ){
+        // Gestion du résultat de l'ajout
+        val currentStateUiStateAddEventResult = uiStateAddEventResult // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
+        when (currentStateUiStateAddEventResult){
 
-            // Saisie du titre
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(ColorCardAndInput),
-                value = uiStateCurrentEvent.sTitle,
-                textStyle = MaterialTheme.typography.labelLarge,
-                isError = (uiStateError is FormErrorAddEvent.TitleError),
-                onValueChange =  {
-                    viewModel.onAction(FormDataAddEvent.TitleChanged(it))
-                },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.title),
-                        style = MaterialTheme.typography.labelMedium
+            // Erreur
+            is EventAddUIState.Error -> {
+                val sError = currentStateUiStateAddEventResult.sError ?: stringResource(R.string.unknown_error)
+                ErrorComposable(
+                    sErrorMessage = sError,
+                    onClickRetryP = {
+                        viewModel.addEvent()
+                    }
+                )
+            }
+
+            // Ajout en cours
+            EventAddUIState.IsLoading -> {
+                LoadingComposable()
+            }
+
+            EventAddUIState.Success -> {
+                onBackClick() // Retour à la liste d'évènement
+            }
+
+            // Formulaire de saisie
+            null -> {
+
+                Column(
+                    modifier = Modifier
+                        .padding(contentPadding)
+                        .padding(
+                            horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
+                            vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
+                        ),
+                    //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
+                ){
+
+
+                    // Saisie du titre
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(ColorCardAndInput),
+                        value = uiStateCurrentEvent.sTitle,
+                        textStyle = MaterialTheme.typography.labelLarge,
+                        isError = (uiStateError is FormErrorAddEvent.TitleError),
+                        onValueChange =  {
+                            viewModel.onAction(FormDataAddEvent.TitleChanged(it))
+                        },
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.title),
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        singleLine = true,
+                        // On peut toujours personnaliser les autres éléments,
+                        // comme les couleurs des indicateurs et des labels,
+                        // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                        )
                     )
-                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true,
-                // On peut toujours personnaliser les autres éléments,
-                // comme les couleurs des indicateurs et des labels,
-                // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                )
-            )
-            if (uiStateError is FormErrorAddEvent.TitleError) {
-                Text(
-                    text = stringResource(id = R.string.mandatorytitle),
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
+                    if (uiStateError is FormErrorAddEvent.TitleError) {
+                        Text(
+                            text = stringResource(id = R.string.mandatorytitle),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Saisie de la description
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(ColorCardAndInput),
-                value = uiStateCurrentEvent.sDescription,
-                textStyle = MaterialTheme.typography.labelLarge,
-                isError = (uiStateError is FormErrorAddEvent.DescriptionError),
-                onValueChange =  {
-                    viewModel.onAction(FormDataAddEvent.DescriptionChanged(it))
-                },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.description),
-                        style = MaterialTheme.typography.labelMedium
+                    // Saisie de la description
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(ColorCardAndInput),
+                        value = uiStateCurrentEvent.sDescription,
+                        textStyle = MaterialTheme.typography.labelLarge,
+                        isError = (uiStateError is FormErrorAddEvent.DescriptionError),
+                        onValueChange =  {
+                            viewModel.onAction(FormDataAddEvent.DescriptionChanged(it))
+                        },
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.description),
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        maxLines = 3,
+                        // On peut toujours personnaliser les autres éléments,
+                        // comme les couleurs des indicateurs et des labels,
+                        // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                        )
                     )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                maxLines = 3,
-                // On peut toujours personnaliser les autres éléments,
-                // comme les couleurs des indicateurs et des labels,
-                // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                )
-            )
-            if (uiStateError is FormErrorAddEvent.DescriptionError) {
-                Text(
-                    text = stringResource(id = R.string.mandatorydescription),
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
+                    if (uiStateError is FormErrorAddEvent.DescriptionError) {
+                        Text(
+                            text = stringResource(id = R.string.mandatorydescription),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            ComposableDateTime(
-                datetimeValueInMs = uiStateCurrentEvent.lDatetime,
-                onValueChangeDateTimeChanged = {
-                    viewModel.onAction(FormDataAddEvent.DateTimeChanged(it))
+                    ComposableDateTime(
+                        datetimeValueInMs = uiStateCurrentEvent.lDatetime,
+                        onValueChangeDateTimeChanged = {
+                            viewModel.onAction(FormDataAddEvent.DateTimeChanged(it))
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Saisie de l'adresse
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(ColorCardAndInput),
+                        value = uiStateCurrentEvent.sAdress,
+                        textStyle = MaterialTheme.typography.labelLarge,
+                        isError = (uiStateError is FormErrorAddEvent.AdressError),
+                        onValueChange =  {
+                            viewModel.onAction(FormDataAddEvent.AdressChanged(it))
+                        },
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.address),
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.enterfulladdress),
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        maxLines = 3,
+                        // On peut toujours personnaliser les autres éléments,
+                        // comme les couleurs des indicateurs et des labels,
+                        // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                        )
+                    )
+                    if (uiStateError is FormErrorAddEvent.AdressError) {
+                        Text(
+                            text = stringResource(id = R.string.mandatoryaddress),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        onClick = {
+                            viewModel.addEvent()
+                        },
+                        // Bouton actif si pas d'erreur et formulaire non vide
+                        enabled = ( viewModel.formIsComplete() ) ,
+                        colors = MyButtonStyle.buttonColors()  // Couleurs de grisage factorisées dans le Theme
+
+                    ){
+                        Text(
+                            text = stringResource(id = R.string.validate),
+                        )
+                    }
+
                 }
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-
-                }
-            ){
-                Text(
-                    text = stringResource(id = R.string.validate),
-                )
             }
-
         }
 
     }

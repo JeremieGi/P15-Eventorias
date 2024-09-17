@@ -1,20 +1,23 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.openclassrooms.p15_eventorias.model.Event
+import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import com.openclassrooms.p15_eventorias.repository.event.EventRepository
 import com.openclassrooms.p15_eventorias.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class EventAddViewModel @Inject constructor (
     private val eventRepository: EventRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository // TODO Denis : J'ai un warning injustifié ici : Warning:(21, 13) Constructor parameter is never used as a property
 ): ViewModel() {
 
 
@@ -60,8 +63,11 @@ class EventAddViewModel @Inject constructor (
             }
 
             is FormDataAddEvent.AdressChanged -> {
-
+                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
+                    sAdress = formDataAddEvent.adress
+                )
             }
+
             is FormDataAddEvent.PhotoChanged -> {
 
             }
@@ -104,6 +110,59 @@ class EventAddViewModel @Inject constructor (
             _uiStateFormError.value = formError     // erreur passé à un UIState dédié
         }
 
+    }
+
+    // Ajoute l'évènement courant
+    fun addEvent(){
+
+        // Récupération de l'évènement courant
+        val eventToAdd = _uiStateCurrentEvent.value
+
+        viewModelScope.launch {
+
+            // Le Flow est retourné par la fonction du repository
+            eventRepository.addEvent(eventToAdd).collect{ resultFlow ->
+
+                // En fonction du résultat
+                when (resultFlow) {
+
+                    // Transmission au UIState dédié
+
+                    // Echec
+                    is ResultCustom.Failure ->
+                        // Propagation du message d'erreur
+                        _uiStateAddEventResult.value = EventAddUIState.Error(resultFlow.errorMessage)
+
+                    // En chargement
+                    is ResultCustom.Loading -> {
+                        // Propagation du chargement
+                        _uiStateAddEventResult.value = EventAddUIState.IsLoading
+                    }
+
+                    // Succès
+                    is ResultCustom.Success -> {
+                        _uiStateAddEventResult.value = EventAddUIState.Success
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    /**
+     * Renvoie Vrai si le formulaire est complet
+     * // TODO Denis : Voir car cette fonction fait doublon avec la gestion des erreurs et elle est utile qu'au lancement de la fenêtre
+     */
+    fun formIsComplete(): Boolean {
+        val currentEvent = _uiStateCurrentEvent.value
+
+        return currentEvent.sTitle.isNotEmpty()
+                && currentEvent.sDescription.isNotEmpty()
+                && (currentEvent.lDatetime != 0L)
+                && currentEvent.sAdress.isNotEmpty()
     }
 
 }

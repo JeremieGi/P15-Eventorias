@@ -23,6 +23,7 @@ class EventRepository @Inject constructor(
         get() = _flowEvents
 
 
+    // Charge tous les évènements dans le Flow du repository
     fun loadAllEvents() {
 
         _flowEvents = if (!injectedContext.isInternetAvailable()) {
@@ -41,6 +42,7 @@ class EventRepository @Inject constructor(
 
     }
 
+    // Charge un évènement
     fun loadEventByID(idEvent : String) : Flow<ResultCustom<Event>> {
 
         if (!injectedContext.isInternetAvailable()) {
@@ -56,7 +58,7 @@ class EventRepository @Inject constructor(
         }
     }
 
-
+    // Ajoute un évènement
     fun addEvent(event: Event): Flow<ResultCustom<String>> {
 
         if (!injectedContext.isInternetAvailable()){

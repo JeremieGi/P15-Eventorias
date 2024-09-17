@@ -1,9 +1,12 @@
 package com.openclassrooms.p15_eventorias.ui.ui.theme
 
 
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 
 //// Pas de thème sombre dans le cahier des charges
@@ -48,4 +51,14 @@ fun P15EventoriasTheme(
         typography = Typography,
         content = content
     )
+}
+
+object MyButtonStyle {
+    @Composable
+    fun buttonColors(): ButtonColors {
+        return ButtonDefaults.buttonColors(
+            disabledContainerColor = Color.Gray,  // Couleur de fond quand désactivé
+            disabledContentColor = Color.White    // Couleur du texte quand désactivé
+        )
+    }
 }

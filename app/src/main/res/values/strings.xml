@@ -21,4 +21,7 @@
     <string name="time">Time</string>
     <string name="dateformat">MM/DD/YYYY</string>
     <string name="timeformat">HH:MM</string>
+    <string name="address">Address</string>
+    <string name="enterfulladdress">Enter full address</string>
+    <string name="mandatoryaddress">Mandatory address</string>
 </resources>
