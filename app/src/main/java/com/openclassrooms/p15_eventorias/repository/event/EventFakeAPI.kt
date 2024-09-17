@@ -4,6 +4,7 @@ import com.openclassrooms.p15_eventorias.model.CoordinatesGPS
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,6 +43,9 @@ class EventFakeAPI : EventApi {
 
         return callbackFlow {
 
+            trySend(ResultCustom.Loading)
+            delay(2*1000)
+
             val list : List<Event>  = events.value
             trySend(ResultCustom.Success(list))
 
@@ -56,6 +60,9 @@ class EventFakeAPI : EventApi {
     override fun addEvent(event: Event): Flow<ResultCustom<String>> {
 
         return callbackFlow {
+
+            trySend(ResultCustom.Loading)
+            delay(2*1000)
 
             events.value.add(0, event)
             trySend(ResultCustom.Success(""))
@@ -74,6 +81,9 @@ class EventFakeAPI : EventApi {
         val post = loadByID(idEvent)
 
         return callbackFlow {
+
+            trySend(ResultCustom.Loading)
+            delay(2*1000)
 
             if (post==null){
                 trySend(ResultCustom.Failure("No event find with ID = $idEvent"))

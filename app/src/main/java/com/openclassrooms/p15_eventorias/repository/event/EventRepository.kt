@@ -28,6 +28,8 @@ class EventRepository @Inject constructor(
     // Charge tous les évènements dans le Flow du repository
     fun loadAllEvents() {
 
+
+
         _flowEvents = if (!injectedContext.isInternetAvailable()) {
             // Créer un flux d'erreur si Internet n'est pas disponible
             flow {
