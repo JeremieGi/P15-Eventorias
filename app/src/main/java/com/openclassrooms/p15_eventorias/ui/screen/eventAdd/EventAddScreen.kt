@@ -106,7 +106,7 @@ fun EventAddScreen(
             //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
         ){
 
-
+            // Saisie du titre
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,13 +142,11 @@ fun EventAddScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Saisie de la description
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(ColorCardAndInput),
-//                    .onFocusChanged {
-//
-//                    },
                 value = uiStateCurrentEvent.sDescription,
                 textStyle = MaterialTheme.typography.labelLarge,
                 isError = (uiStateError is FormErrorAddEvent.DescriptionError),
@@ -181,7 +179,7 @@ fun EventAddScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             ComposableDateTime(
-                datetimeValue = uiStateCurrentEvent.lDatetime,
+                datetimeValueInMs = uiStateCurrentEvent.lDatetime,
                 onValueChangeDateTimeChanged = {
                     viewModel.onAction(FormDataAddEvent.DateTimeChanged(it))
                 }
@@ -209,10 +207,13 @@ fun EventAddScreen(
 
 }
 
+/**
+ * Composable dédié à l'affichage et la sélection de la date et l'heure
+ */
 @Composable
 fun ComposableDateTime(
     modifier: Modifier = Modifier,
-    datetimeValue: Long,
+    datetimeValueInMs: Long,
     onValueChangeDateTimeChanged : (Long) -> Unit
 ) {
 
@@ -257,14 +258,13 @@ fun ComposableDateTime(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Champ de date (JJ/MM/YYYY)
-
         OutlinedTextField(
             modifier = Modifier
                 .weight(1f)
                 .clickable() {
                     datePickerDialog.show() // Affiche le picker au clic
                 },
-            value = longToFormatedString(datetimeValue,"mm/dd/yyyy"),
+            value = longToFormatedString(datetimeValueInMs,"MM/dd/yyyy"),
             onValueChange = { },
             label = {
                 Text(
@@ -293,7 +293,7 @@ fun ComposableDateTime(
                 .clickable() {
                     timePickerDialog.show()
                 },
-            value = longToFormatedString(datetimeValue,"hh:mm"),
+            value = longToFormatedString(datetimeValueInMs,"HH:mm"),
             onValueChange = { },
             label = {
                 Text(
@@ -325,11 +325,9 @@ fun ComposableDateTime(
 fun EventListComposablePreview() {
 
     P15EventoriasTheme {
-
         EventAddScreen(
             onBackClick = {}
         )
-
     }
 
 }

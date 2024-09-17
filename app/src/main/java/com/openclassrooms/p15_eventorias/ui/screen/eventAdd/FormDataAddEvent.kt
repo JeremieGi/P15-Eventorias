@@ -1,9 +1,8 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
-import java.sql.Time
-import java.time.LocalDateTime
-import java.util.Date
-
+/**
+ * Modification des différents éléments du formulaire d'ajout d'évènement
+ */
 sealed class FormDataAddEvent {
 
     data class TitleChanged(val title: String) : FormDataAddEvent()

@@ -36,9 +36,10 @@ class EventAddViewModel @Inject constructor (
     val uiStateCurrentEvent: StateFlow<Event> = _uiStateCurrentEvent.asStateFlow()
 
 
-
+    // Récupère les saisies des différents champs
     fun onAction(formDataAddEvent : FormDataAddEvent) {
 
+        // En fonction du champ, mise à jour de l'évènement courant
         when (formDataAddEvent) {
 
             is FormDataAddEvent.TitleChanged -> {
@@ -67,6 +68,7 @@ class EventAddViewModel @Inject constructor (
 
         }
 
+        // Vérifie les champs obligatoires
         checkFormError()
 
     }
@@ -82,7 +84,6 @@ class EventAddViewModel @Inject constructor (
             return FormErrorAddEvent.DescriptionError
         }
 
-
         if (_uiStateCurrentEvent.value.lDatetime == 0L){
             return FormErrorAddEvent.DatetimeError
         }
@@ -91,16 +92,16 @@ class EventAddViewModel @Inject constructor (
 
     }
 
-    // Vérifie les erreurs du formaulaire en cours de saisi
-    fun checkFormError() {
+    // Vérifie les erreurs du formulaire en cours de saisi
+    private fun checkFormError() {
 
         // Mise à jour des erreurs
         val formError = displayError()
         if(formError==null){
-            _uiStateFormError.value = null // Pas d'erreur dans la saisie de formulaire
+            _uiStateFormError.value = null          // Pas d'erreur dans la saisie de formulaire
         }
         else{
-            _uiStateFormError.value = formError
+            _uiStateFormError.value = formError     // erreur passé à un UIState dédié
         }
 
     }

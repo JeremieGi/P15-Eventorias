@@ -1,5 +1,8 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
+/**
+ * Différents types d'erreur sur le formulaire d'ajout d'évènement
+ */
 sealed class FormErrorAddEvent {
 
     data object TitleError : FormErrorAddEvent()

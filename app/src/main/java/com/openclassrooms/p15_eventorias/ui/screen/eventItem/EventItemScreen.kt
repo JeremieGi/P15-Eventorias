@@ -298,7 +298,7 @@ fun FormatedDateComposant(
 
 
             Text(
-                text = longToFormatedString(lDatetime,"hh:mm"),
+                text = longToFormatedString(lDatetime,"HH:mm"),
                 style = MaterialTheme.typography.bodyLarge
             )
 
