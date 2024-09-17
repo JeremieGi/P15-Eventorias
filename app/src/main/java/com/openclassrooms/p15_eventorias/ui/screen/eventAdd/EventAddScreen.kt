@@ -2,6 +2,12 @@ package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +28,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,17 +43,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
@@ -310,6 +314,16 @@ fun PhotoSelectorComposable(
 )
 {
 
+    // Callback du mediaPicker (Android 11 et supérieur)
+    val pickImageLauncherNew = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        onPhotoChanged(uri.toString())
+    }
+
+    // Callback du image launcher (Android 10 et inférieur)
+    val pickImageLauncherOld = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        onPhotoChanged(uri.toString())
+    }
+
     // Box utile pour centrer horizontalement le Row
     Box(
         modifier = modifier
@@ -320,53 +334,81 @@ fun PhotoSelectorComposable(
         contentAlignment = Alignment.TopCenter
     ) {
 
-        Row{
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ){
 
-            val nIconSize = 52
+            //1 er élément la ligne avec les 2 boutons
 
-            IconButton(
-                modifier = Modifier
-                    .size(nIconSize.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(ColorTitleWhite),
-                onClick = {
+            Row{
 
+                val nIconSize = 52
+
+                IconButton(
+                    modifier = Modifier
+                        .size(nIconSize.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(ColorTitleWhite),
+                    onClick = {
+
+                    }
+
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(16.dp),
+                        painter = painterResource(R.drawable.baseline_photo_camera_24),
+                        contentDescription = stringResource(id = R.string.takeapicture),
+                        tint = ColorCardAndInput
+                    )
                 }
 
-            ) {
-                Icon(
-                    modifier = Modifier.padding(16.dp),
-                    painter = painterResource(R.drawable.baseline_photo_camera_24),
-                    contentDescription = stringResource(id = R.string.takeapicture),
-                    tint = ColorCardAndInput
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+
+
+                IconButton(
+                    modifier = Modifier
+                        .size(nIconSize.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                    ,
+                    onClick = {
+                        // Lancement des images Pickers
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // Android 11+
+                            // Lancement du media picker (que les images)
+                            pickImageLauncherNew.launch(PickVisualMediaRequest(ImageOnly))
+                        } else { // Versions inférieures
+                            pickImageLauncherOld.launch("image/*")
+                        }
+                    }
+
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(16.dp),
+                        painter = painterResource(R.drawable.baseline_attach_file_24),
+                        contentDescription = stringResource(id = R.string.selectphotoingallery),
+                        tint = ColorTitleWhite
+                    )
+                }
+
+            }
+
+
+            //2 ème élément la photo si elle existe
+
+            sURLValue?.let { uri ->
+                Image(
+                    painter = rememberAsyncImagePainter(uri), //  l'image est chargée et affichée à l'aide de Coil
+                    contentDescription = null,
+                    modifier = Modifier.size(200.dp),
+                    contentScale = ContentScale.Crop
                 )
             }
-
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-
-
-            IconButton(
-                modifier = Modifier
-                    .size(nIconSize.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.primary)
-                ,
-                onClick = {
-
-                }
-
-            ) {
-               Icon(
-                    modifier = Modifier.padding(16.dp),
-                    painter = painterResource(R.drawable.baseline_attach_file_24),
-                    contentDescription = stringResource(id = R.string.selectphotoingallery),
-                    tint = ColorTitleWhite
-               )
-            }
-
         }
+
+
 
     }
 

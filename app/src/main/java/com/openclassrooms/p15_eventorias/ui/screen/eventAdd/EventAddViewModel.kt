@@ -69,7 +69,9 @@ class EventAddViewModel @Inject constructor (
             }
 
             is FormDataAddEvent.PhotoChanged -> {
-
+                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
+                    sURLEventPicture = formDataAddEvent.url
+                )
             }
 
         }
