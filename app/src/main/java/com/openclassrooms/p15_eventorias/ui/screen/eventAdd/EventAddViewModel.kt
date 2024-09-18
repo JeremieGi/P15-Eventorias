@@ -3,7 +3,7 @@ package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.p15_eventorias.model.Event
-import com.openclassrooms.p15_eventorias.repository.ResultCustom
+import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
 import com.openclassrooms.p15_eventorias.repository.event.EventRepository
 import com.openclassrooms.p15_eventorias.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -139,27 +139,40 @@ class EventAddViewModel @Inject constructor (
 
                     // Transmission au UIState dédié
 
-                    // Echec de l'ajout
-                    is ResultCustom.Failure -> {
+                    // Echec du au réseau
+                    is ResultCustomAddEvent.NetworkFailure -> {
+
                         // Récupération du message d'erreur
-                        val sErrorAddress = EventAddUIState.Error(resultFlow.errorMessage).sError
+                        val sErrorNetwork = EventAddUIState.Error(resultFlow.errorNetwork).sError
+
+                        // Affiche la fenêtre d'erreur
+                        _uiStateAddEventResult.value = EventAddUIState.Error(sErrorNetwork)
+
+                    }
+
+                    // Echec du à une adresse incorrecte
+                    is ResultCustomAddEvent.AdressFailure -> {
+
+                        // Récupération du message d'erreur
+                        val sErrorAddress = EventAddUIState.Error(resultFlow.errorAddress).sError
 
                         // J'affiche l'erreur sous le champ Adresse pour que l'utilisateur puisse la corriger
                         _uiStateFormError.value = FormErrorAddEvent.AddressError(sErrorAddress)
 
                         // Raffiche le formulaire
                         _uiStateAddEventResult.value = null
+
                     }
 
 
                     // En chargement
-                    is ResultCustom.Loading -> {
+                    is ResultCustomAddEvent.Loading -> {
                         // Propagation du chargement
                         _uiStateAddEventResult.value = EventAddUIState.IsLoading
                     }
 
                     // Succès
-                    is ResultCustom.Success -> {
+                    is ResultCustomAddEvent.Success -> {
                         _uiStateAddEventResult.value = EventAddUIState.Success
                     }
 

@@ -3,6 +3,7 @@ package com.openclassrooms.p15_eventorias.repository.event
 import com.openclassrooms.p15_eventorias.model.CoordinatesGPS
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
+import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +45,7 @@ class EventFakeAPI : EventApi {
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
-            delay(2*1000)
+            delay(1*1000)
 
             val list : List<Event>  = events.value
             trySend(ResultCustom.Success(list))
@@ -57,15 +58,15 @@ class EventFakeAPI : EventApi {
 
     }
 
-    override fun addEvent(event: Event): Flow<ResultCustom<String>> {
+    override fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> {
 
         return callbackFlow {
 
-            trySend(ResultCustom.Loading)
-            delay(2*1000)
+            trySend(ResultCustomAddEvent.Loading)
+            delay(1*1000)
 
             events.value.add(0, event)
-            trySend(ResultCustom.Success(""))
+            trySend(ResultCustomAddEvent.Success(""))
 
             // awaitClose : Permet de fermer le listener dès que le flow n'est plus écouté (pour éviter les fuites mémoire)
             awaitClose {
@@ -83,7 +84,7 @@ class EventFakeAPI : EventApi {
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
-            delay(2*1000)
+            delay(1*1000)
 
             if (post==null){
                 trySend(ResultCustom.Failure("No event find with ID = $idEvent"))

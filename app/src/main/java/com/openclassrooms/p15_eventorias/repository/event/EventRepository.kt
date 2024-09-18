@@ -4,6 +4,7 @@ import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
+import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -75,15 +76,15 @@ class EventRepository @Inject constructor(
     }
 
     // Ajoute un évènement
-    fun addEvent(event: Event): Flow<ResultCustom<String>> = flow {
+    fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> = flow {
 
-        emit(ResultCustom.Loading)
-        //delay(2000) // To test Loading mode
+        emit(ResultCustomAddEvent.Loading)
+        //delay(2000)
 
         if (!injectedContext.isInternetAvailable()){
 
             emit(
-                ResultCustom.Failure(
+                ResultCustomAddEvent.NetworkFailure(
                     injectedContext.getInjectedContext().getString(R.string.no_network)
                 )
             )
@@ -96,7 +97,7 @@ class EventRepository @Inject constructor(
             if (sErrorGeolocation.isNotEmpty()) {
 
                     emit(
-                        ResultCustom.Failure(
+                        ResultCustomAddEvent.AdressFailure(
                             sErrorGeolocation
                         )
                     )
