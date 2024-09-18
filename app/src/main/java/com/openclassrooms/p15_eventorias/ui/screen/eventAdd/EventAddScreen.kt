@@ -371,6 +371,9 @@ fun PhotoSelectorComposable(
 
             //1 er élément la ligne avec les 2 boutons
 
+            // TODO JG : Camera
+            // https://medium.com/@dheerubhadoria/capturing-images-from-camera-in-android-with-jetpack-compose-a-step-by-step-guide-64cd7f52e5de
+
             Row{
 
                 val nIconSize = 52
