@@ -68,59 +68,37 @@ fun EventItemScreen(
        viewModel.loadEventByID(eventId)
     }
 
-    when (uiStateItem) {
+    EventItemStateComposable(
+        modifier=modifier,
+        uiStateItemP = uiStateItem,
+        onBackClick = onBackClick,
+        onLoadEventByID = { viewModel.loadEventByID(eventId) }
+    )
 
-        // Chargement
-        is EventItemUIState.IsLoading -> {
-            LoadingComposable(modifier)
-        }
-
-        // Récupération des données avec succès
-        is EventItemUIState.Success -> {
-
-            val event = (uiStateItem as EventItemUIState.Success).event
-
-            EventItemComposable(
-                modifier=modifier,
-                eventP = event,
-                onBackClick = onBackClick,
-            )
-
-        }
-
-        // Exception
-        is EventItemUIState.Error -> {
-
-            val error = (uiStateItem as EventItemUIState.Error).exception.message ?: stringResource(
-                R.string.unknown_error
-            )
-
-            ErrorComposable(
-                modifier=modifier,
-                sErrorMessage = error,
-                onClickRetryP = { viewModel.loadEventByID(eventId) }
-            )
-
-
-        }
-    }
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventItemComposable(
+fun EventItemStateComposable(
     modifier: Modifier = Modifier,
-    eventP: Event,
+    uiStateItemP: EventItemUIState,
     onBackClick: () -> Unit,
+    onLoadEventByID: () -> Unit,
 ) {
+
 
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
-                    Text(eventP.sTitle)
+                    if (uiStateItemP is EventItemUIState.Success){
+                        Text(uiStateItemP.event.sTitle)
+                    }
+                    else{
+                        Text(stringResource(id = R.string.event))
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -140,70 +118,115 @@ fun EventItemComposable(
         }
     ) { contentPadding ->
 
-        Column(
-            modifier = modifier
-                .padding(contentPadding)
-                .padding(
-                    horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
-                    vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
-        ){
+        when (uiStateItemP) {
 
+            // Chargement
+            is EventItemUIState.IsLoading -> {
+                LoadingComposable(modifier.padding(contentPadding))
+            }
 
-            URLImageEventComposable(
-                modifier = Modifier
-                    .weight(5f)     // Image prend la moitié de l'écran
-                    //.height(365.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                sURLP = eventP.sURLEventPicture )
+            // Récupération des données avec succès
+            is EventItemUIState.Success -> {
 
-
-            Column(
-                modifier = Modifier
-                    .weight(5f)     // L'autre moitié de l'écran pour les autres infos
-                ,
-                verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
-            ){
-
-                // Ligne avec date / heure et avatar de l'auteur
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-
-                    // Partie date et heure avec les pictos
-                    FormatedDateComposant(
-                        modifier = Modifier
-                            .weight(8f),    // 80% de la largeur
-                        eventP.lDatetime
-                    )
-
-
-                    URLImageAvatarComposable(
-                        modifier = Modifier
-                            .weight(2f),    // 20% pour l'avatar
-                        sURLP = eventP.sURLPhotoAuthor
-                    )
-
-                }
-
-
-                Text(
-                    text = eventP.sDescription,
-                    style = MaterialTheme.typography.bodyMedium
+                EventItemSuccessComposable(
+                    modifier=modifier.padding(contentPadding),
+                    eventP = uiStateItemP.event
                 )
-
-                AdresseComposable(eventP)
-
 
             }
 
+            // Exception
+            is EventItemUIState.Error -> {
 
+                val error = uiStateItemP.sError ?: stringResource(
+                    R.string.unknown_error
+                )
+
+
+                ErrorComposable(
+                    modifier=modifier
+                        .padding(contentPadding)
+                        ,
+                    sErrorMessage = error,
+                    onClickRetryP = onLoadEventByID
+                )
+
+
+            }
         }
+
+
 
     }
 
 
+
+}
+
+@Composable
+fun EventItemSuccessComposable(
+    modifier: Modifier,
+    eventP: Event) {
+
+    Column(
+        modifier = modifier
+            .padding(
+                horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
+                vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
+            ),
+        verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
+    ){
+
+
+        URLImageEventComposable(
+            modifier = Modifier
+                .weight(5f)     // Image prend la moitié de l'écran
+                //.height(365.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            sURLP = eventP.sURLEventPicture )
+
+
+        Column(
+            modifier = Modifier
+                .weight(5f)     // L'autre moitié de l'écran pour les autres infos
+            ,
+            verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
+        ){
+
+            // Ligne avec date / heure et avatar de l'auteur
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ){
+
+                // Partie date et heure avec les pictos
+                FormatedDateComposant(
+                    modifier = Modifier
+                        .weight(8f),    // 80% de la largeur
+                    eventP.lDatetime
+                )
+
+
+                URLImageAvatarComposable(
+                    modifier = Modifier
+                        .weight(2f),    // 20% pour l'avatar
+                    sURLP = eventP.sURLPhotoAuthor
+                )
+
+            }
+
+
+            Text(
+                text = eventP.sDescription,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            AdresseComposable(eventP)
+
+
+        }
+
+
+    }
 
 }
 
@@ -313,22 +336,65 @@ fun FormatedDateComposant(
 }
 
 
-@Preview("Event Item")
+@Preview("Event Item Loading")
 @Composable
-fun EventListComposablePreview() {
+fun EventItemStateComposableLoadingPreview() {
+
+    val uiStateLoading = EventItemUIState.IsLoading
+
+    P15EventoriasTheme {
+
+        EventItemStateComposable(
+            uiStateItemP = uiStateLoading,
+            onBackClick = {},
+            onLoadEventByID = {}
+        )
+
+    }
+}
+
+
+@Preview("Event Item Success")
+@Composable
+fun EventItemStateComposableSuccessPreview() {
 
 
     // Coil n'affiche pas les images dans les previews... Ok à l'exec
 
     val listFakeEvent = EventFakeAPI.initFakeEvents()
-
+    val uiStateSuccess = EventItemUIState.Success(listFakeEvent[0])
 
     P15EventoriasTheme {
 
-        EventItemComposable(
-            eventP = listFakeEvent[0],
-            onBackClick = {}
+        EventItemStateComposable(
+            uiStateItemP = uiStateSuccess,
+            onBackClick = {},
+            onLoadEventByID = {}
+        )
+
+    }
+
+
+}
+
+
+@Preview("Event Item Error")
+@Composable
+fun EventItemStateComposableErrorPreview() {
+
+    val uiStateError = EventItemUIState.Error("Message de test pour la preview")
+
+    P15EventoriasTheme {
+
+        EventItemStateComposable(
+            uiStateItemP = uiStateError,
+            onBackClick = {},
+            onLoadEventByID = {}
         )
 
     }
 }
+
+
+
+

@@ -34,4 +34,5 @@
     <string name="mandatoryname">Mandatory name</string>
     <string name="email">E-mail</string>
     <string name="userprofile">User profile</string>
+    <string name="event">Event</string>
 </resources>

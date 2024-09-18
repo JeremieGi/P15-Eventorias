@@ -33,7 +33,8 @@ fun ErrorComposable(
 ) {
 
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
