@@ -10,6 +10,6 @@ sealed class EventListUIState {
         val listEvents : List<Event>
     ) : EventListUIState()
 
-    data class Error(val exception: Throwable) : EventListUIState()
+    data class Error(val sError: String?) : EventListUIState()
 
 }

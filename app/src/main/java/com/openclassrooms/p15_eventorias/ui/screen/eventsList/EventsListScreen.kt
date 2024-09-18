@@ -122,8 +122,6 @@ fun EventsListScreen(
 
         content = { innerPadding ->
 
-            val modifierScaffold =  Modifier.padding(innerPadding)
-
             // Recharger les évents quand l'écran est visible
             LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
                 viewModel.loadAllEvents()
@@ -133,42 +131,14 @@ fun EventsListScreen(
             // la recomposition a lieu pour les composables utilisant la valeur uiState.
             val uiStateList by viewModel.uiState.collectAsState()
 
-            when (uiStateList) {
 
-                // Chargement
-                is EventListUIState.IsLoading -> {
-                    LoadingComposable(modifierScaffold)
-                }
+            EventListStateComposable(
+                modifier = Modifier.padding(innerPadding),
+                uiStateListP = uiStateList,
+                loadAllEventsP = { viewModel.loadAllEvents() },
+                onEventClickP = onEventClickP
+            )
 
-                // Récupération des données avec succès
-                is EventListUIState.Success -> {
-
-                    val listEvents = (uiStateList as EventListUIState.Success).listEvents
-
-                    EventListComposable(
-                        modifier = modifierScaffold,
-                        listEvents = listEvents,
-                        onEventClickP = onEventClickP
-                    )
-
-                }
-
-                // Exception
-                is EventListUIState.Error -> {
-
-                    val error = (uiStateList as EventListUIState.Error).exception.message ?: stringResource(
-                        R.string.unknown_error
-                    )
-
-                    ErrorComposable(
-                        modifier=modifierScaffold,
-                        sErrorMessage = error,
-                        onClickRetryP = { viewModel.loadAllEvents() }
-                    )
-
-
-                }
-            }
         },
 
         bottomBar = {
@@ -184,6 +154,50 @@ fun EventsListScreen(
 
 }
 
+@Composable
+fun EventListStateComposable(
+    modifier: Modifier = Modifier,
+    uiStateListP: EventListUIState,
+    loadAllEventsP: () -> Unit,
+    onEventClickP: (Event) -> Unit
+) {
+
+    when (uiStateListP) {
+
+        // Chargement
+        is EventListUIState.IsLoading -> {
+            LoadingComposable(modifier)
+        }
+
+        // Récupération des données avec succès
+        is EventListUIState.Success -> {
+
+            EventListComposable(
+                modifier = modifier,
+                listEvents = uiStateListP.listEvents,
+                onEventClickP = onEventClickP
+            )
+
+        }
+
+        // Exception
+        is EventListUIState.Error -> {
+
+            val error = uiStateListP.sError ?: stringResource(
+                R.string.unknown_error
+            )
+
+            ErrorComposable(
+                modifier= modifier,
+                sErrorMessage = error,
+                onClickRetryP = loadAllEventsP
+            )
+
+
+        }
+    }
+
+}
 
 
 @Composable
@@ -291,17 +305,47 @@ fun EventItemListComposable(
 
 
 
-@Preview("Events list")
+@Preview("Events list success")
 @Composable
-fun EventListComposablePreview() {
-
+fun EventListComposableSucessPreview() {
 
     val listFakeEvent = EventFakeAPI.initFakeEvents()
+    val uiStateSuccess = EventListUIState.Success(listFakeEvent)
 
     P15EventoriasTheme {
 
-        EventListComposable(
-            listEvents = listFakeEvent,
+        EventListStateComposable(
+            uiStateListP = uiStateSuccess,
+            loadAllEventsP = {},
+            onEventClickP = {}
+        )
+    }
+}
+
+@Preview("Events list loading")
+@Composable
+fun EventListComposableLoadingPreview() {
+
+    P15EventoriasTheme {
+
+        EventListStateComposable(
+            uiStateListP = EventListUIState.IsLoading,
+            loadAllEventsP = {},
+            onEventClickP = {}
+        )
+    }
+}
+
+
+@Preview("Events list error")
+@Composable
+fun EventListComposableErrorPreview() {
+
+    P15EventoriasTheme {
+
+        EventListStateComposable(
+            uiStateListP = EventListUIState.Error("Erreur de test de la preview"),
+            loadAllEventsP = {},
             onEventClickP = {}
         )
     }

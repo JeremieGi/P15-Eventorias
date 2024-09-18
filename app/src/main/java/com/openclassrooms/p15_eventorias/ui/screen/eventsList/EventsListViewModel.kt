@@ -39,7 +39,7 @@ class EventsListViewModel @Inject constructor(
                     // Echec
                     is ResultCustom.Failure ->
                         // Propagation du message d'erreur
-                        _uiState.value = EventListUIState.Error(Exception(resultFlow.errorMessage))
+                        _uiState.value = EventListUIState.Error(resultFlow.errorMessage)
 
                     // En chargement
                     is ResultCustom.Loading -> {
