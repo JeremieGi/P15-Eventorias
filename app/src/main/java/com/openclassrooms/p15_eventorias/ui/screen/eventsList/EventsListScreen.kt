@@ -73,6 +73,19 @@ fun EventsListScreen(
                     Text(stringResource(id = R.string.event_list))
                 },
                 actions = {
+                    // Utilisé en debug
+//                    IconButton(
+//                        onClick = {
+//                            viewModel.loadAllEvents()
+//                        }
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Refresh,
+//                            contentDescription = "Refresh",
+//                            tint = ColorTitleWhite
+//                        )
+//                    }
+
                     IconButton(
                         onClick = {
                             // TODO JG : Recherche
@@ -122,20 +135,23 @@ fun EventsListScreen(
 
         content = { innerPadding ->
 
-            // Recharger les évents quand l'écran est visible
-            LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-                viewModel.loadAllEvents()
-            }
 
             // lorsque la valeur uiState est modifiée,
             // la recomposition a lieu pour les composables utilisant la valeur uiState.
             val uiStateList by viewModel.uiState.collectAsState()
 
+            // Recharger les évents quand l'écran est visible
+            LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
+                viewModel.loadAllEvents()
+            }
+
 
             EventListStateComposable(
                 modifier = Modifier.padding(innerPadding),
                 uiStateListP = uiStateList,
-                loadAllEventsP = { viewModel.loadAllEvents() },
+                loadAllEventsP = {
+                    viewModel.loadAllEvents()
+                                 },
                 onEventClickP = onEventClickP
             )
 

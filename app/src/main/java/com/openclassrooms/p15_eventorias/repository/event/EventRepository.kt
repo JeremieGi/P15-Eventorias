@@ -6,8 +6,11 @@ import com.openclassrooms.p15_eventorias.repository.InjectedContext
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,29 +23,38 @@ class EventRepository @Inject constructor(
     /**
      * Liste d'évènement qui sera écouté
      */
-    private var _flowEvents : Flow<ResultCustom<List<Event>>> = eventApi.loadAllEvents()
-    val flowEvents : Flow<ResultCustom<List<Event>>>
+    private var _flowEvents = MutableSharedFlow<ResultCustom<List<Event>>>() //eventApi.loadAllEvents() //loadAllEvents() //  //=
+    val flowEvents : SharedFlow<ResultCustom<List<Event>>>
         get() = _flowEvents
 
 
     // Charge tous les évènements dans le Flow du repository
-    fun loadAllEvents() {
+    suspend fun loadAllEvents() {
 
+        withContext(Dispatchers.IO) {
 
+            // Si pas d'Internet
+            if (!injectedContext.isInternetAvailable()) {
 
-        _flowEvents = if (!injectedContext.isInternetAvailable()) {
-            // Créer un flux d'erreur si Internet n'est pas disponible
-            flow {
-                emit(
+                _flowEvents.emit(
                     ResultCustom.Failure(
                         injectedContext.getInjectedContext().getString(R.string.no_network)
                     )
                 )
+
             }
-        } else {
-            // si Internet est disponible
-            eventApi.loadAllEvents()
+            else{
+
+                // On charge les évènements
+                eventApi.loadAllEvents().collect { result ->
+                    _flowEvents.emit(result)
+                }
+
+            }
+
+
         }
+
 
     }
 

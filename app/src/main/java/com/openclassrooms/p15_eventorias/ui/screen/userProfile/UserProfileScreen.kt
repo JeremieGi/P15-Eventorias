@@ -2,11 +2,13 @@ package com.openclassrooms.p15_eventorias.ui.screen.userProfile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,12 +18,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,15 +60,19 @@ fun UserProfileScreen(
     // Lecture du user
     val uiStateUser by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadCurrentUser()
+    // TODO Denis : Pour que lors d'une rotation d'écran loadCurrentUser ne soit pas rééxécuté. Correct ?
+    LaunchedEffect(uiStateUser) {
+        if (uiStateUser !is UserUIState.Success) {
+            viewModel.loadCurrentUser()
+        }
     }
 
     UserProfileStateComposable(
         uiStateUserP = uiStateUser,
         onBackClick = onBackClick,
         onClickEventsP = onClickEventsP,
-        loadCurrentUserP = viewModel::loadCurrentUser
+        loadCurrentUserP = viewModel::loadCurrentUser,
+        onChangeNotificationEnableP = viewModel::changeCurrentUserNotificationEnabled
     )
 
 
@@ -74,6 +85,7 @@ fun UserProfileStateComposable(
     onBackClick: () -> Unit,
     onClickEventsP: () -> Unit,
     loadCurrentUserP : () -> Unit,
+    onChangeNotificationEnableP : (Boolean) -> Unit
 ) {
 
     Scaffold(
@@ -131,7 +143,8 @@ fun UserProfileStateComposable(
 
                     UserProfileComposable(
                         modifier = Modifier.padding(contentPadding),
-                        userP = user
+                        userP = user,
+                        onChangeNotificationEnableP = onChangeNotificationEnableP
                     )
 
                 }
@@ -174,7 +187,8 @@ fun UserProfileStateComposable(
 @Composable
 fun UserProfileComposable(
     modifier: Modifier = Modifier,
-    userP: User
+    userP: User,
+    onChangeNotificationEnableP : (Boolean) -> Unit
 ) {
 
     Column(
@@ -229,6 +243,27 @@ fun UserProfileComposable(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ){
+
+            // Pour ne pas redessiner toute la vue, j'utilise un remember
+            var varIsChecked by rememberSaveable { mutableStateOf(userP.bNotificationEnabled) }
+
+            Switch(
+                checked = varIsChecked,
+                onCheckedChange = {
+                    onChangeNotificationEnableP(it)
+                    varIsChecked = it
+                }
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = stringResource(id = R.string.notifications),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+        }
 
 
 
@@ -244,16 +279,18 @@ fun UserProfileComposable(
 @Composable
 fun UserProfileStateComposableSuccessPreview() {
 
-
     val user = UserFakeAPI.initFakeCurrentUser()
-    val uiStateSuccess = UserUIState.Success(user)
+    val uiStateSuccess = UserUIState.Success(
+        user = user
+    )
 
     P15EventoriasTheme {
         UserProfileStateComposable(
             uiStateUserP = uiStateSuccess,
             onBackClick = {},
             onClickEventsP = {},
-            loadCurrentUserP= {}
+            loadCurrentUserP= {},
+            onChangeNotificationEnableP = {}
         )
     }
 
@@ -268,7 +305,8 @@ fun UserProfileStateComposableLoadingPreview() {
             uiStateUserP = UserUIState.IsLoading,
             onBackClick = {},
             onClickEventsP = {},
-            loadCurrentUserP= {}
+            loadCurrentUserP= {},
+            onChangeNotificationEnableP = {}
         )
     }
 
@@ -282,7 +320,8 @@ fun UserProfileStateComposableErrorPreview() {
             uiStateUserP = UserUIState.Error("Erreur de test de la preview"),
             onBackClick = {},
             onClickEventsP = {},
-            loadCurrentUserP= {}
+            loadCurrentUserP= {},
+            onChangeNotificationEnableP = {}
         )
     }
 

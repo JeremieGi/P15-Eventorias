@@ -63,7 +63,9 @@ class EventsListViewModel @Inject constructor(
     }
 
     fun loadAllEvents() {
-        eventRepository.loadAllEvents()
+        viewModelScope.launch {
+            eventRepository.loadAllEvents()
+        }
     }
 
 

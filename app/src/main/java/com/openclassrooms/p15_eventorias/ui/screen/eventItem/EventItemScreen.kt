@@ -65,7 +65,10 @@ fun EventItemScreen(
     val uiStateItem by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(eventId) {
-       viewModel.loadEventByID(eventId)
+        // TODO JG : Code à reprendre ?
+        if (uiStateItem !is EventItemUIState.Success) {
+            viewModel.loadEventByID(eventId)
+        }
     }
 
     EventItemStateComposable(

@@ -11,11 +11,14 @@ interface UserApi {
 
     fun loadCurrentUser(): Flow<ResultCustom<User>>
 
-    /*
+    fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean)
+
     /**
      * Return current user
      */
-    fun getCurrentUser() : FirebaseUser?
+    fun getCurrentUser() : User
+
+    /*
 
     /**
      * @return : True => The current user is logged, else False

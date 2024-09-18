@@ -33,4 +33,14 @@ class UserRepository @Inject constructor(
             return userApi.loadCurrentUser()
         }
     }
+
+    fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean) {
+
+        userApi.changeCurrentUserNotificationEnabled(bNotificationEnabled)
+
+    }
+
+//    fun getCurrentUser() : User {
+//        return userApi.getCurrentUser()
+//    }
 }

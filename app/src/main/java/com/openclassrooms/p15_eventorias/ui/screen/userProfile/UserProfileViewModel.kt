@@ -57,4 +57,15 @@ class UserProfileViewModel @Inject constructor (
 
 
     }
+
+    fun changeCurrentUserNotificationEnabled(bNotificationEnabledP: Boolean) {
+        userRepository.changeCurrentUserNotificationEnabled(bNotificationEnabledP)
+    }
+
+    /*
+    fun getCurrentUser() : User {
+        return userRepository.getCurrentUser()
+    }
+    */
+
 }

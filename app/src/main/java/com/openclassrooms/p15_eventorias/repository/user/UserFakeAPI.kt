@@ -18,7 +18,8 @@ class UserFakeAPI : UserApi {
                 id = "1",
                 sName = "fake user",
                 sEmail = "fakeuser@fake.fr",
-                sURLAvatar = "https://xsgames.co/randomusers/assets/avatars/male/12.jpg"
+                sURLAvatar = "https://xsgames.co/randomusers/assets/avatars/male/12.jpg",
+                bNotificationEnabled = false
             )
         }
 
@@ -45,6 +46,14 @@ class UserFakeAPI : UserApi {
 
             }
         }
+    }
+
+    override fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean) {
+        this.userFake.bNotificationEnabled = bNotificationEnabled
+    }
+
+    override fun getCurrentUser(): User {
+        return this.userFake
     }
 
 }

@@ -9,7 +9,8 @@ sealed class UserUIState {
     data object IsLoading : UserUIState()
 
     data class Success(
-        val user : User
+        val user : User,
+        // val bNotificationEnabled : TODO Denis : Boolean -> Finalement je stocke çà dans Firebase çà simplifiera mon code
     ) : UserUIState()
 
     data class Error(val sError: String?) : UserUIState()

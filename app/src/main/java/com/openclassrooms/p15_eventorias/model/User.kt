@@ -23,4 +23,9 @@ data class User(
      */
     val sURLAvatar : String = "",
 
+    /**
+     * Activation des notifications
+     */
+    var bNotificationEnabled : Boolean = false
+
 )
