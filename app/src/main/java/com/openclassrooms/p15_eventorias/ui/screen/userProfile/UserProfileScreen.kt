@@ -42,10 +42,9 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserProfileScreen(
-    modifier: Modifier = Modifier,
+    //modifier: Modifier = Modifier,
     viewModel: UserProfileViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onClickEventsP: () -> Unit
@@ -58,61 +57,24 @@ fun UserProfileScreen(
         viewModel.loadCurrentUser()
     }
 
-    when (uiStateUser) {
-
-        // Chargement
-        is UserUIState.IsLoading -> {
-            LoadingComposable(modifier)
-        }
-
-        // Récupération des données avec succès
-        is UserUIState.Success -> {
-
-            val user = (uiStateUser as UserUIState.Success).user
-
-            UserProfileComposable(
-                userP = user,
-                onBackClick = onBackClick,
-                onClickEventsP = onClickEventsP
-            )
-
-        }
-
-        // Exception
-        is UserUIState.Error -> {
-
-            val error = (uiStateUser as UserUIState.Error).sError ?: stringResource(
-                R.string.unknown_error
-            )
-
-            ErrorComposable(
-                modifier=modifier,
-                sErrorMessage = error,
-                onClickRetryP = { viewModel.loadCurrentUser() }
-            )
-
-
-        }
-    }
-
-
-
+    UserProfileStateComposable(
+        uiStateUserP = uiStateUser,
+        onBackClick = onBackClick,
+        onClickEventsP = onClickEventsP,
+        loadCurrentUserP = viewModel::loadCurrentUser
+    )
 
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserProfileComposable(
-    modifier: Modifier = Modifier,
-    userP: User,
+fun UserProfileStateComposable(
+    uiStateUserP: UserUIState,
     onBackClick: () -> Unit,
-    onClickEventsP: () -> Unit
+    onClickEventsP: () -> Unit,
+    loadCurrentUserP : () -> Unit,
 ) {
-
-    // TODO Denis : Voir la bonne stratégie :
-    // Scaffold dans le composable stateLess ? => mais çà fait que le sablier s'affiche pas beau
-    // Avant ce composable : Comment mettre l'avatar dans la top bar ?
 
     Scaffold(
         topBar = {
@@ -134,12 +96,16 @@ fun UserProfileComposable(
                     Text(stringResource(id = R.string.userprofile))
                 },
                 actions = {
-                    URLImageAvatarComposable(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(end = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp),
-                        sURLP = userP.sURLAvatar
-                    )
+
+                    if (uiStateUserP is UserUIState.Success){
+                        URLImageAvatarComposable(
+                            modifier = Modifier
+                                .padding(end = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp)
+                                .size(48.dp),
+                            sURLP = uiStateUserP.user.sURLAvatar
+                        )
+                    }
+
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = ColorBackground,
@@ -151,64 +117,41 @@ fun UserProfileComposable(
         content = { contentPadding ->
 
 
-            Column(
-                modifier = modifier
-                    .padding(contentPadding)
-                    .padding(
-                        horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
-                        vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-                    ),
-                //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
-            ){
+            when (uiStateUserP) {
 
-                // Saisie du nom
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ColorCardAndInput),
-                    value = userP.sName,
-                    textStyle = MaterialTheme.typography.labelLarge,
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.name),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    singleLine = true,
-                    enabled = false,
-                    onValueChange = {}, // Obligation d'inclure onValueChange, même si le champ est désactivé
-                )
+                // Chargement
+                is UserUIState.IsLoading -> {
+                    LoadingComposable(Modifier.padding(contentPadding))
+                }
 
+                // Récupération des données avec succès
+                is UserUIState.Success -> {
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    val user = uiStateUserP.user
 
-                // Saisie du mail
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ColorCardAndInput),
-                    value = userP.sEmail,
-                    textStyle = MaterialTheme.typography.labelLarge,
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.email),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    singleLine = true,
-                    enabled = false,
-                    onValueChange = {}, // Obligation d'inclure onValueChange, même si le champ est désactivé
-                )
+                    UserProfileComposable(
+                        modifier = Modifier.padding(contentPadding),
+                        userP = user
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                // Exception
+                is UserUIState.Error -> {
+
+                    val error = uiStateUserP.sError ?: stringResource(
+                        R.string.unknown_error
+                    )
+
+                    ErrorComposable(
+                        modifier=Modifier.padding(contentPadding),
+                        sErrorMessage = error,
+                        onClickRetryP = { loadCurrentUserP() }
+                    )
 
 
-
-
+                }
             }
-
 
 
         },
@@ -225,20 +168,122 @@ fun UserProfileComposable(
 
 
 
+
 }
 
-
-@Preview("BottomBar")
 @Composable
-fun UserProfileComposablePreview() {
+fun UserProfileComposable(
+    modifier: Modifier = Modifier,
+    userP: User
+) {
+
+    Column(
+        modifier = modifier
+            .padding(
+                horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
+                vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
+            ),
+        //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
+    ){
+
+        // Saisie du nom
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(ColorCardAndInput),
+            value = userP.sName,
+            textStyle = MaterialTheme.typography.labelLarge,
+            label = {
+                Text(
+                    text = stringResource(id = R.string.name),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            singleLine = true,
+            enabled = false,
+            onValueChange = {}, // Obligation d'inclure onValueChange, même si le champ est désactivé
+        )
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Saisie du mail
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(ColorCardAndInput),
+            value = userP.sEmail,
+            textStyle = MaterialTheme.typography.labelLarge,
+            label = {
+                Text(
+                    text = stringResource(id = R.string.email),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            singleLine = true,
+            enabled = false,
+            onValueChange = {}, // Obligation d'inclure onValueChange, même si le champ est désactivé
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+    }
+
+
+
+}
+
+// TODo Denis : On ne voit pas le Scattfold (actionbar par exemple) dans les previews
+
+@Preview("UserProfile - Success preview")
+@Composable
+fun UserProfileStateComposableSuccessPreview() {
+
 
     val user = UserFakeAPI.initFakeCurrentUser()
+    val uiStateSuccess = UserUIState.Success(user)
 
     P15EventoriasTheme {
-        UserProfileComposable(
-            userP = user,
+        UserProfileStateComposable(
+            uiStateUserP = uiStateSuccess,
             onBackClick = {},
-            onClickEventsP = {}
+            onClickEventsP = {},
+            loadCurrentUserP= {}
         )
     }
+
+}
+
+@Preview("UserProfile - Loading preview")
+@Composable
+fun UserProfileStateComposableLoadingPreview() {
+
+    P15EventoriasTheme {
+        UserProfileStateComposable(
+            uiStateUserP = UserUIState.IsLoading,
+            onBackClick = {},
+            onClickEventsP = {},
+            loadCurrentUserP= {}
+        )
+    }
+
+}
+@Preview("UserProfile - Error preview")
+@Composable
+fun UserProfileStateComposableErrorPreview() {
+
+    P15EventoriasTheme {
+        UserProfileStateComposable(
+            uiStateUserP = UserUIState.Error("Erreur de test de la preview"),
+            onBackClick = {},
+            onClickEventsP = {},
+            loadCurrentUserP= {}
+        )
+    }
+
 }
