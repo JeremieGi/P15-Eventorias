@@ -31,7 +31,7 @@ val displayFontFamily = FontFamily(
 )
 */
 
-val fontProject = FontFamily.Default // TODO Denis : Comment mettre la font "Inter" ici ? (Voir tentative ci-dessus)
+val fontProject = FontFamily.Default // TODO Denis 1 : Comment mettre la font "Inter" ici ? (Voir tentative ci-dessus)
 
 
 // Set of Material typography styles to start with

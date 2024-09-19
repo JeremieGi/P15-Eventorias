@@ -103,7 +103,7 @@ fun EventsListScreen(
                         }
                     ) {
                         Icon(
-                            // TODO Denis : Faire une rotation de 90 degrés
+                            // TODO Denis 2 : Faire une rotation de 90 degrés
                             painter = painterResource(R.drawable.baseline_compare_arrows_24),
                             contentDescription = stringResource(id = R.string.search),
                             tint = ColorTitleWhite
