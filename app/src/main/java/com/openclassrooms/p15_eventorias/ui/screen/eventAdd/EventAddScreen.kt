@@ -468,13 +468,13 @@ fun PhotoSelectorComposable(
                 // Récupération d'un image dans la gallerie photo
 
                 // Callback du mediaPicker (Android 11 et supérieur)
-                val pickImageLauncherNew = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                    onPhotoChanged(uri.toString())
+                val pickImageLauncherNew = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uriPick ->
+                    onPhotoChanged(uriPick.toString())
                 }
 
                 // Callback du image launcher (Android 10 et inférieur)
-                val pickImageLauncherOld = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-                    onPhotoChanged(uri.toString())
+                val pickImageLauncherOld = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uriPick ->
+                    onPhotoChanged(uriPick.toString())
                 }
 
                 IconButton(
