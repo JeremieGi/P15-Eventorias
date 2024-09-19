@@ -60,6 +60,8 @@ class EventFakeAPI : EventApi {
 
     override fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> {
 
+        // TODo JG : Si le fichier est une photo (fichier temporaire), penser à le supprimer
+
         return callbackFlow {
 
             trySend(ResultCustomAddEvent.Loading)

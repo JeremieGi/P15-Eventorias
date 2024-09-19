@@ -1,8 +1,12 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
+import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +41,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,9 +55,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
+import com.openclassrooms.p15_eventorias.BuildConfig
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
@@ -62,8 +72,10 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.MyButtonStyle
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import com.openclassrooms.p15_eventorias.utils.createImageFile
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import java.util.Calendar
+import java.util.Objects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -303,7 +315,7 @@ fun EventAddStateComposable(
 
                 PhotoSelectorComposable(
                     modifier = Modifier.weight(1f), // Toute la place restante
-                    sURLValue = uiStateCurrentEventP.sURLEventPicture,
+                    sURLValueP = uiStateCurrentEventP.sURLEventPicture,
                     onPhotoChanged = {
                         onActionP(FormDataAddEvent.PhotoChanged(it))
                     },
@@ -338,21 +350,13 @@ fun EventAddStateComposable(
 @Composable
 fun PhotoSelectorComposable(
     modifier: Modifier,
-    sURLValue: String,
+    sURLValueP: String,
     onPhotoChanged: (String) -> Unit,
     uiStateError: FormErrorAddEvent?,
 )
 {
 
-    // Callback du mediaPicker (Android 11 et supérieur)
-    val pickImageLauncherNew = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        onPhotoChanged(uri.toString())
-    }
-
-    // Callback du image launcher (Android 10 et inférieur)
-    val pickImageLauncherOld = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        onPhotoChanged(uri.toString())
-    }
+    val context = LocalContext.current
 
     // Box utile pour centrer horizontalement le contenu
     Box(
@@ -371,12 +375,39 @@ fun PhotoSelectorComposable(
 
             //1 er élément la ligne avec les 2 boutons
 
-            // TODO JG : Camera
-            // https://medium.com/@dheerubhadoria/capturing-images-from-camera-in-android-with-jetpack-compose-a-step-by-step-guide-64cd7f52e5de
-
             Row{
 
                 val nIconSize = 52
+
+                // Prise d'une photo avec l'appareil
+                // https://medium.com/@dheerubhadoria/capturing-images-from-camera-in-android-with-jetpack-compose-a-step-by-step-guide-64cd7f52e5de
+
+                // TODo JG : Protéger ce code pour qu'il soit pas exécuté à chaque recomposition
+                val file = context.createImageFile()
+                val uri = FileProvider.getUriForFile(
+                    Objects.requireNonNull(context),
+                    BuildConfig.APPLICATION_ID + ".provider", file
+                )
+
+                //var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
+
+                // Callback de la prise de photo
+                val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+                    //capturedImageUri = uri
+                    onPhotoChanged(uri.toString())
+                }
+
+                // Callback de la demande de permission
+                val permissionLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.RequestPermission()
+                ) { bPermissionGranted ->
+                    if (bPermissionGranted) {
+                        Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+                        cameraLauncher.launch(uri)
+                    } else {
+                        Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
                 IconButton(
                     modifier = Modifier
@@ -384,6 +415,18 @@ fun PhotoSelectorComposable(
                         .clip(RoundedCornerShape(16.dp))
                         .background(ColorTitleWhite),
                     onClick = {
+
+                        // Vérifie la permission
+                        val permissionCheckResult = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+
+                        // Si permission accordée
+                        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                            // Lance la prise de photo
+                            cameraLauncher.launch(uri)
+                        } else {
+                            // Demande la permission
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
 
                     }
 
@@ -399,7 +442,17 @@ fun PhotoSelectorComposable(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+                // Récupération d'un image dans la gallerie photo
 
+                // Callback du mediaPicker (Android 11 et supérieur)
+                val pickImageLauncherNew = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                    onPhotoChanged(uri.toString())
+                }
+
+                // Callback du image launcher (Android 10 et inférieur)
+                val pickImageLauncherOld = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                    onPhotoChanged(uri.toString())
+                }
 
                 IconButton(
                     modifier = Modifier
@@ -438,17 +491,15 @@ fun PhotoSelectorComposable(
 
             //2 ème élément la photo si elle existe
 
-            if (sURLValue.isNotEmpty()){
+            if (sURLValueP.isNotEmpty()){
                 Image(
-                    painter = rememberAsyncImagePainter(sURLValue), //  l'image est chargée et affichée à l'aide de Coil
+                    painter = rememberAsyncImagePainter(sURLValueP), //  l'image est chargée et affichée à l'aide de Coil
                     contentDescription = null,
                     modifier = Modifier.size(200.dp),
                     contentScale = ContentScale.Crop
                 )
             }
-//            sURLValue?.let { uri ->
-//
-//            }
+
         }
 
 
