@@ -17,10 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class EventAddViewModel @Inject constructor (
     private val eventRepository: EventRepository,
-    private val userRepository: UserRepository // TODO Denis 3 : J'ai un warning injustifié ici : Warning:(21, 13) Constructor parameter is never used as a property
+    /*private val */ userRepository: UserRepository // TODO Denis 1 : J'ai un warning injustifié ici : Warning:(21, 13) Constructor parameter is never used as a property
 ): ViewModel() {
 
-    // TODO Denis : Possible de ne pas faire 3 UIStates ? Peut être encapsulé dans une data class ?
+    // TODO Denis : Possible de faire un seul UIState ? Bonne pratique ?
 
     // UI state - Résultat de la création de l'évènement
     private val _uiStateAddEventResult = MutableStateFlow<EventAddUIState?>(null)
@@ -186,9 +186,10 @@ class EventAddViewModel @Inject constructor (
 
     /**
      * Renvoie Vrai si le formulaire est complet
-     * // TODO Denis 4 : Voir car cette fonction fait doublon avec la gestion des erreurs et elle est utile qu'au lancement de la fenêtre
+     * // TODO Denis 2 : Voir car cette fonction fait doublon avec la gestion des erreurs et elle est utile qu'au lancement de la fenêtre
      */
     fun formIsComplete(): Boolean {
+
         val currentEvent = _uiStateCurrentEvent.value
 
         return currentEvent.sTitle.isNotEmpty()
@@ -196,6 +197,8 @@ class EventAddViewModel @Inject constructor (
                 && (currentEvent.lDatetime != 0L)
                 && currentEvent.sAdress.isNotEmpty()
                 && currentEvent.sURLEventPicture.isNotEmpty()
+
+
     }
 
 }

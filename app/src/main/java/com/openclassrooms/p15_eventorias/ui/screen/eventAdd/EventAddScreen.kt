@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -345,6 +346,7 @@ fun EventAddStateComposable(
 
                 Button(
                     modifier = Modifier
+                        .navigationBarsPadding() // Ajoute un padding en fonction de la barre de navigation système pour éviter qu'elle masque le bouton
                         .fillMaxWidth(),
                     onClick = {
                         addEventP()
@@ -643,7 +645,7 @@ fun ComposableDateTime(
 
 }
 
-// TODO Denis : Pourquoi je n'ai pas le style dans les previews ?
+// TODO Denis : Pourquoi je n'ai pas le style dans les previews + Rendering sandbox error
 
 @Preview("Event Add Form")
 @Composable
@@ -661,7 +663,7 @@ fun EventListComposablePreview() {
             uiStateCurrentEventP = currentEvent,
             uiStateErrorP = null,
             onActionP = {},
-            formIsCompleteP = { true  },
+            formIsCompleteP = { true },
         )
     }
 

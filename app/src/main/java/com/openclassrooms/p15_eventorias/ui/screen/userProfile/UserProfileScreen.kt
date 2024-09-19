@@ -273,8 +273,6 @@ fun UserProfileComposable(
 
 }
 
-// TODo Denis : On ne voit pas le Scattfold (actionbar par exemple) dans les previews
-
 @Preview("UserProfile - Success preview")
 @Composable
 fun UserProfileStateComposableSuccessPreview() {

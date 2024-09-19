@@ -6,33 +6,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+
 /*
-import androidx.compose.ui.text.googlefonts.GoogleFont
-import androidx.compose.ui.text.googlefonts.Font
-
-val provider = GoogleFont.Provider(
-    providerAuthority = "com.google.android.gms.fonts",
-    providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
+// Créez une FontFamily avec vos fichiers de police
+val interFontFamily = FontFamily(
+    Font(R.font.interregular, FontWeight.Normal),
+    Font(R.font.interbold, FontWeight.Bold),
+    Font(R.font.interitalic, FontWeight.Normal, FontStyle.Italic)
+    //Font(R.font.intersemibold, FontWeight.Normal, FontStyle.)
 )
 
-val bodyFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Roboto"),
-        fontProvider = provider,
-    )
-)
-
-val displayFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Inter"),
-        fontProvider = provider,
-    )
-)
+val fontProject = interFontFamily  // TODO Denis : la font "Inter" semble être celle par défaut ?
 */
 
-val fontProject = FontFamily.Default // TODO Denis 1 : Comment mettre la font "Inter" ici ? (Voir tentative ci-dessus)
-
+val fontProject = FontFamily.Default
 
 // Set of Material typography styles to start with
 val Typography = Typography(
