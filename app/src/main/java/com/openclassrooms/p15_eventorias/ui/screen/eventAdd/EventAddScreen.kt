@@ -97,6 +97,7 @@ fun EventAddScreen(
     // Obtenir le résultat de l'enregistrement de l'évènement
     val uiStateAddEventResult by viewModel.uiStateAddEventResult.collectAsStateWithLifecycle()
 
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -125,9 +126,13 @@ fun EventAddScreen(
         // Gestion du résultat de l'ajout
         val currentStateUiStateAddEventResult = uiStateAddEventResult // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
 
+        // TODO Denis : Voir comment ajouter un scroll ici pour le mode paysage
+        //val scrollState = rememberScrollState()
+
         EventAddStateComposable(
             modifier = Modifier
                 .padding(contentPadding),
+                //.verticalScroll(scrollState),
             currentStateUiStateAddEventResultP = currentStateUiStateAddEventResult,
             uiStateCurrentEventP = uiStateCurrentEvent,
             uiStateErrorP = uiStateError,
