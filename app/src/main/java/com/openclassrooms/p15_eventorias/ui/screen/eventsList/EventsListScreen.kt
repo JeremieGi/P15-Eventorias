@@ -43,6 +43,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.BottomBarComposable
@@ -103,7 +104,8 @@ fun EventsListScreen(
                         }
                     ) {
                         Icon(
-                            // TODO Denis 2 : Faire une rotation de 90 degrés
+                            modifier = Modifier
+                                .graphicsLayer(rotationZ = 90f), // rotation de 90 degrés
                             painter = painterResource(R.drawable.baseline_compare_arrows_24),
                             contentDescription = stringResource(id = R.string.search),
                             tint = ColorTitleWhite

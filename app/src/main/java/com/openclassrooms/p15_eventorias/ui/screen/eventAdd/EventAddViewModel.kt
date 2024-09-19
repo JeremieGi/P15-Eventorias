@@ -20,7 +20,7 @@ class EventAddViewModel @Inject constructor (
     private val userRepository: UserRepository // TODO Denis 3 : J'ai un warning injustifié ici : Warning:(21, 13) Constructor parameter is never used as a property
 ): ViewModel() {
 
-    // TODO Denis : Possible de ne pas faire 3 UIStates ?
+    // TODO Denis : Possible de ne pas faire 3 UIStates ? Peut être encapsulé dans une data class ?
 
     // UI state - Résultat de la création de l'évènement
     private val _uiStateAddEventResult = MutableStateFlow<EventAddUIState?>(null)
