@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,10 +39,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,8 +70,12 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.MyButtonStyle
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import com.openclassrooms.p15_eventorias.utils.clearCachePhoto
 import com.openclassrooms.p15_eventorias.utils.createImageFile
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Objects
 
@@ -138,6 +140,23 @@ fun EventAddScreen(
 
     }
 
+
+    val context = LocalContext.current
+    val ioScope = CoroutineScope(Dispatchers.IO)
+
+    // DisposableEffect(Unit) => Exécuté uniquement lors de la création et de la suppression du composable
+    DisposableEffect(Unit) {
+
+        // lorsque le Composable est détruit
+        onDispose {
+            ioScope.launch {   // Scope IO pour ne pas bloquer le thread UI
+                // si la coroutine est en cours d'exécution
+                // lorsqu'elle est annulée car le Composable est supprimé,
+                // elle continuera à s'exécuter en arrière-plan jusqu'à ce qu'elle soit terminée.
+                context.clearCachePhoto()   // Nettoyage du répertoire dedié au stockage des photos
+            }
+        }
+    }
 
 
 }
@@ -382,18 +401,22 @@ fun PhotoSelectorComposable(
                 // Prise d'une photo avec l'appareil
                 // https://medium.com/@dheerubhadoria/capturing-images-from-camera-in-android-with-jetpack-compose-a-step-by-step-guide-64cd7f52e5de
 
-                // TODo JG : Protéger ce code pour qu'il soit pas exécuté à chaque recomposition
-                val file = context.createImageFile()
-                val uri = FileProvider.getUriForFile(
-                    Objects.requireNonNull(context),
-                    BuildConfig.APPLICATION_ID + ".provider", file
-                )
 
-                //var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
+                val file = remember { // Protection de ce code pour qu'il soit pas exécuté à chaque recomposition
+                    context.createImageFile()
+                }
+                val uri = remember { // Protection de ce code pour qu'il soit pas exécuté à chaque recomposition
+                    // Le FileProvider est une classe utilitaire dans Android qui permet aux applications de partager des fichiers avec d'autres applications de manière sécurisée
+                    // Elle se paramètre dans le Manifest
+                    FileProvider.getUriForFile(
+                        Objects.requireNonNull(context),
+                        BuildConfig.APPLICATION_ID + ".provider", file
+                    )
+                }
 
                 // Callback de la prise de photo
                 val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-                    //capturedImageUri = uri
+                    // On envoie l'URI au viewModel
                     onPhotoChanged(uri.toString())
                 }
 
