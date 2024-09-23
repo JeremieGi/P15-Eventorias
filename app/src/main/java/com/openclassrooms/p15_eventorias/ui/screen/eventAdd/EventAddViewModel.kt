@@ -2,7 +2,6 @@ package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
 import com.openclassrooms.p15_eventorias.repository.event.EventRepository
 import com.openclassrooms.p15_eventorias.repository.user.UserRepository
@@ -10,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -17,27 +17,13 @@ import javax.inject.Inject
 @HiltViewModel
 class EventAddViewModel @Inject constructor (
     private val eventRepository: EventRepository,
-    /*private val */userRepository: UserRepository // Paramètre car utilisé uniquement dans le constructeur
+    private val userRepository: UserRepository // Paramètre car utilisé uniquement dans le constructeur
 ): ViewModel() {
 
-    // TODO JG : faire un seul State
 
-    // UI state - Résultat de la création de l'évènement
-    private val _uiStateAddEventResult = MutableStateFlow<EventAddUIState?>(null)
-    val uiStateAddEventResult: StateFlow<EventAddUIState?> = _uiStateAddEventResult.asStateFlow() // Accès en lecture seule de l'extérieur
-
-    // State Flow pour les erreurs de formulaire
-    private val _uiStateFormError = MutableStateFlow<FormErrorAddEvent?>(null)
-    val uiStateFormError: StateFlow<FormErrorAddEvent?> = _uiStateFormError.asStateFlow() // Accès en lecture seule de l'extérieur
-
-    // StateFlow pour conserver les données du formulaire
-    private var _uiStateCurrentEvent = MutableStateFlow(
-       Event(
-           id = UUID.randomUUID().toString(),                       // ID
-           sURLPhotoAuthor = userRepository.getCurrentUserAvatar()  // Avatar de l'utilisateur courant
-       )
-    )
-    val uiStateCurrentEvent: StateFlow<Event> = _uiStateCurrentEvent.asStateFlow()
+    // UI state
+    private val _uiState = MutableStateFlow(EventAddUIState())
+    val uiState: StateFlow<EventAddUIState> = _uiState.asStateFlow() // Accès en lecture seule de l'extérieur
 
 
     // Récupère les saisies des différents champs
@@ -47,32 +33,42 @@ class EventAddViewModel @Inject constructor (
         when (formDataAddEvent) {
 
             is FormDataAddEvent.TitleChanged -> {
-                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
-                    sTitle = formDataAddEvent.title
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentEvent = currentState.currentEvent.copy(sTitle = formDataAddEvent.title)
+                    )
+                }
             }
 
             is FormDataAddEvent.DescriptionChanged -> {
-                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
-                    sDescription = formDataAddEvent.description
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentEvent = currentState.currentEvent.copy(sDescription = formDataAddEvent.description)
+                    )
+                }
             }
             is FormDataAddEvent.DateTimeChanged -> {
-                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
-                    lDatetime = formDataAddEvent.lDatetimeValue
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentEvent = currentState.currentEvent.copy(lDatetime = formDataAddEvent.lDatetimeValue)
+                    )
+                }
             }
 
             is FormDataAddEvent.AdressChanged -> {
-                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
-                    sAdress = formDataAddEvent.adress
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentEvent = currentState.currentEvent.copy(sAdress = formDataAddEvent.adress)
+                    )
+                }
             }
 
             is FormDataAddEvent.PhotoChanged -> {
-                _uiStateCurrentEvent.value = _uiStateCurrentEvent.value.copy(
-                    sURLEventPicture = formDataAddEvent.url
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentEvent = currentState.currentEvent.copy(sURLEventPicture = formDataAddEvent.url)
+                    )
+                }
             }
 
         }
@@ -83,25 +79,25 @@ class EventAddViewModel @Inject constructor (
     }
 
 
-    private fun displayError(): FormErrorAddEvent? {
+    fun getFormError (): FormErrorAddEvent? {
 
-        if (_uiStateCurrentEvent.value.sTitle.isEmpty()){
+        if (_uiState.value.currentEvent.sTitle.isEmpty()){
             return FormErrorAddEvent.TitleError
         }
 
-        if (_uiStateCurrentEvent.value.sDescription.isEmpty()){
+        if (_uiState.value.currentEvent.sDescription.isEmpty()){
             return FormErrorAddEvent.DescriptionError
         }
 
-        if (_uiStateCurrentEvent.value.lDatetime == 0L){
+        if (_uiState.value.currentEvent.lDatetime == 0L){
             return FormErrorAddEvent.DatetimeError
         }
 
-        if (_uiStateCurrentEvent.value.sAdress.isEmpty()){
+        if (_uiState.value.currentEvent.sAdress.isEmpty()){
             return FormErrorAddEvent.AddressError("Mandatory Adress") // TODO JG : Utiliser les ressources de chaines
         }
 
-        if (_uiStateCurrentEvent.value.sURLEventPicture.isEmpty()){
+        if (_uiState.value.currentEvent.sURLEventPicture.isEmpty()){
             return FormErrorAddEvent.PhotoError
         }
 
@@ -113,12 +109,23 @@ class EventAddViewModel @Inject constructor (
     private fun checkFormError() {
 
         // Mise à jour des erreurs
-        val formError = displayError()
+        val formError = getFormError()
         if(formError==null){
-            _uiStateFormError.value = null          // Pas d'erreur dans la saisie de formulaire
+             // Pas d'erreur dans la saisie de formulaire
+            _uiState.update { currentState ->
+                currentState.copy(
+                    formError = null
+                )
+            }
         }
         else{
-            _uiStateFormError.value = formError     // erreur passé à un UIState dédié
+
+            // erreur passé à l'UIState dédié
+            _uiState.update { currentState ->
+                currentState.copy(
+                    formError = formError
+                )
+            }
         }
 
     }
@@ -127,12 +134,19 @@ class EventAddViewModel @Inject constructor (
     fun addEvent(){
 
         // Récupération de l'évènement courant
-        val eventToAdd = _uiStateCurrentEvent.value
+        val eventToAdd = _uiState.value.currentEvent
+
+        // Ajout de l'ID et de l'avatar de l'utilisteur courant
+        val eventToAddWithIDAndAvatar = eventToAdd.copy(
+            id = UUID.randomUUID().toString(),
+            sURLPhotoAuthor = userRepository.getCurrentUserAvatar()
+        )
+
 
         viewModelScope.launch {
 
             // Le Flow est retourné par la fonction du repository
-            eventRepository.addEvent(eventToAdd).collect{ resultFlow ->
+            eventRepository.addEvent(eventToAddWithIDAndAvatar).collect{ resultFlow ->
 
                 // En fonction du résultat
                 when (resultFlow) {
@@ -143,10 +157,15 @@ class EventAddViewModel @Inject constructor (
                     is ResultCustomAddEvent.NetworkFailure -> {
 
                         // Récupération du message d'erreur
-                        val sErrorNetwork = EventAddUIState.Error(resultFlow.errorNetwork).sError
+                        val sErrorNetwork = resultFlow.errorNetwork
 
                         // Affiche la fenêtre d'erreur
-                        _uiStateAddEventResult.value = EventAddUIState.Error(sErrorNetwork)
+                        _uiState.update { currentState ->
+                            val updatedAddEventResult = EventAddResultUIState.AddError(sErrorNetwork)
+                            currentState.copy(
+                                addEventResult = updatedAddEventResult
+                            )
+                        }
 
                     }
 
@@ -154,13 +173,21 @@ class EventAddViewModel @Inject constructor (
                     is ResultCustomAddEvent.AdressFailure -> {
 
                         // Récupération du message d'erreur
-                        val sErrorAddress = EventAddUIState.Error(resultFlow.errorAddress).sError
+                        val sErrorAddress = resultFlow.errorAddress
 
-                        // J'affiche l'erreur sous le champ Adresse pour que l'utilisateur puisse la corriger
-                        _uiStateFormError.value = FormErrorAddEvent.AddressError(sErrorAddress)
+                        _uiState.update { currentState ->
 
-                        // Raffiche le formulaire
-                        _uiStateAddEventResult.value = null
+                            // J'affiche l'erreur sous le champ Adresse pour que l'utilisateur puisse la corriger
+                            val updatedFormError = FormErrorAddEvent.AddressError(sErrorAddress)
+
+                            // Raffiche le formulaire
+                            val updatedAddEventResult = null
+
+                            currentState.copy(
+                                addEventResult = updatedAddEventResult,
+                                formError = updatedFormError
+                            )
+                        }
 
                     }
 
@@ -168,12 +195,22 @@ class EventAddViewModel @Inject constructor (
                     // En chargement
                     is ResultCustomAddEvent.Loading -> {
                         // Propagation du chargement
-                        _uiStateAddEventResult.value = EventAddUIState.IsLoading
+                        _uiState.update { currentState ->
+                            val updatedAddEventResult = EventAddResultUIState.AddIsLoading
+                            currentState.copy(
+                                addEventResult = updatedAddEventResult
+                            )
+                        }
                     }
 
                     // Succès
                     is ResultCustomAddEvent.Success -> {
-                        _uiStateAddEventResult.value = EventAddUIState.Success
+                        _uiState.update { currentState ->
+                            val updatedAddEventResult = EventAddResultUIState.AddSuccess
+                            currentState.copy(
+                                addEventResult = updatedAddEventResult
+                            )
+                        }
                     }
 
                 }
@@ -184,22 +221,5 @@ class EventAddViewModel @Inject constructor (
 
     }
 
-    /**
-     * Renvoie Vrai si le formulaire est complet
-     * // TODO JG : Supprimer cette fonction et grisé le bouton à l'init dans Compose
-     *
-     */
-    fun formIsComplete(): Boolean {
-
-        val currentEvent = _uiStateCurrentEvent.value
-
-        return currentEvent.sTitle.isNotEmpty()
-                && currentEvent.sDescription.isNotEmpty()
-                && (currentEvent.lDatetime != 0L)
-                && currentEvent.sAdress.isNotEmpty()
-                && currentEvent.sURLEventPicture.isNotEmpty()
-
-
-    }
 
 }

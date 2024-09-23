@@ -1,11 +1,23 @@
 package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
-sealed class EventAddUIState {
+import com.openclassrooms.p15_eventorias.model.Event
 
-    data object IsLoading : EventAddUIState()
+data class EventAddUIState (
 
-    data object Success : EventAddUIState()
+    val addEventResult: EventAddResultUIState? = null,   // Résultat de l'ajout d'événement
 
-    data class Error(val sError : String?) : EventAddUIState()
+    val formError: FormErrorAddEvent? = null,           // Erreurs de formulaire
+
+    val currentEvent: Event = Event()                   // Événement en cours de saisie
+
+
+)
+
+
+sealed class EventAddResultUIState {
+
+    data object AddIsLoading : EventAddResultUIState()
+    data object AddSuccess : EventAddResultUIState()
+    data class AddError(val sError : String?) : EventAddResultUIState()
 
 }

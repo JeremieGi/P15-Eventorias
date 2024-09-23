@@ -63,7 +63,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.openclassrooms.p15_eventorias.BuildConfig
 import com.openclassrooms.p15_eventorias.R
-import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
@@ -90,15 +89,7 @@ fun EventAddScreen(
     onBackClick: () -> Unit
 ) {
 
-    // Gestion du formulaire (Champs obligatoires)
-    val uiStateError by viewModel.uiStateFormError.collectAsStateWithLifecycle()
-
-    // Données du formulaire conservées dans le ViwModel
-    val uiStateCurrentEvent by viewModel.uiStateCurrentEvent.collectAsStateWithLifecycle()
-
-    // Obtenir le résultat de l'enregistrement de l'évènement
-    val uiStateAddEventResult by viewModel.uiStateAddEventResult.collectAsStateWithLifecycle()
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier,
@@ -126,21 +117,19 @@ fun EventAddScreen(
     ) { contentPadding ->
 
         // Gestion du résultat de l'ajout
-        val currentStateUiStateAddEventResult = uiStateAddEventResult // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
+        val currentUIState = uiState // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
 
 
         EventAddStateComposable(
             modifier = Modifier
                 .padding(contentPadding),
-            currentStateUiStateAddEventResultP = currentStateUiStateAddEventResult,
-            uiStateCurrentEventP = uiStateCurrentEvent,
-            uiStateErrorP = uiStateError,
+            uiStateP = currentUIState,
             addEventP = {
                 viewModel.addEvent()
             },
             onActionP = viewModel::onAction,
-            formIsCompleteP = viewModel::formIsComplete,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            getFormErrorP = viewModel::getFormError
         )
 
     }
@@ -169,20 +158,20 @@ fun EventAddScreen(
 @Composable
 fun EventAddStateComposable(
     modifier: Modifier = Modifier,
-    currentStateUiStateAddEventResultP: EventAddUIState?,
+    uiStateP: EventAddUIState,
     addEventP: () -> Unit,
     onBackClick: () -> Unit,
-    uiStateCurrentEventP: Event,
-    uiStateErrorP: FormErrorAddEvent?,
     onActionP: (FormDataAddEvent) -> Unit,
-    formIsCompleteP: () -> Boolean,
+    getFormErrorP: () -> FormErrorAddEvent?
 ) {
 
-    when (currentStateUiStateAddEventResultP){
+
+
+    when (val uiStateAddEvent = uiStateP.addEventResult){
 
         // Erreur
-        is EventAddUIState.Error -> {
-            val sError = currentStateUiStateAddEventResultP.sError ?: stringResource(R.string.unknown_error)
+        is EventAddResultUIState.AddError -> {
+            val sError = uiStateAddEvent.sError ?: stringResource(R.string.unknown_error)
             ErrorComposable(
                 modifier = modifier,
                 sErrorMessage = sError,
@@ -191,11 +180,11 @@ fun EventAddStateComposable(
         }
 
         // Ajout en cours
-        EventAddUIState.IsLoading -> {
+        EventAddResultUIState.AddIsLoading -> {
             LoadingComposable(modifier = modifier)
         }
 
-        EventAddUIState.Success -> {
+        EventAddResultUIState.AddSuccess -> {
             onBackClick() // Retour à la liste d'évènement
         }
 
@@ -214,8 +203,7 @@ fun EventAddStateComposable(
                 // Le formulaire prend la totalité de la hauteur dispo
                 InputFormComposable(
                     modifier = Modifier.weight(1f), // Toute la hauteur
-                    uiStateCurrentEventP = uiStateCurrentEventP,
-                    uiStateErrorP = uiStateErrorP,
+                    uiStateP = uiStateP,
                     onActionP = onActionP
                 )
 
@@ -229,8 +217,8 @@ fun EventAddStateComposable(
                     onClick = {
                         addEventP()
                     },
-                    // Bouton actif si pas d'erreur et formulaire non vide
-                    enabled = ( formIsCompleteP() ) ,
+                    // Bouton inactif au lancement
+                    enabled = (getFormErrorP()==null) ,
                     colors = MyButtonStyle.buttonColors()  // Couleurs de grisage factorisées dans le Theme
 
                 ){
@@ -242,6 +230,8 @@ fun EventAddStateComposable(
             }
 
         }
+
+
     }
 
 }
@@ -249,8 +239,7 @@ fun EventAddStateComposable(
 @Composable
 fun InputFormComposable(
     modifier: Modifier,
-    uiStateCurrentEventP: Event,
-    uiStateErrorP: FormErrorAddEvent?,
+    uiStateP : EventAddUIState,
     onActionP: (FormDataAddEvent) -> Unit,
 ) {
 
@@ -259,14 +248,16 @@ fun InputFormComposable(
             .verticalScroll(rememberScrollState()) // permet de rendre la colonne défilable verticalement si le contenu dépasse la taille de l'écran.
     ){
 
+        val currentEvent = uiStateP.currentEvent
+
         // Saisie du titre
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(ColorCardAndInput),
-            value = uiStateCurrentEventP.sTitle,
+            value = currentEvent.sTitle,
             textStyle = MaterialTheme.typography.labelLarge,
-            isError = (uiStateErrorP is FormErrorAddEvent.TitleError),
+            isError = (uiStateP.formError is FormErrorAddEvent.TitleError),
             onValueChange =  {
                 onActionP(FormDataAddEvent.TitleChanged(it))
             },
@@ -286,7 +277,7 @@ fun InputFormComposable(
                 unfocusedBorderColor = Color.Transparent,
             )
         )
-        if (uiStateErrorP is FormErrorAddEvent.TitleError) {
+        if (uiStateP.formError is FormErrorAddEvent.TitleError) {
             Text(
                 text = stringResource(id = R.string.mandatorytitle),
                 color = MaterialTheme.colorScheme.error,
@@ -300,9 +291,9 @@ fun InputFormComposable(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(ColorCardAndInput),
-            value = uiStateCurrentEventP.sDescription,
+            value = currentEvent.sDescription,
             textStyle = MaterialTheme.typography.labelLarge,
-            isError = (uiStateErrorP is FormErrorAddEvent.DescriptionError),
+            isError = (uiStateP.formError is FormErrorAddEvent.DescriptionError),
             onValueChange =  {
                 onActionP(FormDataAddEvent.DescriptionChanged(it))
             },
@@ -322,7 +313,7 @@ fun InputFormComposable(
                 unfocusedBorderColor = Color.Transparent,
             )
         )
-        if (uiStateErrorP is FormErrorAddEvent.DescriptionError) {
+        if (uiStateP.formError is FormErrorAddEvent.DescriptionError) {
             Text(
                 text = stringResource(id = R.string.mandatorydescription),
                 color = MaterialTheme.colorScheme.error,
@@ -332,7 +323,7 @@ fun InputFormComposable(
         Spacer(modifier = Modifier.height(16.dp))
 
         ComposableDateTime(
-            datetimeValueInMs = uiStateCurrentEventP.lDatetime,
+            datetimeValueInMs = currentEvent.lDatetime,
             onValueChangeDateTimeChanged = {
                 onActionP(FormDataAddEvent.DateTimeChanged(it))
             }
@@ -345,9 +336,9 @@ fun InputFormComposable(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(ColorCardAndInput),
-            value = uiStateCurrentEventP.sAdress,
+            value = currentEvent.sAdress,
             textStyle = MaterialTheme.typography.labelLarge,
-            isError = (uiStateErrorP is FormErrorAddEvent.AddressError),
+            isError = (uiStateP.formError is FormErrorAddEvent.AddressError),
             onValueChange =  {
                 onActionP(FormDataAddEvent.AdressChanged(it))
             },
@@ -373,9 +364,9 @@ fun InputFormComposable(
                 unfocusedBorderColor = Color.Transparent,
             )
         )
-        if (uiStateErrorP is FormErrorAddEvent.AddressError) {
+        if (uiStateP.formError is FormErrorAddEvent.AddressError) {
             Text(
-                text = uiStateErrorP.errorAddress?: stringResource(
+                text = uiStateP.formError.errorAddress?: stringResource(
                     R.string.unknown_error
                 ),/*stringResource(id = R.string.mandatoryaddress)*/
                 color = MaterialTheme.colorScheme.error,
@@ -386,11 +377,11 @@ fun InputFormComposable(
 
         PhotoSelectorComposable(
             modifier = Modifier.height(300.dp), // Hauteur fixe
-            sURLValueP = uiStateCurrentEventP.sURLEventPicture,
+            sURLValueP = currentEvent.sURLEventPicture,
             onPhotoChanged = {
                 onActionP(FormDataAddEvent.PhotoChanged(it))
             },
-            uiStateError = uiStateErrorP,
+            uiStateError = uiStateP.formError,
         )
 
     }
@@ -684,16 +675,20 @@ fun EventListComposablePreview() {
     val listFakeEvent = EventFakeAPI.initFakeEvents()
     val currentEvent = listFakeEvent[0]
 
+    val uiState = EventAddUIState(
+        addEventResult = null,          // Formulaire en cours de saisie
+        currentEvent = currentEvent,    // Evenement en cours de saisie
+        // pas d'erreur de formulaire
+    )
+
     P15EventoriasTheme {
 
         EventAddStateComposable(
-            currentStateUiStateAddEventResultP = null, // Formulaire en cours de saisie
+            uiStateP = uiState,
             addEventP = {},
             onBackClick = {},
-            uiStateCurrentEventP = currentEvent,
-            uiStateErrorP = null,
             onActionP = {},
-            formIsCompleteP = { true },
+            getFormErrorP = { null }
         )
     }
 
@@ -707,16 +702,20 @@ fun EventListComposableErrorPreview() {
     val listFakeEvent = EventFakeAPI.initFakeEvents()
     val currentEvent = listFakeEvent[0]
 
+    val uiState = EventAddUIState(
+        addEventResult = EventAddResultUIState.AddError("Erreur lors de l'ajout"),
+        currentEvent = currentEvent,    // Evenement en cours de saisie
+        // pas d'erreur de formulaire
+    )
+
     P15EventoriasTheme {
 
         EventAddStateComposable(
-            currentStateUiStateAddEventResultP = EventAddUIState.Error("Erreur lors de l'ajout"),
+            uiStateP = uiState,
             addEventP = {},
             onBackClick = {},
-            uiStateCurrentEventP = currentEvent,
-            uiStateErrorP = null,
             onActionP = {},
-            formIsCompleteP = { true  },
+            getFormErrorP = { null }
         )
 
     }
@@ -731,16 +730,20 @@ fun EventListComposableLoadingPreview() {
     val listFakeEvent = EventFakeAPI.initFakeEvents()
     val currentEvent = listFakeEvent[0]
 
+    val uiState = EventAddUIState(
+        addEventResult = EventAddResultUIState.AddIsLoading,
+        currentEvent = currentEvent,    // Evenement en cours de saisie
+        // pas d'erreur de formulaire
+    )
+
     P15EventoriasTheme {
 
         EventAddStateComposable(
-            currentStateUiStateAddEventResultP = EventAddUIState.IsLoading,
+            uiStateP = uiState,
             addEventP = {},
             onBackClick = {},
-            uiStateCurrentEventP = currentEvent,
-            uiStateErrorP = null,
             onActionP = {},
-            formIsCompleteP = { true  },
+            getFormErrorP = { null }
         )
     }
 
