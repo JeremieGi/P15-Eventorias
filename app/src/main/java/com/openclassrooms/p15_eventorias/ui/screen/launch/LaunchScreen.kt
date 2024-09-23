@@ -5,7 +5,10 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.firebase.ui.auth.AuthUI
@@ -26,7 +29,8 @@ fun LaunchScreen(
 
     val context = LocalContext.current
 
-    var currentUser = remember { viewModel.getCurrentUser() }
+    // Authentification réussie ?
+    var isAuthenticated by remember { mutableStateOf(false) }
 
     val signInLauncher = rememberLauncherForActivityResult(
         contract = FirebaseAuthUIActivityResultContract()
@@ -45,10 +49,8 @@ fun LaunchScreen(
             viewModel.insertCurrentUserInFirestore()
 
 
-            currentUser = viewModel.getCurrentUser()
+            isAuthenticated = true
 
-
-            // ...
         } else {
 
             var sError : String? = null
@@ -67,12 +69,11 @@ fun LaunchScreen(
     }
 
 
-
     // Vérifier l'état de connexion de l'utilisateur
     LaunchedEffect(Unit) {
 
         // Si utilisateur connecté => Firebase Auth UI
-        if (currentUser==null){
+        if (viewModel.getCurrentUser()==null && !isAuthenticated ){
 
             // Si l’utilisateur n’est pas connecté, redirige vers l’écran de création de compte / connexion
 
@@ -93,13 +94,15 @@ fun LaunchScreen(
                 .setLogo(R.drawable.logo_eventorias)
                 .build()
 
+            // Lance la fenêtre Firebase
             signInLauncher.launch(signInIntent)
 
         }
 
     }
 
-    if (currentUser!=null){
+    // Si l'utilisateur était déjà loggué ou il vient de se logguer avec succès
+    if (viewModel.getCurrentUser()!=null || isAuthenticated ){
         //  Utilisateur connecté
         EventsListScreen(
             //modifier = modifier,

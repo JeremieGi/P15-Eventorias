@@ -18,4 +18,7 @@
     <color name="backgroundLogin">#FF1d1b20</color>
     <color name="primaryLogin">#FFD0021B</color>
 
+    <color name="cardAndInput">#FF49454F</color>
+
+
 </resources>

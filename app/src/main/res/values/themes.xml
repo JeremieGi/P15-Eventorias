@@ -22,10 +22,19 @@
     </style>
 
     <style name="FirebaseLoginTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:colorBackground">@color/backgroundLogin</item>
+
+        <!-- TODO JG : A remettre -->
+        <!--<item name="android:colorBackground">@color/backgroundLogin</item>-->
+
+        <!-- Couleur des boutons -->
         <item name="colorPrimary">@color/primaryLogin</item>
 
-        <!-- TODO Denis : Centrer les éléments - Marche pas -->
+        <!-- Couleur de fond des champs de saisie -->
+        <!-- TODO Denis : Couleur de fond des champs de saisie -->
+        <item name="android:editTextBackground">@color/cardAndInput</item>
+
+
+        <!-- TODO Denis : Centrer les éléments - Marche pas pour la 1ere page -->
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
 
