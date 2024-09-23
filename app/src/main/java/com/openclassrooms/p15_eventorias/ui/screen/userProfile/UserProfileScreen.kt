@@ -60,7 +60,6 @@ fun UserProfileScreen(
     // Lecture du user
     val uiStateUser by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // TODO JG : Revérifier le comportement ici avec Firebase
     LaunchedEffect(uiStateUser) {
         //if (uiStateUser !is UserUIState.Success) {
             viewModel.loadCurrentUser()
@@ -108,6 +107,10 @@ fun UserProfileStateComposable(
                     Text(stringResource(id = R.string.userprofile))
                 },
                 actions = {
+
+                    // TODO Denis : Au clic, il faudrait pouvoir uploader une photo ?
+                    // car pas possible de le faire à la création du compte apparemment
+                    // Voir getPhotoUrl : https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseUser
 
                     if (uiStateUserP is UserUIState.Success){
                         URLImageAvatarComposable(
