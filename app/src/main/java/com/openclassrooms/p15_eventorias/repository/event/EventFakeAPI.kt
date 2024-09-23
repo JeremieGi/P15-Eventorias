@@ -5,7 +5,6 @@ import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
@@ -40,14 +39,28 @@ class EventFakeAPI : EventApi {
         initFakeEvents()
     )
 
-    override fun loadAllEvents(): Flow<ResultCustom<List<Event>>> {
+    override fun loadAllEvents(sFilterTitleP : String, bOrderByDatetimeP : Boolean?): Flow<ResultCustom<List<Event>>> {
 
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
             //delay(1*1000)
 
-            val list : List<Event>  = events.value
+            var list : List<Event>  = events.value
+
+            if (sFilterTitleP.isNotEmpty()){
+                list = list.filter { it.sTitle.contains(sFilterTitleP) }
+            }
+
+            if (bOrderByDatetimeP!=null){
+                if (bOrderByDatetimeP){
+                    list = list.sortedBy { it.lDatetime }
+                }
+                else{
+                    list = list.sortedByDescending { it.lDatetime }
+                }
+            }
+
             trySend(ResultCustom.Success(list))
 
             // awaitClose : Permet de fermer le listener dès que le flow n'est plus écouté (pour éviter les fuites mémoire)

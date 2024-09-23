@@ -40,6 +40,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
@@ -66,6 +69,9 @@ fun EventsListScreen(
     onClickProfileP : () -> Unit
 ) {
 
+    var bSortAsc by rememberSaveable { mutableStateOf<Boolean?>(null) }
+    var sSearchByTitle by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
 
         topBar = {
@@ -87,9 +93,11 @@ fun EventsListScreen(
 //                        )
 //                    }
 
+
                     IconButton(
                         onClick = {
-                            // TODO JG : Recherche
+                            // Recherche par titre
+                            viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
                         }
                     ) {
                         Icon(
@@ -98,9 +106,19 @@ fun EventsListScreen(
                             tint = ColorTitleWhite
                         )
                     }
+
+
                     IconButton(
                         onClick = {
-                            // TODO JG : Tri
+
+                            bSortAsc = when (bSortAsc) {
+                                null -> true // Si nul, commence par le tri croissant
+                                true -> false // Inverse à décroissant
+                                false -> null // Retourne à l'état initial (aucun tri)
+                            }
+
+                            // Tri par date
+                            viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
                         }
                     ) {
                         Icon(
@@ -144,7 +162,7 @@ fun EventsListScreen(
 
             // Recharger les évents quand l'écran est visible
             LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-                viewModel.loadAllEvents()
+                viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
             }
 
 
@@ -152,8 +170,8 @@ fun EventsListScreen(
                 modifier = Modifier.padding(innerPadding),
                 uiStateListP = uiStateList,
                 loadAllEventsP = {
-                    viewModel.loadAllEvents()
-                                 },
+                    viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
+                },
                 onEventClickP = onEventClickP
             )
 

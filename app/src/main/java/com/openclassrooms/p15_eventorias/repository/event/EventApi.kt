@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface EventApi {
 
-    fun loadAllEvents() : Flow<ResultCustom<List<Event>>>
+    fun loadAllEvents(sFilterTitleP : String, bOrderByDatetimeP : Boolean?) : Flow<ResultCustom<List<Event>>>
 
     fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>>
 

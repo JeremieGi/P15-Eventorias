@@ -65,10 +65,10 @@ fun EventItemScreen(
     val uiStateItem by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(eventId) {
-        // TODO JG : Code à reprendre ?
-        if (uiStateItem !is EventItemUIState.Success) {
+        // TODO JG : Code à reprendre ? Vérifier si il y a un Load à la rotation après branchement de Firebase
+        //if (uiStateItem !is EventItemUIState.Success) {
             viewModel.loadEventByID(eventId)
-        }
+        //}
     }
 
     EventItemStateComposable(

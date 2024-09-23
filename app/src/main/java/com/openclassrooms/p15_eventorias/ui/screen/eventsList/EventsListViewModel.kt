@@ -62,9 +62,9 @@ class EventsListViewModel @Inject constructor(
         }
     }
 
-    fun loadAllEvents() {
+    fun loadAllEvents(sFilterTitleP : String, bOrderByDatetime : Boolean?) {
         viewModelScope.launch {
-            eventRepository.loadAllEvents()
+            eventRepository.loadAllEvents(sFilterTitleP,bOrderByDatetime)
         }
     }
 

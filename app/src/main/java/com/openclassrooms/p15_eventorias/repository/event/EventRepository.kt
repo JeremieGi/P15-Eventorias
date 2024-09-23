@@ -31,7 +31,7 @@ class EventRepository @Inject constructor(
 
 
     // Charge tous les évènements dans le Flow du repository
-    suspend fun loadAllEvents() {
+    suspend fun loadAllEvents(sFilterTitleP : String, bOrderByDatetimeP : Boolean?) {
 
         withContext(Dispatchers.IO) {
 
@@ -48,7 +48,7 @@ class EventRepository @Inject constructor(
             else{
 
                 // On charge les évènements
-                eventApi.loadAllEvents().collect { result ->
+                eventApi.loadAllEvents(sFilterTitleP, bOrderByDatetimeP).collect { result ->
                     _flowEvents.emit(result)
                 }
 
