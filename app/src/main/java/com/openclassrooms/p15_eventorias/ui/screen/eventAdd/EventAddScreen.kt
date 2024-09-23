@@ -204,7 +204,6 @@ fun EventAddStateComposable(
 
             Column(
                 modifier = modifier
-    //                .verticalScroll(rememberScrollState()) // permet de rendre la colonne défilable verticalement si le contenu dépasse la taille de l'écran.
                     .padding(
                         horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                         vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
@@ -212,151 +211,16 @@ fun EventAddStateComposable(
 
             ){
 
-//                Column(){
-//
-//                    InputFormComposable()
-//
-//
-//
-//                }
-
-
-                // Saisie du titre
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ColorCardAndInput),
-                    value = uiStateCurrentEventP.sTitle,
-                    textStyle = MaterialTheme.typography.labelLarge,
-                    isError = (uiStateErrorP is FormErrorAddEvent.TitleError),
-                    onValueChange =  {
-                        onActionP(FormDataAddEvent.TitleChanged(it))
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.title),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    singleLine = true,
-                    // On peut toujours personnaliser les autres éléments,
-                    // comme les couleurs des indicateurs et des labels,
-                    // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                    )
-                )
-                if (uiStateErrorP is FormErrorAddEvent.TitleError) {
-                    Text(
-                        text = stringResource(id = R.string.mandatorytitle),
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Saisie de la description
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ColorCardAndInput),
-                    value = uiStateCurrentEventP.sDescription,
-                    textStyle = MaterialTheme.typography.labelLarge,
-                    isError = (uiStateErrorP is FormErrorAddEvent.DescriptionError),
-                    onValueChange =  {
-                        onActionP(FormDataAddEvent.DescriptionChanged(it))
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.description),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    maxLines = 3,
-                    // On peut toujours personnaliser les autres éléments,
-                    // comme les couleurs des indicateurs et des labels,
-                    // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                    )
-                )
-                if (uiStateErrorP is FormErrorAddEvent.DescriptionError) {
-                    Text(
-                        text = stringResource(id = R.string.mandatorydescription),
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ComposableDateTime(
-                    datetimeValueInMs = uiStateCurrentEventP.lDatetime,
-                    onValueChangeDateTimeChanged = {
-                        onActionP(FormDataAddEvent.DateTimeChanged(it))
-                    }
+                // Le formulaire prend la totalité de la hauteur dispo
+                InputFormComposable(
+                    modifier = Modifier.weight(1f), // Toute la hauteur
+                    uiStateCurrentEventP = uiStateCurrentEventP,
+                    uiStateErrorP = uiStateErrorP,
+                    onActionP = onActionP
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Saisie de l'adresse
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(ColorCardAndInput),
-                    value = uiStateCurrentEventP.sAdress,
-                    textStyle = MaterialTheme.typography.labelLarge,
-                    isError = (uiStateErrorP is FormErrorAddEvent.AddressError),
-                    onValueChange =  {
-                        onActionP(FormDataAddEvent.AdressChanged(it))
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.address),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.enterfulladdress),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    maxLines = 3,
-                    // On peut toujours personnaliser les autres éléments,
-                    // comme les couleurs des indicateurs et des labels,
-                    // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                    )
-                )
-                if (uiStateErrorP is FormErrorAddEvent.AddressError) {
-                    Text(
-                        text = uiStateErrorP.errorAddress?: stringResource(
-                            R.string.unknown_error
-                        ),/*stringResource(id = R.string.mandatoryaddress)*/
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                PhotoSelectorComposable(
-                    modifier = Modifier.weight(1f), // Toute la place restante
-                    //modifier = Modifier.height(300.dp), // Hauteur fixe // TODO JG : Tenter 2 créer une colonne supplémentaire à 2 éléments
-                    sURLValueP = uiStateCurrentEventP.sURLEventPicture,
-                    onPhotoChanged = {
-                        onActionP(FormDataAddEvent.PhotoChanged(it))
-                    },
-                    uiStateError = uiStateErrorP,
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
                     modifier = Modifier
@@ -379,6 +243,158 @@ fun EventAddStateComposable(
 
         }
     }
+
+}
+
+@Composable
+fun InputFormComposable(
+    modifier: Modifier,
+    uiStateCurrentEventP: Event,
+    uiStateErrorP: FormErrorAddEvent?,
+    onActionP: (FormDataAddEvent) -> Unit,
+) {
+
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState()) // permet de rendre la colonne défilable verticalement si le contenu dépasse la taille de l'écran.
+    ){
+
+        // Saisie du titre
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(ColorCardAndInput),
+            value = uiStateCurrentEventP.sTitle,
+            textStyle = MaterialTheme.typography.labelLarge,
+            isError = (uiStateErrorP is FormErrorAddEvent.TitleError),
+            onValueChange =  {
+                onActionP(FormDataAddEvent.TitleChanged(it))
+            },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.title),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            singleLine = true,
+            // On peut toujours personnaliser les autres éléments,
+            // comme les couleurs des indicateurs et des labels,
+            // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+            )
+        )
+        if (uiStateErrorP is FormErrorAddEvent.TitleError) {
+            Text(
+                text = stringResource(id = R.string.mandatorytitle),
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Saisie de la description
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(ColorCardAndInput),
+            value = uiStateCurrentEventP.sDescription,
+            textStyle = MaterialTheme.typography.labelLarge,
+            isError = (uiStateErrorP is FormErrorAddEvent.DescriptionError),
+            onValueChange =  {
+                onActionP(FormDataAddEvent.DescriptionChanged(it))
+            },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.description),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            maxLines = 3,
+            // On peut toujours personnaliser les autres éléments,
+            // comme les couleurs des indicateurs et des labels,
+            // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+            )
+        )
+        if (uiStateErrorP is FormErrorAddEvent.DescriptionError) {
+            Text(
+                text = stringResource(id = R.string.mandatorydescription),
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        ComposableDateTime(
+            datetimeValueInMs = uiStateCurrentEventP.lDatetime,
+            onValueChangeDateTimeChanged = {
+                onActionP(FormDataAddEvent.DateTimeChanged(it))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Saisie de l'adresse
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(ColorCardAndInput),
+            value = uiStateCurrentEventP.sAdress,
+            textStyle = MaterialTheme.typography.labelLarge,
+            isError = (uiStateErrorP is FormErrorAddEvent.AddressError),
+            onValueChange =  {
+                onActionP(FormDataAddEvent.AdressChanged(it))
+            },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.address),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.enterfulladdress),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            maxLines = 3,
+            // On peut toujours personnaliser les autres éléments,
+            // comme les couleurs des indicateurs et des labels,
+            // via cette fonction, mais pas la couleur de fond qui se paramètre dans le Modifier.
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+            )
+        )
+        if (uiStateErrorP is FormErrorAddEvent.AddressError) {
+            Text(
+                text = uiStateErrorP.errorAddress?: stringResource(
+                    R.string.unknown_error
+                ),/*stringResource(id = R.string.mandatoryaddress)*/
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PhotoSelectorComposable(
+            modifier = Modifier.height(300.dp), // Hauteur fixe
+            sURLValueP = uiStateCurrentEventP.sURLEventPicture,
+            onPhotoChanged = {
+                onActionP(FormDataAddEvent.PhotoChanged(it))
+            },
+            uiStateError = uiStateErrorP,
+        )
+
+    }
+
 
 }
 
