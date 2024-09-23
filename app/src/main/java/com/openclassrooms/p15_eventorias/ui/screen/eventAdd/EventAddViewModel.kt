@@ -90,7 +90,7 @@ class EventAddViewModel @Inject constructor (
         }
 
         if (_uiState.value.currentEvent.lDatetime == 0L){
-            return FormErrorAddEvent.DatetimeError
+            return FormErrorAddEvent.DatetimeError("")
         }
 
         if (_uiState.value.currentEvent.sAdress.isEmpty()){
@@ -179,6 +179,28 @@ class EventAddViewModel @Inject constructor (
 
                             // J'affiche l'erreur sous le champ Adresse pour que l'utilisateur puisse la corriger
                             val updatedFormError = FormErrorAddEvent.AddressError(sErrorAddress)
+
+                            // Raffiche le formulaire
+                            val updatedAddEventResult = null
+
+                            currentState.copy(
+                                addEventResult = updatedAddEventResult,
+                                formError = updatedFormError
+                            )
+                        }
+
+                    }
+
+                    // Echec du à une date dans le futur
+                    is ResultCustomAddEvent.DateFailure -> {
+
+                        // Récupération du message d'erreur
+                        val sErrorDate = resultFlow.errorDate
+
+                        _uiState.update { currentState ->
+
+                            // J'affiche l'erreur sous le champ Date pour que l'utilisateur puisse la corriger
+                            val updatedFormError = FormErrorAddEvent.DatetimeError(sErrorDate)
 
                             // Raffiche le formulaire
                             val updatedAddEventResult = null

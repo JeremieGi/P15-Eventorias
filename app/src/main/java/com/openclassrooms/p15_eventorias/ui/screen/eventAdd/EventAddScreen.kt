@@ -322,11 +322,16 @@ fun InputFormComposable(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        var sErrorDate : String? = null
+        if (uiStateP.formError is FormErrorAddEvent.DatetimeError) {
+            sErrorDate = uiStateP.formError.errorDate
+        }
         ComposableDateTime(
             datetimeValueInMs = currentEvent.lDatetime,
             onValueChangeDateTimeChanged = {
                 onActionP(FormDataAddEvent.DateTimeChanged(it))
-            }
+            },
+            sErrorDate = sErrorDate
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -581,7 +586,8 @@ fun PhotoSelectorComposable(
 @Composable
 fun ComposableDateTime(
     datetimeValueInMs: Long,
-    onValueChangeDateTimeChanged : (Long) -> Unit
+    onValueChangeDateTimeChanged : (Long) -> Unit,
+    sErrorDate : String?
 ) {
 
     // Pour obtenir le contexte
@@ -617,76 +623,101 @@ fun ComposableDateTime(
         true // Utilisation du format 24h
     )
 
-    // Interface utilisateur avec les champs de saisie
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+    Column{
+
+        // Interface utilisateur avec les champs de saisie
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
             //.padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Champ de date (JJ/MM/YYYY)
-        OutlinedTextField(
-            modifier = Modifier
-                .weight(1f)
-                .clickable {
-                    datePickerDialog.show() // Affiche le picker au clic
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Champ de date (JJ/MM/YYYY)
+            OutlinedTextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        datePickerDialog.show() // Affiche le picker au clic
+                    },
+                value = longToFormatedString(datetimeValueInMs,"MM/dd/yyyy"),
+                onValueChange = { },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.date),
+                        style = MaterialTheme.typography.labelMedium
+                    )
                 },
-            value = longToFormatedString(datetimeValueInMs,"MM/dd/yyyy"),
-            onValueChange = { },
-            label = {
-                Text(
-                    text = stringResource(id = R.string.date),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.dateformat),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            },
-            readOnly = true, // Empêche la modification manuelle
-            enabled = false, // Obligatoire sinon .clickable() { n'est pas appelé
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-            )
-        )
-
-        // Champ de temps (HH:MM)
-        OutlinedTextField(
-            modifier = Modifier
-                .weight(1f)
-                .clickable {
-                    timePickerDialog.show()
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.dateformat),
+                        style = MaterialTheme.typography.labelMedium
+                    )
                 },
-            value = longToFormatedString(datetimeValueInMs,"HH:mm"),
-            onValueChange = { },
-            label = {
-                Text(
-                    text = stringResource(id = R.string.time),
-                    style = MaterialTheme.typography.labelMedium
+                readOnly = true, // Empêche la modification manuelle
+                enabled = false, // Obligatoire sinon .clickable() { n'est pas appelé
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
                 )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.timeformat),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            },
-            readOnly = true, // Empêche la modification manuelle
-            enabled = false, // Obligatoire sinon .clickable() { n'est pas appelé
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
             )
-        )
 
+            // Champ de temps (HH:MM)
+            OutlinedTextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        timePickerDialog.show()
+                    },
+                value = longToFormatedString(datetimeValueInMs,"HH:mm"),
+                onValueChange = { },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.time),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.timeformat),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                readOnly = true, // Empêche la modification manuelle
+                enabled = false, // Obligatoire sinon .clickable() { n'est pas appelé
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                )
+            )
+
+        }
+
+        if (sErrorDate!=null) {
+            Text(
+                text = getDateErrorMessage(sErrorDate),
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+    }
+
+
+
+}
+
+@Composable
+fun getDateErrorMessage(sErrorDate: String): String {
+
+    return if (sErrorDate.isEmpty()){
+        stringResource(id = R.string.mandatorydatetime)
+    }
+    else{
+        sErrorDate
     }
 
 }
 
-// TODO Denis : Pourquoi je n'ai pas le style dans les previews + Rendering sandbox error
+// je n'ai pas le style dans les previews + Rendering sandbox error
 
 @Preview("Event Add Form")
 @Composable

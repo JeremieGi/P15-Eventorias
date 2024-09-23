@@ -36,4 +36,6 @@
     <string name="userprofile">User profile</string>
     <string name="event">Event</string>
     <string name="notifications">Notifications</string>
+    <string name="the_event_date_must_be_in_the_future">The event date must be in the future</string>
+    <string name="mandatorydatetime">Mandatory date / time</string>
 </resources>

@@ -5,6 +5,7 @@ import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
+import com.openclassrooms.p15_eventorias.utils.isDateInFuture
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -92,9 +93,12 @@ class EventRepository @Inject constructor(
         }
         else{
 
-            // Géolocation de l'adresse
-            val sErrorGeolocation = event.geolocate( injectedContext.getInjectedContext() )
-            if (sErrorGeolocation.isNotEmpty()) {
+            // Date dans le futur
+            if (isDateInFuture(event.lDatetime)){
+
+                // Géolocation de l'adresse
+                val sErrorGeolocation = event.geolocate( injectedContext.getInjectedContext() )
+                if (sErrorGeolocation.isNotEmpty()) {
 
                     emit(
                         ResultCustomAddEvent.AdressFailure(
@@ -102,15 +106,28 @@ class EventRepository @Inject constructor(
                         )
                     )
 
-            }
-            else{
+                }
+                else{
 
-                // Emettre son propre Flow (avec les éventuelles erreurs ou succès)
-                eventApi.addEvent(event).collect { result ->
-                    emit(result)
+                    // Emettre son propre Flow (avec les éventuelles erreurs ou succès)
+                    eventApi.addEvent(event).collect { result ->
+                        emit(result)
+                    }
+
                 }
 
             }
+            else{
+
+                emit(
+                    ResultCustomAddEvent.DateFailure(
+                        injectedContext.getInjectedContext().getString(R.string.the_event_date_must_be_in_the_future)
+                    )
+                )
+
+            }
+
+
 
 
         }

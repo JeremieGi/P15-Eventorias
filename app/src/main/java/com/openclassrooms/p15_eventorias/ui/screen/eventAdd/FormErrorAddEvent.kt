@@ -7,7 +7,7 @@ sealed class FormErrorAddEvent {
 
     data object TitleError : FormErrorAddEvent()
     data object DescriptionError : FormErrorAddEvent()
-    data object DatetimeError : FormErrorAddEvent() // TODO JG : Prévoir une vérification que la date soit dans le futur ?
+    data class DatetimeError(val errorDate: String?) : FormErrorAddEvent()
     //data object AdressError : FormErrorAddEvent()
     data class AddressError(val errorAddress: String?) : FormErrorAddEvent()
     data object PhotoError : FormErrorAddEvent()

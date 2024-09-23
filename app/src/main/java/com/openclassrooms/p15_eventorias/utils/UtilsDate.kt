@@ -5,7 +5,7 @@ import java.util.*
 
 /**
  * Convertit un long en date textuelle (TODO JG : Test unitaire possible à faire)
- * @param timestamp : Date in long format
+ * @param timestampInMs : Date in long format
  * @param sPattern : Pattern Ex "MMMM dd, yyyy" ou "HH:mm" :  https://developer.android.com/reference/android/icu/text/SimpleDateFormat
  */
 fun longToFormatedString(timestampInMs: Long, sPattern : String): String {
@@ -28,3 +28,10 @@ fun longToFormatedString(timestampInMs: Long, sPattern : String): String {
 
 }
 
+/**
+ * Renvoie vrai si la date est dans le futur
+ */
+fun isDateInFuture(dateMillis: Long): Boolean {
+    val currentTimeMillis = System.currentTimeMillis()
+    return dateMillis > currentTimeMillis
+}

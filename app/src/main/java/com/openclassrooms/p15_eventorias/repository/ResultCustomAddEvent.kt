@@ -15,6 +15,10 @@ sealed class ResultCustomAddEvent<out T> {
         val errorAddress: String? = null,
     ) : ResultCustomAddEvent<Nothing>()
 
+    data class DateFailure(
+        val errorDate: String? = null,
+    ) : ResultCustomAddEvent<Nothing>()
+
     // C'est une classe de données générique qui stocke le résultat de l'opération en cas de succès.
     // Elle prend un type générique R pour permettre de représenter différents types de résultats.
     data class Success<out R>(
