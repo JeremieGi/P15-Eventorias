@@ -1,7 +1,10 @@
 package com.openclassrooms.p15_eventorias
 
+import com.openclassrooms.p15_eventorias.utils.isDateInFuture
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 
@@ -31,5 +34,21 @@ class UtilsDateTest {
         val result = longToFormatedString(timestamp, "HH:mm")
         assertEquals(expectedFormat, result) // Vérifie que le format est correct
     }
+
+    @Test
+    fun isDateInFuture_true(){
+        // Ajoute 1 jour (en millisecondes) à l'heure actuelle
+        val futureDateMillis = System.currentTimeMillis() + 24 * 60 * 60 * 1000L
+        assertTrue(isDateInFuture(futureDateMillis)) // La date est dans le futur
+    }
+
+
+    @Test
+    fun isDateInFuture_false(){
+        // Soustrait 1 jour (en millisecondes) à l'heure actuelle
+        val pastDateMillis = System.currentTimeMillis() - 24 * 60 * 60 * 1000L
+        assertFalse(isDateInFuture(pastDateMillis)) // La date est dans le passé
+    }
+
 
 }

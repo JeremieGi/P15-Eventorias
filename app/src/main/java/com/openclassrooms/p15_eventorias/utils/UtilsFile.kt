@@ -19,7 +19,7 @@ fun Context.getPathCacheImgPhoto(): File {
  * Elle crée un fichier avec le préfixe « JPEG_ » et un horodatage,
  * et le stocke dans le répertoire de cache externe avec une extension « .jpg ».
  */
-@SuppressLint("SimpleDateFormat")
+@SuppressLint("SimpleDateFormat") // Pour enlever le Warning de SimpleDateFormat
 fun Context.createImageFile(): File { // Foncion d'extension de la classe Context
 
     // Exemple cache interne (utilisé ici) : /data/user/0/com.openclassrooms.p15_eventorias/cache/JPEG_20240919_110610_5159691113524491717.jpg
@@ -43,7 +43,6 @@ fun Context.createImageFile(): File { // Foncion d'extension de la classe Contex
         imgPhotoDir
     )
     return fileImage
-
 
 
 }

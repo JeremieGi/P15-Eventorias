@@ -122,4 +122,9 @@ dependencies {
     // Firebase -> système de notification
     implementation(libs.firebase.messaging)
 
+    // Tests
+
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+
 }
