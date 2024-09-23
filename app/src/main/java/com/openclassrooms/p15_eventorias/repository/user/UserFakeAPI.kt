@@ -32,28 +32,17 @@ class UserFakeAPI : UserApi {
         return userFake.sURLAvatar
     }
 
-    override fun loadCurrentUser(): Flow<ResultCustom<User>> {
-
-        return callbackFlow {
-
-            trySend(ResultCustom.Loading)
-            //delay(1*1000) // TODO JG : Penser à enlever les delay de test
-
-            trySend(ResultCustom.Success(userFake))
-
-            // awaitClose : Permet de fermer le listener dès que le flow n'est plus écouté (pour éviter les fuites mémoire)
-            awaitClose {
-
-            }
-        }
-    }
 
     override fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean) {
         this.userFake.bNotificationEnabled = bNotificationEnabled
     }
 
-    override fun getCurrentUser(): User {
+    override fun getCurrentUser(): User? {
         return this.userFake
+    }
+
+    override fun insertCurrentUser() {
+        // On ne fait rien dans la Fake API => car ce code n'est pas utile
     }
 
 }

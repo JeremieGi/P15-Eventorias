@@ -38,4 +38,6 @@
     <string name="notifications">Notifications</string>
     <string name="the_event_date_must_be_in_the_future">The event date must be in the future</string>
     <string name="mandatorydatetime">Mandatory date / time</string>
+    <string name="loginCancel">Login process cancelled by user</string>
+    <string name="connexion_ok">Login OK</string>
 </resources>

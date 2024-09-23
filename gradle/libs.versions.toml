@@ -13,6 +13,8 @@ hilt = "2.51.1"
 kotlin = "1.9.23"
 compose = "2024.08.00"
 activityCompose = "1.9.1"
+mockitoCore = "5.12.0"
+mockitoInline = "4.5.1"
 navigationCompose = "2.7.7"
 ksp = "1.9.23-1.0.20"
 lifecycleRuntimeCompose = "2.8.4"
@@ -51,6 +53,8 @@ firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

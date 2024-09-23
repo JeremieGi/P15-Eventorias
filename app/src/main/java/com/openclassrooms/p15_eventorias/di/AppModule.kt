@@ -6,6 +6,7 @@ import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
 import com.openclassrooms.p15_eventorias.repository.user.UserApi
 import com.openclassrooms.p15_eventorias.repository.user.UserFakeAPI
+import com.openclassrooms.p15_eventorias.repository.user.UserFirestoreAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,8 +33,8 @@ class AppModule {
     @Provides
     @Singleton
     fun provideUserAPI(): UserApi {
-        return UserFakeAPI() // Utilisation de FireStore
-        //return UserFireStoreAPI() // TODO JG Utilisation de FireStore
+        //return UserFakeAPI() //
+        return UserFirestoreAPI() // Utilisation de FireStore
     }
 
 

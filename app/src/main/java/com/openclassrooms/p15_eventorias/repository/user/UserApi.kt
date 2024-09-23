@@ -9,14 +9,19 @@ interface UserApi {
 
     fun getCurrentUserAvatar() : String
 
-    fun loadCurrentUser(): Flow<ResultCustom<User>>
-
     fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean)
 
     /**
      * Return current user
      */
-    fun getCurrentUser() : User
+    fun getCurrentUser() : User?
+
+    /**
+     * Enregistre les données de l'utilisateur courant (après sa première identification)
+     */
+    fun insertCurrentUser()
+
+
 
     /*
 
