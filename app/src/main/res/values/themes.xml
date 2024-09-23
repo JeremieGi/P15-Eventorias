@@ -21,4 +21,17 @@
 
     </style>
 
+    <style name="FirebaseLoginTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:colorBackground">@color/backgroundLogin</item>
+        <item name="colorPrimary">@color/primaryLogin</item>
+
+        <!-- TODO Denis : Centrer les éléments - Marche pas -->
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+
+        <!-- On API 21+ you can use android:statusBarColor -->
+        <!-- Barre système en haut -->
+        <item name="colorPrimaryDark">@color/backgroundLogin</item>
+    </style>
+
 </resources>

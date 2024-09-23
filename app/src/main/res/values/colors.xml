@@ -15,4 +15,7 @@
 
     -->
 
+    <color name="backgroundLogin">#FF1d1b20</color>
+    <color name="primaryLogin">#FFD0021B</color>
+
 </resources>
