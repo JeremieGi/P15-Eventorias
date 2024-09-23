@@ -16,10 +16,10 @@ val interFontFamily = FontFamily(
     //Font(R.font.intersemibold, FontWeight.Normal, FontStyle.)
 )
 
-val fontProject = interFontFamily  // TODO Denis : la font "Inter" semble être celle par défaut ?
+val fontProject = interFontFamily
 */
 
-val fontProject = FontFamily.Default
+val fontProject = FontFamily.Default // la font "Inter" semble être celle par défaut
 
 // Set of Material typography styles to start with
 val Typography = Typography(

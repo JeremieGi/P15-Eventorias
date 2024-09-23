@@ -60,11 +60,11 @@ fun UserProfileScreen(
     // Lecture du user
     val uiStateUser by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // TODO Denis : Pour que lors d'une rotation d'écran loadCurrentUser ne soit pas rééxécuté. Correct ?
+    // TODO JG : Revérifier le comportement ici avec Firebase
     LaunchedEffect(uiStateUser) {
-        if (uiStateUser !is UserUIState.Success) {
+        //if (uiStateUser !is UserUIState.Success) {
             viewModel.loadCurrentUser()
-        }
+        //}
     }
 
     UserProfileStateComposable(

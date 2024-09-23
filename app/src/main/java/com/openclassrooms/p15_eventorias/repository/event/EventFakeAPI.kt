@@ -45,7 +45,7 @@ class EventFakeAPI : EventApi {
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
-            delay(1*1000)
+            //delay(1*1000)
 
             val list : List<Event>  = events.value
             trySend(ResultCustom.Success(list))
@@ -60,12 +60,10 @@ class EventFakeAPI : EventApi {
 
     override fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> {
 
-        // TODo JG : Si le fichier est une photo (fichier temporaire), penser à le supprimer
-
         return callbackFlow {
 
             trySend(ResultCustomAddEvent.Loading)
-            delay(1*1000)
+            //delay(1*1000)
 
             events.value.add(0, event)
             trySend(ResultCustomAddEvent.Success(""))
@@ -86,7 +84,7 @@ class EventFakeAPI : EventApi {
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
-            delay(1*1000)
+            //delay(1*1000)
 
             if (post==null){
                 trySend(ResultCustom.Failure("No event find with ID = $idEvent"))

@@ -17,10 +17,10 @@ import javax.inject.Inject
 @HiltViewModel
 class EventAddViewModel @Inject constructor (
     private val eventRepository: EventRepository,
-    /*private val */ userRepository: UserRepository // TODO Denis 1 : J'ai un warning injustifié ici : Warning:(21, 13) Constructor parameter is never used as a property
+    /*private val */userRepository: UserRepository // Paramètre car utilisé uniquement dans le constructeur
 ): ViewModel() {
 
-    // TODO Denis : Possible de faire un seul UIState ? Bonne pratique ?
+    // TODO JG : faire un seul State
 
     // UI state - Résultat de la création de l'évènement
     private val _uiStateAddEventResult = MutableStateFlow<EventAddUIState?>(null)
@@ -109,7 +109,7 @@ class EventAddViewModel @Inject constructor (
 
     }
 
-    // Vérifie les erreurs du formulaire en cours de saisi
+    // Vérifie les erreurs du formulaire en cours de saisie
     private fun checkFormError() {
 
         // Mise à jour des erreurs
@@ -186,7 +186,8 @@ class EventAddViewModel @Inject constructor (
 
     /**
      * Renvoie Vrai si le formulaire est complet
-     * // TODO Denis 2 : Voir car cette fonction fait doublon avec la gestion des erreurs et elle est utile qu'au lancement de la fenêtre
+     * // TODO JG : Supprimer cette fonction et grisé le bouton à l'init dans Compose
+     *
      */
     fun formIsComplete(): Boolean {
 

@@ -25,8 +25,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -126,13 +128,10 @@ fun EventAddScreen(
         // Gestion du résultat de l'ajout
         val currentStateUiStateAddEventResult = uiStateAddEventResult // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
 
-        // TODO Denis : Voir comment ajouter un scroll ici pour le mode paysage
-        //val scrollState = rememberScrollState()
 
         EventAddStateComposable(
             modifier = Modifier
                 .padding(contentPadding),
-                //.verticalScroll(scrollState),
             currentStateUiStateAddEventResultP = currentStateUiStateAddEventResult,
             uiStateCurrentEventP = uiStateCurrentEvent,
             uiStateErrorP = uiStateError,
@@ -205,12 +204,21 @@ fun EventAddStateComposable(
 
             Column(
                 modifier = modifier
+    //                .verticalScroll(rememberScrollState()) // permet de rendre la colonne défilable verticalement si le contenu dépasse la taille de l'écran.
                     .padding(
                         horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                         vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-                    ),
-                //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
+                    )
+
             ){
+
+//                Column(){
+//
+//                    InputFormComposable()
+//
+//
+//
+//                }
 
 
                 // Saisie du titre
@@ -340,6 +348,7 @@ fun EventAddStateComposable(
 
                 PhotoSelectorComposable(
                     modifier = Modifier.weight(1f), // Toute la place restante
+                    //modifier = Modifier.height(300.dp), // Hauteur fixe // TODO JG : Tenter 2 créer une colonne supplémentaire à 2 éléments
                     sURLValueP = uiStateCurrentEventP.sURLEventPicture,
                     onPhotoChanged = {
                         onActionP(FormDataAddEvent.PhotoChanged(it))
@@ -375,7 +384,7 @@ fun EventAddStateComposable(
 
 @Composable
 fun PhotoSelectorComposable(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     sURLValueP: String,
     onPhotoChanged: (String) -> Unit,
     uiStateError: FormErrorAddEvent?,
@@ -693,6 +702,7 @@ fun EventListComposableErrorPreview() {
             onActionP = {},
             formIsCompleteP = { true  },
         )
+
     }
 
 }

@@ -16,7 +16,7 @@ import org.junit.Assert.*
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
 
-    // TODO Denis : tests instrumentés sur Firebase ? comment tester la partie pur Firebase ?
+    // Tests instrumentés sur Firebase ? non => se brancher sur Firebase
 
     @Test
     fun useAppContext() {
