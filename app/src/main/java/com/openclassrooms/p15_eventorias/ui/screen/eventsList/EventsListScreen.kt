@@ -38,9 +38,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,15 +71,35 @@ fun EventsListScreen(
     onClickProfileP : () -> Unit
 ) {
 
+    // Tri en cours
     var bSortAsc by rememberSaveable { mutableStateOf<Boolean?>(null) }
-    var sSearchByTitle by rememberSaveable { mutableStateOf("") }
+
+    // État pour la visibilité du champ de recherche dans la top bar
+    var isSearchVisible by remember { mutableStateOf(false) }
+
+    // Filtre par titre en cours
+    var sFilterByTitle by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
 
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(id = R.string.event_list))
+
+                    if (isSearchVisible) {
+                        TextField(
+                            value = sFilterByTitle,
+                            onValueChange = {
+                                sFilterByTitle = it
+                                viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
+                        )
+                    } else {
+                        Text(stringResource(id = R.string.event_list))
+                    }
+
                 },
                 actions = {
                     // Utilisé en debug
@@ -96,8 +118,11 @@ fun EventsListScreen(
 
                     IconButton(
                         onClick = {
-                            // Recherche par titre
-                            viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
+                            // Change la visibilité du champ de recherche
+                            isSearchVisible = !isSearchVisible
+                            if (!isSearchVisible) {
+                                sFilterByTitle = "" // Réinitialise le texte de recherche quand il se cache
+                            }
                         }
                     ) {
                         Icon(
@@ -118,7 +143,7 @@ fun EventsListScreen(
                             }
 
                             // Tri par date
-                            viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
+                            viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
                         }
                     ) {
                         Icon(
@@ -162,7 +187,7 @@ fun EventsListScreen(
 
             // Recharger les évents quand l'écran est visible
             LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-                viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
+                viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
             }
 
 
@@ -170,7 +195,7 @@ fun EventsListScreen(
                 modifier = Modifier.padding(innerPadding),
                 uiStateListP = uiStateList,
                 loadAllEventsP = {
-                    viewModel.loadAllEvents(sFilterTitleP = sSearchByTitle, bOrderByDatetime = bSortAsc)
+                    viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
                 },
                 onEventClickP = onEventClickP
             )
