@@ -365,10 +365,9 @@ fun InputFormComposable(
             )
         )
         if (uiStateP.formError is FormErrorAddEvent.AddressError) {
+
             Text(
-                text = uiStateP.formError.errorAddress?: stringResource(
-                    R.string.unknown_error
-                ),/*stringResource(id = R.string.mandatoryaddress)*/
+                text = getAdressErrorMessage(uiStateP.formError.errorAddress),
                 color = MaterialTheme.colorScheme.error,
             )
         }
@@ -386,6 +385,27 @@ fun InputFormComposable(
 
     }
 
+
+}
+
+@Composable
+fun getAdressErrorMessage(errorAddressP : String?): String {
+
+    val sErrorMessage : String
+
+    if (errorAddressP==null){
+        sErrorMessage = stringResource(id = R.string.unknown_error)
+    }
+    else{
+        if (errorAddressP.isEmpty()){
+            sErrorMessage = stringResource(id = R.string.mandatoryaddress)
+        }
+        else{
+            sErrorMessage = errorAddressP
+        }
+    }
+
+    return sErrorMessage
 
 }
 

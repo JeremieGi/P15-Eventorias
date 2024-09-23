@@ -94,7 +94,7 @@ class EventAddViewModel @Inject constructor (
         }
 
         if (_uiState.value.currentEvent.sAdress.isEmpty()){
-            return FormErrorAddEvent.AddressError("Mandatory Adress") // TODO JG : Utiliser les ressources de chaines
+            return FormErrorAddEvent.AddressError("")
         }
 
         if (_uiState.value.currentEvent.sURLEventPicture.isEmpty()){
