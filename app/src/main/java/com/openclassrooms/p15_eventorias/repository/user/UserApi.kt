@@ -1,5 +1,7 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
+import android.content.Context
+import com.google.android.gms.tasks.Task
 import com.openclassrooms.p15_eventorias.model.User
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import kotlinx.coroutines.flow.Flow
@@ -24,4 +26,5 @@ interface UserApi {
     fun insertCurrentUser()
 
 
+    fun signOut(context : Context) : Task<Void>
 }

@@ -1,7 +1,9 @@
 package com.openclassrooms.p15_eventorias.ui.screen.userProfile
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.tasks.Task
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import com.openclassrooms.p15_eventorias.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,10 +64,8 @@ class UserProfileViewModel @Inject constructor (
         userRepository.changeCurrentUserNotificationEnabled(bNotificationEnabledP)
     }
 
-    /*
-    fun getCurrentUser() : User {
-        return userRepository.getCurrentUser()
+    fun signOut(context : Context) : Task<Void> {
+        return userRepository.signOut(context)
     }
-    */
 
 }

@@ -17,7 +17,7 @@ class LaunchViewModel @Inject constructor (
         return userRepository.getCurrentUserID()
     }
 
-    fun insertCurrentUserInFirestore() {
+    fun insertCurrentUser() {
         return userRepository.insertCurrentUser()
     }
 

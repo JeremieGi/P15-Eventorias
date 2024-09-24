@@ -1,5 +1,8 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
+import android.content.Context
+import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.tasks.Task
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.User
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
@@ -31,29 +34,6 @@ class UserRepository @Inject constructor(
             }
         } else {
             return userApi.loadCurrentUser()
-
-//            val event = userApi.getCurrentUser()
-//            event?.let {
-//
-//                return flow {
-//                    emit(
-//                        ResultCustom.Success(
-//                            it
-//                        )
-//                    )
-//                }
-//
-//            } ?: run {
-//                return flow {
-//                    emit(
-//                        ResultCustom.Failure(
-//                            injectedContext.getInjectedContext().getString(R.string.unknown_error)
-//                        )
-//                    )
-//                }
-//            }
-
-
         }
 
     }
@@ -70,5 +50,12 @@ class UserRepository @Inject constructor(
 
     fun getCurrentUserID() : String {
         return userApi.getCurrentUserID()
+    }
+
+    /**
+     * Log out current user
+     */
+    fun signOut(context : Context) : Task<Void> {
+        return AuthUI.getInstance().signOut(context)
     }
 }

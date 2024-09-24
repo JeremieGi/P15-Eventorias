@@ -1,5 +1,7 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
+import android.content.Context
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -74,14 +76,14 @@ class UserFirestoreAPI : UserApi {
 
         return callbackFlow {
 
-            // Utilisateur courant déjà en mémoire
-            _currentUser?.let { currentUser ->
-
-                // On le retourne
-                trySend(ResultCustom.Success(currentUser))
-
-
-            } ?: run {
+//            // Utilisateur courant déjà en mémoire
+//            _currentUser?.let { currentUser ->
+//
+//                // On le retourne
+//                trySend(ResultCustom.Success(currentUser))
+//
+//
+//            } ?: run {
                 // Bloc de code à exécuter si _currentUser est null
                 // (1er appel à la méthode)
 
@@ -123,7 +125,7 @@ class UserFirestoreAPI : UserApi {
                 else{
                     trySend(ResultCustom.Failure("Firebase User not find in Authentication"))
                 }
-            }
+        //    }
 
             // awaitClose : Permet d'exécuter du code quand le flow n'est plus écouté
             awaitClose {
@@ -171,12 +173,12 @@ class UserFirestoreAPI : UserApi {
         val uid = userFirebase.uid                      // Récupération de l'ID créé lors de l'authenfication Firebase
         val name = userFirebase.displayName ?: ""
         val email = userFirebase.email ?: ""
-        // val avatar = user. ?: ""
+        val avatar = userFirebase.photoUrl.toString()
         val userDTO = FirebaseUserDTO(
             id = uid,
             sName = name,
             sEmail = email,
-            sURLAvatar = "", // TODO JG : Récup avatar
+            sURLAvatar = avatar, // TODO Denis : Ca récupère l'avatar du compte Google par exemple. on en reste là
             bNotificationEnabled = false
         )
 
@@ -202,5 +204,11 @@ class UserFirestoreAPI : UserApi {
         return this.getCurrentFirebaseUser()?.uid
     }
 
+    /**
+     * Log out current user
+     */
+    override fun signOut(context : Context) : Task<Void> {
+        return AuthUI.getInstance().signOut(context)
+    }
 
 }

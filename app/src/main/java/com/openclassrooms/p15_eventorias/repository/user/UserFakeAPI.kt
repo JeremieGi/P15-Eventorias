@@ -1,5 +1,8 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
+import android.content.Context
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.openclassrooms.p15_eventorias.model.User
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import kotlinx.coroutines.channels.awaitClose
@@ -59,6 +62,11 @@ class UserFakeAPI : UserApi {
 
     override fun insertCurrentUser() {
         // On ne fait rien dans la Fake API => car ce code n'est pas utile
+    }
+
+    override fun signOut(context: Context): Task<Void> {
+        // On ne fait rien dans la Fake API => car ce code n'est pas utile
+        return Tasks.forResult(null) // Crée une tâche terminée avec un résultat null
     }
 
 }

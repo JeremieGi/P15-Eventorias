@@ -45,9 +45,8 @@ fun LaunchScreen(
                 .makeText(context, context.getString(R.string.connexion_ok), Toast.LENGTH_SHORT)
                 .show()
 
-            // Insertion de l'utilisateur dans la base de données
-            viewModel.insertCurrentUserInFirestore()
-
+            // Insertion de l'utilisateur dans le repo
+            viewModel.insertCurrentUser()
 
             isAuthenticated = true
 
@@ -82,7 +81,7 @@ fun LaunchScreen(
             // Ici : Authenfication mail / mot de passe + Google
             val providers = arrayListOf(
                 AuthUI.IdpConfig.EmailBuilder().build(),
-                AuthUI.IdpConfig.GoogleBuilder().build()
+                AuthUI.IdpConfig.GoogleBuilder().build() // TODo JG : A etster
             )
 
             // Create and launch sign-in intent

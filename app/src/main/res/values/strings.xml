@@ -40,4 +40,6 @@
     <string name="mandatorydatetime">Mandatory date / time</string>
     <string name="loginCancel">Login process cancelled by user</string>
     <string name="connexion_ok">Login OK</string>
+    <string name="deconnexion_ok">Logout OK</string>
+    <string name="SignOut">Sign out</string>
 </resources>
