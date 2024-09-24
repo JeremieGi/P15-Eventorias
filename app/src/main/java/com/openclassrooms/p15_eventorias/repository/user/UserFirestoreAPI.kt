@@ -22,8 +22,6 @@ class UserFirestoreAPI : UserApi {
 
         private const val COLLECTION_USERS: String = "users"
 
-        // De préférence uniquement en minuscule (ici même nom que dans le DTO)
-        private const val FIELD_NOTIFICATION_ENABLED: String = "bnotificationenabled"
     }
 
     private var _currentUser : User? = null
@@ -58,7 +56,7 @@ class UserFirestoreAPI : UserApi {
             // Récupère le document user en base de données
             val docUser = getUsersCollection().document(currentUser.id)
 
-            docUser.update(FIELD_NOTIFICATION_ENABLED,bNotificationEnabled)
+            docUser.update(FirebaseUserDTO.FIELD_NOTIFICATION_ENABLED,bNotificationEnabled)
                 .addOnSuccessListener {
                     _currentUser = currentUser.copy(
                         bNotificationEnabled = bNotificationEnabled

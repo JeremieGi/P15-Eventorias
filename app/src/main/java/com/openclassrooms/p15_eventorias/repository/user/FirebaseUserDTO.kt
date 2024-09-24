@@ -12,7 +12,6 @@ import com.openclassrooms.p15_eventorias.model.User
 
 data class FirebaseUserDTO (
 
-
     @PropertyName("id")
     val id: String = "", // paramètre pas défaut pour pouvoir utiliser toObject
 
@@ -44,6 +43,14 @@ data class FirebaseUserDTO (
 
 
 ){
+
+    companion object {
+
+        // De préférence uniquement en minuscule (ici même nom que dans le DTO)
+        const val FIELD_NOTIFICATION_ENABLED: String = "bnotificationenabled"
+
+    }
+
     fun toModel(): User {
 
         return User(

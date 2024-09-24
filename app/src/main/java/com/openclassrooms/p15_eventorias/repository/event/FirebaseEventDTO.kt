@@ -8,13 +8,13 @@ data class FirebaseEventDTO (
 
     // TODO Denis : J'ai été obligé de mettre les propriétés en var + @get:PropertyName et  @set:PropertyName ...
 
-    @get:PropertyName("id")
-    @set:PropertyName("id")
+    @get:PropertyName(COLLECTION_EVENT_ID)
+    @set:PropertyName(COLLECTION_EVENT_ID)
     var id: String = "",
 
     //@PropertyName("title")
-    @get:PropertyName("title")
-    @set:PropertyName("title")
+    @get:PropertyName(COLLECTION_EVENT_TITLE)
+    @set:PropertyName(COLLECTION_EVENT_TITLE)
     var sTitle : String = "",
 
     //@get:PropertyName("description")
@@ -23,8 +23,8 @@ data class FirebaseEventDTO (
     var sDescription : String = "",
 
     //@get:PropertyName("datetime")
-    @get:PropertyName("datetime")
-    @set:PropertyName("datetime")
+    @get:PropertyName(COLLECTION_EVENT_DATETIME)
+    @set:PropertyName(COLLECTION_EVENT_DATETIME)
     var lDatetime : Long = 0,
 
     @get:PropertyName("urleventpicture")
@@ -45,6 +45,16 @@ data class FirebaseEventDTO (
 
 ){
 
+    companion object {
+
+        // Pour ne pas maintenir ces noms de champs avec les @property du DTO + dans EventFirestoreAPI
+        const val COLLECTION_EVENT_ID: String = "id"
+        const val COLLECTION_EVENT_TITLE: String = "title"
+        const val COLLECTION_EVENT_DATETIME: String = "datetime"
+
+    }
+
+
     constructor(eventModeP : Event) : this (
         id = eventModeP.id,
         sTitle = eventModeP.sTitle,
@@ -55,6 +65,7 @@ data class FirebaseEventDTO (
         coordGPS = eventModeP.coordGPS,
         sURLPhotoAuthor = eventModeP.sURLPhotoAuthor,
     )
+
 
     fun toModel(): Event {
 

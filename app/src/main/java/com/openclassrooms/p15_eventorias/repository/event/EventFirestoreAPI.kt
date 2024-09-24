@@ -24,11 +24,6 @@ class EventFirestoreAPI : EventApi {
 
         private const val COLLECTION_EVENTS: String = "events"
 
-        // TODO Denis : Je dois maintenir ces noms de champs avec les @property du DTO
-        private const val COLLECTION_EVENT_ID: String = "id"
-        private const val COLLECTION_EVENT_TITLE: String = "title"
-        private const val COLLECTION_EVENT_DATETIME: String = "datetime"
-
     }
 
     // Get the Collection Reference
@@ -109,13 +104,13 @@ class EventFirestoreAPI : EventApi {
 
 
         if (sFilterTitleP.isNotEmpty()){
-            result.whereArrayContains(COLLECTION_EVENT_TITLE, sFilterTitleP)
+            result.whereArrayContains(FirebaseEventDTO.COLLECTION_EVENT_TITLE, sFilterTitleP)
         }
 
         when (bOrderByDatetimeP){
             null -> {}  // Pas de tri
-            true -> result.orderBy(COLLECTION_EVENT_DATETIME) // Ascendant
-            false -> result.orderBy(COLLECTION_EVENT_DATETIME, Query.Direction.DESCENDING) // Descendant
+            true -> result.orderBy(FirebaseEventDTO.COLLECTION_EVENT_DATETIME) // Ascendant
+            false -> result.orderBy(FirebaseEventDTO.COLLECTION_EVENT_DATETIME, Query.Direction.DESCENDING) // Descendant
         }
 
         return result
@@ -129,105 +124,83 @@ class EventFirestoreAPI : EventApi {
         // Cette méthode crée un Flow qui est basé sur des callbacks, ce qui est idéal pour intégrer des API asynchrones comme Firestore.
         return callbackFlow {
 
+            // On rentre ici, que si le Flow est écouté
+
             try {
 
                 // Utilisation de l'ID du post pour créer une référence de document
                 val eventDocument = getEventsCollection().document(event.id)
 
-                // On rentre ici, que si le Flow est écouté
 
-                // Si une photo de l'évènement est présente, il faut l'uploader
-                if (event.sURLEventPicture.isNotEmpty()){
+                // Récupération du content (content://media/picker/0/com.android.providers.media.photopicker/media/1000000035)
+                // dans une URI
+                // la photo est obligatoire
+                val uri = Uri.parse(event.sURLEventPicture)
 
-                    // Récupération du content (content://media/picker/0/com.android.providers.media.photopicker/media/1000000035)
-                    // dans une URI
-                    val uri = Uri.parse(event.sURLEventPicture)
+                // Référence vers le fichier distant
+                val storageRefImage = _storageRef.child("images/eventID${event.id}.jpg")
 
-                    // Référence vers le fichier distant
-                    val storageRefImage = _storageRef.child("images/eventID${event.id}.jpg")
+                // Upload
+                val uploadTask = storageRefImage.putFile(uri)
 
-                    // Upload
-                    val uploadTask = storageRefImage.putFile(uri)
+                // Observer les résultats de l'upload
+                uploadTask
+                    .addOnFailureListener { exception ->
 
-                    // Observer les résultats de l'upload
-                    uploadTask
-                        .addOnFailureListener { exception ->
+                        // Gestion des erreurs lors de l'upload
+                        trySend(ResultCustomAddEvent.NetworkFailure("Upload failed: ${exception.message}"))
 
-                            // Gestion des erreurs lors de l'upload
-                            trySend(ResultCustomAddEvent.NetworkFailure("Upload failed: ${exception.message}"))
+                    }
+                    .addOnSuccessListener {
 
-                        }
-                        .addOnSuccessListener {
+                        // Récupérer l'URL de téléchargement de l'image
+                        storageRefImage.downloadUrl
+                            .addOnSuccessListener { uri ->
 
-                            // Récupérer l'URL de téléchargement de l'image
-                            storageRefImage.downloadUrl
-                                .addOnSuccessListener { uri ->
+                                // Mettre à jour l'objet Event avec l'URL de l'image
+                                val updatedEvent = event.copy(sURLEventPicture = uri.toString())
 
-                                    // Mettre à jour l'objet Event avec l'URL de l'image
-                                    val updatedEvent = event.copy(sURLEventPicture = uri.toString())
+                                // Mise à jour dans la base de données Firestore
+                                val eventDTO = FirebaseEventDTO(updatedEvent)
+                                eventDocument.set(eventDTO)
+                                    .addOnSuccessListener {
+                                        // Succès de l'ajout dans Firestore
+                                        trySend(ResultCustomAddEvent.Success("Event saved"))
+                                    }
+                                    .addOnFailureListener { firestoreException ->
+                                        // Gestion des erreurs lors de l'ajout dans Firestore
+                                        trySend(ResultCustomAddEvent.NetworkFailure("Failed to add post to Firestore: ${firestoreException.message}"))
+                                    }
 
-                                    // Mise à jour dans la base de données Firestore
-                                    val eventDTO = FirebaseEventDTO(updatedEvent)
-                                    eventDocument.set(eventDTO)
-                                        .addOnSuccessListener {
-                                            // Succès de l'ajout dans Firestore
-                                            trySend(ResultCustomAddEvent.Success("Event saved"))
-                                        }
-                                        .addOnFailureListener { firestoreException ->
-                                            // Gestion des erreurs lors de l'ajout dans Firestore
-                                            trySend(ResultCustomAddEvent.NetworkFailure("Failed to add post to Firestore: ${firestoreException.message}"))
-                                        }
+                                    .addOnCanceledListener {
+                                        trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                                    }
 
-                                        .addOnCanceledListener {
-                                            trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                                        }
+                            }
 
-                                }
+                            .addOnFailureListener { urlException ->
+                                // Gestion des erreurs lors de la récupération de l'URL de téléchargement
+                                trySend(ResultCustomAddEvent.NetworkFailure("Failed to get download URL: ${urlException.message}"))
+                            }
 
-                                .addOnFailureListener { urlException ->
-                                    // Gestion des erreurs lors de la récupération de l'URL de téléchargement
-                                    trySend(ResultCustomAddEvent.NetworkFailure("Failed to get download URL: ${urlException.message}"))
-                                }
-
-                                .addOnCanceledListener {
-                                    trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                                }
+                            .addOnCanceledListener {
+                                trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                            }
 
 
-                        }
-                        .addOnCanceledListener {
-                            trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                        }
-                        .addOnPausedListener {
-                            trySend(ResultCustomAddEvent.NetworkFailure("addOnPausedListener"))
-                        }
+                    }
+                    .addOnCanceledListener {
+                        trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                    }
+                    .addOnPausedListener {
+                        trySend(ResultCustomAddEvent.NetworkFailure("addOnPausedListener"))
+                    }
 //                        .addOnProgressListener {
 //                            // Appelle en attendant le résultat
 //                        }
 
 
-                }
-                else {
-                    // Aucune photo
 
-                    // Si aucune photo n'est présente, ajouter directement le post dans Firestore
-                    //getPostCollection().add(post)
-                    val eventDTO = FirebaseEventDTO(event)
-                    eventDocument.set(eventDTO)
-                        .addOnSuccessListener {
-                            // Succès de l'ajout dans Firestore
-                            trySend(ResultCustomAddEvent.Success("Event saved"))
-                        }
-                        .addOnFailureListener { firestoreException ->
-                            // Gestion des erreurs lors de l'ajout dans Firestore
-                            trySend(ResultCustomAddEvent.NetworkFailure("Failed to add post to Firestore: ${firestoreException.message}"))
-                        }
-                        .addOnCanceledListener {
-                            trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                        }
-
-
-                }
 
 
             } catch (e: Exception) {
@@ -286,7 +259,7 @@ class EventFirestoreAPI : EventApi {
     private fun requestEventByID(idEvent: String): Query {
 
         return this.getEventsCollection()
-            .whereEqualTo(COLLECTION_EVENT_ID, idEvent)
+            .whereEqualTo(FirebaseEventDTO.COLLECTION_EVENT_ID, idEvent)
 
     }
 }
