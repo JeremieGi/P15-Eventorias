@@ -43,8 +43,8 @@ class UserFirestoreAPI : UserApi {
     }
 
     override fun getCurrentUserAvatar(): String {
-        //return getCurrentFirebaseUser()?.photoUrl.toString()
-        return _currentUser?.sURLAvatar?:""
+        return getCurrentFirebaseUser()?.photoUrl.toString()
+        //return _currentUser?.sURLAvatar?:""
     }
 
 

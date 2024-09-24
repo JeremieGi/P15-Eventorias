@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 
 class EventFirestoreAPI : EventApi {
 
@@ -117,96 +118,32 @@ class EventFirestoreAPI : EventApi {
 
     }
 
-    override fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> {
-
-        // TODO JG : Manque la sauvegarde de l'avatar de l'auteur
+    override fun addEvent(event: Event): Flow<ResultCustomAddEvent<Event>> {
 
         // Cette méthode crée un Flow qui est basé sur des callbacks, ce qui est idéal pour intégrer des API asynchrones comme Firestore.
         return callbackFlow {
 
             // On rentre ici, que si le Flow est écouté
 
-            try {
+            // les deux appels se produisent de manière concurrente.
 
-                // Utilisation de l'ID du post pour créer une référence de document
-                val eventDocument = getEventsCollection().document(event.id)
+            uploadImageAndSaveEvent(event,event.sURLEventPicture,"PhotoEvent", bEventImage = true).collect{ resultEventPhoto ->
 
+                if (resultEventPhoto is ResultCustomAddEvent.Success){
 
-                // Récupération du content (content://media/picker/0/com.android.providers.media.photopicker/media/1000000035)
-                // dans une URI
-                // la photo est obligatoire
-                val uri = Uri.parse(event.sURLEventPicture)
+                    val uploadedEvent = resultEventPhoto.value
 
-                // Référence vers le fichier distant
-                val storageRefImage = _storageRef.child("images/eventID${event.id}.jpg")
-
-                // Upload
-                val uploadTask = storageRefImage.putFile(uri)
-
-                // Observer les résultats de l'upload
-                uploadTask
-                    .addOnFailureListener { exception ->
-
-                        // Gestion des erreurs lors de l'upload
-                        trySend(ResultCustomAddEvent.NetworkFailure("Upload failed: ${exception.message}"))
-
+                    // TODO JG : l'URL fournit par FirebaseUser provoque une erreur
+                    uploadImageAndSaveEvent(uploadedEvent,event.sURLPhotoAuthor,"AvatarCreatorEvent", bEventImage = false).collect{ resultPhotoAuthor ->
+                        trySend(resultPhotoAuthor)
                     }
-                    .addOnSuccessListener {
 
-                        // Récupérer l'URL de téléchargement de l'image
-                        storageRefImage.downloadUrl
-                            .addOnSuccessListener { uri ->
+                }
+                else{
+                    trySend(resultEventPhoto)
+                }
 
-                                // Mettre à jour l'objet Event avec l'URL de l'image
-                                val updatedEvent = event.copy(sURLEventPicture = uri.toString())
-
-                                // Mise à jour dans la base de données Firestore
-                                val eventDTO = FirebaseEventDTO(updatedEvent)
-                                eventDocument.set(eventDTO)
-                                    .addOnSuccessListener {
-                                        // Succès de l'ajout dans Firestore
-                                        trySend(ResultCustomAddEvent.Success("Event saved"))
-                                    }
-                                    .addOnFailureListener { firestoreException ->
-                                        // Gestion des erreurs lors de l'ajout dans Firestore
-                                        trySend(ResultCustomAddEvent.NetworkFailure("Failed to add post to Firestore: ${firestoreException.message}"))
-                                    }
-
-                                    .addOnCanceledListener {
-                                        trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                                    }
-
-                            }
-
-                            .addOnFailureListener { urlException ->
-                                // Gestion des erreurs lors de la récupération de l'URL de téléchargement
-                                trySend(ResultCustomAddEvent.NetworkFailure("Failed to get download URL: ${urlException.message}"))
-                            }
-
-                            .addOnCanceledListener {
-                                trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                            }
-
-
-                    }
-                    .addOnCanceledListener {
-                        trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
-                    }
-                    .addOnPausedListener {
-                        trySend(ResultCustomAddEvent.NetworkFailure("addOnPausedListener"))
-                    }
-//                        .addOnProgressListener {
-//                            // Appelle en attendant le résultat
-//                        }
-
-
-
-
-
-            } catch (e: Exception) {
-                trySend(ResultCustomAddEvent.NetworkFailure("Exception occurred: ${e.message}"))
             }
-
 
 
             // awaitClose : Permet d'exécuter du code quand le flow n'est plus écouté
@@ -215,6 +152,99 @@ class EventFirestoreAPI : EventApi {
             }
         }
 
+
+    }
+
+    private fun uploadImageAndSaveEvent(
+        eventP : Event,
+        sURLP : String,
+        sPrefixFileP : String,
+        bEventImage : Boolean) = callbackFlow {
+
+        try {
+
+            // Utilisation de l'ID du post pour créer une référence de document
+            val eventDocument = getEventsCollection().document(eventP.id)
+
+
+            // Récupération du content (content://media/picker/0/com.android.providers.media.photopicker/media/1000000035)
+            // dans une URI
+            // la photo est obligatoire
+            val uri = Uri.parse(sURLP)
+
+            // Référence vers le fichier distant
+            val storageRefImage = _storageRef.child("images/$sPrefixFileP${eventP.id}.jpg")
+
+            // Upload
+            val uploadTask = storageRefImage.putFile(uri)
+
+            // Observer les résultats de l'upload
+            uploadTask
+                .addOnFailureListener { exception ->
+
+                    // Gestion des erreurs lors de l'upload
+                    trySend(ResultCustomAddEvent.NetworkFailure("Upload failed: ${exception.message}"))
+
+                }
+                .addOnSuccessListener {
+
+                    // Récupérer l'URL de téléchargement de l'image
+                    storageRefImage.downloadUrl
+                        .addOnSuccessListener { uri ->
+
+                            // Mettre à jour l'objet Event avec l'URL de l'image
+                            val updatedEvent : Event
+                            if (bEventImage){
+                                updatedEvent = eventP.copy(sURLEventPicture = uri.toString())
+                            }
+                            else{
+                                updatedEvent = eventP.copy(sURLPhotoAuthor = uri.toString())
+                            }
+
+                            // Mise à jour dans la base de données Firestore
+                            val eventDTO = FirebaseEventDTO(updatedEvent)
+                            eventDocument.set(eventDTO)
+                                .addOnSuccessListener {
+                                    // Succès de l'ajout dans Firestore
+                                    trySend(ResultCustomAddEvent.Success(updatedEvent))
+                                }
+                                .addOnFailureListener { firestoreException ->
+                                    // Gestion des erreurs lors de l'ajout dans Firestore
+                                    trySend(ResultCustomAddEvent.NetworkFailure("Failed to add post to Firestore: ${firestoreException.message}"))
+                                }
+
+                                .addOnCanceledListener {
+                                    trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                                }
+
+                        }
+
+                        .addOnFailureListener { urlException ->
+                            // Gestion des erreurs lors de la récupération de l'URL de téléchargement
+                            trySend(ResultCustomAddEvent.NetworkFailure("Failed to get download URL: ${urlException.message}"))
+                        }
+
+                        .addOnCanceledListener {
+                            trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                        }
+
+
+                }
+                .addOnCanceledListener {
+                    trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                }
+                .addOnPausedListener {
+                    trySend(ResultCustomAddEvent.NetworkFailure("addOnPausedListener"))
+                }
+
+
+        } catch (e: Exception) {
+            trySend(ResultCustomAddEvent.NetworkFailure("Exception occurred: ${e.message}"))
+        }
+
+        awaitClose {
+
+        }
 
     }
 

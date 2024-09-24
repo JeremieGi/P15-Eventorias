@@ -9,7 +9,7 @@ interface EventApi {
 
     fun loadAllEvents(sFilterTitleP : String, bOrderByDatetimeP : Boolean?) : Flow<ResultCustom<List<Event>>>
 
-    fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>>
+    fun addEvent(event: Event): Flow<ResultCustomAddEvent<Event>>
 
     fun loadEventByID(idEvent: String): Flow<ResultCustom<Event>>
 

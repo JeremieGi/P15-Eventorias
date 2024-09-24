@@ -77,7 +77,7 @@ class EventRepository @Inject constructor(
     }
 
     // Ajoute un évènement
-    fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> = flow {
+    fun addEvent(event: Event): Flow<ResultCustomAddEvent<Event>> = flow {
 
         emit(ResultCustomAddEvent.Loading)
         //delay(2000)

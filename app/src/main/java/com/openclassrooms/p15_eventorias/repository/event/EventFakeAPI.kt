@@ -71,7 +71,7 @@ class EventFakeAPI : EventApi {
 
     }
 
-    override fun addEvent(event: Event): Flow<ResultCustomAddEvent<String>> {
+    override fun addEvent(event: Event): Flow<ResultCustomAddEvent<Event>> {
 
         return callbackFlow {
 
@@ -79,7 +79,8 @@ class EventFakeAPI : EventApi {
             //delay(1*1000)
 
             events.value.add(0, event)
-            trySend(ResultCustomAddEvent.Success(""))
+
+            trySend(ResultCustomAddEvent.Success(event))
 
             // awaitClose : Permet de fermer le listener dès que le flow n'est plus écouté (pour éviter les fuites mémoire)
             awaitClose {
