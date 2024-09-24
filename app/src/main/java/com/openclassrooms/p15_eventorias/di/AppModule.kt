@@ -4,6 +4,7 @@ import android.content.Context
 import com.openclassrooms.p15_eventorias.repository.event.EventApi
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.repository.InjectedContext
+import com.openclassrooms.p15_eventorias.repository.event.EventFirestoreAPI
 import com.openclassrooms.p15_eventorias.repository.user.UserApi
 import com.openclassrooms.p15_eventorias.repository.user.UserFakeAPI
 import com.openclassrooms.p15_eventorias.repository.user.UserFirestoreAPI
@@ -26,8 +27,8 @@ class AppModule {
     @Provides
     @Singleton
     fun provideEventAPI(): EventApi {
-        return EventFakeAPI()
-        //return EventFireStoreAPI() // TODO JG Utilisation de FireStore
+        //return EventFakeAPI()
+        return EventFirestoreAPI()
     }
 
     @Provides
