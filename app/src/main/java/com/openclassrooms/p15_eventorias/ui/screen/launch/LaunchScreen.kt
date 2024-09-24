@@ -72,8 +72,8 @@ fun LaunchScreen(
     // Vérifier l'état de connexion de l'utilisateur
     LaunchedEffect(Unit) {
 
-        // Si utilisateur connecté => Firebase Auth UI
-        if (viewModel.getCurrentUser()==null && !isAuthenticated ){
+        // Utilisateur pas déjà identifié ou pas authentifié
+        if (viewModel.getCurrentUserID().isEmpty() && !isAuthenticated ){
 
             // Si l’utilisateur n’est pas connecté, redirige vers l’écran de création de compte / connexion
 
@@ -102,7 +102,7 @@ fun LaunchScreen(
     }
 
     // Si l'utilisateur était déjà loggué ou il vient de se logguer avec succès
-    if (viewModel.getCurrentUser()!=null || isAuthenticated ){
+    if (viewModel.getCurrentUserID().isNotEmpty() || isAuthenticated ){
         //  Utilisateur connecté
         EventsListScreen(
             //modifier = modifier,

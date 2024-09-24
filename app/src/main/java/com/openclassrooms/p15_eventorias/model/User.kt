@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias.model
 
+
 data class User(
     /**
      * Unique identifier for the User.

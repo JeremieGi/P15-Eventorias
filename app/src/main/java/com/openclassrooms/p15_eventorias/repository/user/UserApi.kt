@@ -7,34 +7,21 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserApi {
 
+    // Méthodes synchrones
+    fun getCurrentUserID() : String
     fun getCurrentUserAvatar() : String
 
-    fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean)
+    fun setNotificationEnabled(bNotificationEnabled: Boolean)
 
     /**
-     * Return current user
+     * Chargement asynchrone d'un utilisateur
      */
-    fun getCurrentUser() : User?
+    fun loadCurrentUser(): Flow<ResultCustom<User>>
 
     /**
      * Enregistre les données de l'utilisateur courant (après sa première identification)
      */
     fun insertCurrentUser()
 
-
-
-    /*
-
-    /**
-     * @return : True => The current user is logged, else False
-     */
-    fun isCurrentUserLogged() : Boolean
-
-    /**
-     * Log out current user
-     */
-    fun signOut(context : Context) : Task<Void>
-
-*/
 
 }

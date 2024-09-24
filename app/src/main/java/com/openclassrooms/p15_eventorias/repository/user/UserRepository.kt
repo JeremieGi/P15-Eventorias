@@ -30,29 +30,28 @@ class UserRepository @Inject constructor(
                 )
             }
         } else {
-            //return userApi.loadCurrentUser()
+            return userApi.loadCurrentUser()
 
-            val event = userApi.getCurrentUser()
-            event?.let {
-
-                return flow {
-                    emit(
-                        ResultCustom.Success(
-                            it
-                        )
-                    )
-                }
-
-            } ?: run {
-                return flow {
-                    emit(
-                        ResultCustom.Failure(
-                            injectedContext.getInjectedContext().getString(R.string.unknown_error)
-                        )
-                    )
-                }
-            }
-
+//            val event = userApi.getCurrentUser()
+//            event?.let {
+//
+//                return flow {
+//                    emit(
+//                        ResultCustom.Success(
+//                            it
+//                        )
+//                    )
+//                }
+//
+//            } ?: run {
+//                return flow {
+//                    emit(
+//                        ResultCustom.Failure(
+//                            injectedContext.getInjectedContext().getString(R.string.unknown_error)
+//                        )
+//                    )
+//                }
+//            }
 
 
         }
@@ -61,7 +60,7 @@ class UserRepository @Inject constructor(
 
     fun changeCurrentUserNotificationEnabled(bNotificationEnabled: Boolean) {
 
-        userApi.changeCurrentUserNotificationEnabled(bNotificationEnabled)
+        userApi.setNotificationEnabled(bNotificationEnabled)
 
     }
 
@@ -69,7 +68,7 @@ class UserRepository @Inject constructor(
         userApi.insertCurrentUser()
     }
 
-    fun getCurrentUser() : User? {
-        return userApi.getCurrentUser()
+    fun getCurrentUserID() : String {
+        return userApi.getCurrentUserID()
     }
 }
