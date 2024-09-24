@@ -58,7 +58,7 @@ class EventAddViewModel @Inject constructor (
             is FormDataAddEvent.AdressChanged -> {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        currentEvent = currentState.currentEvent.copy(sAdress = formDataAddEvent.adress)
+                        currentEvent = currentState.currentEvent.copy(sAddress = formDataAddEvent.adress)
                     )
                 }
             }
@@ -93,7 +93,7 @@ class EventAddViewModel @Inject constructor (
             return FormErrorAddEvent.DatetimeError("")
         }
 
-        if (_uiState.value.currentEvent.sAdress.isEmpty()){
+        if (_uiState.value.currentEvent.sAddress.isEmpty()){
             return FormErrorAddEvent.AddressError("")
         }
 

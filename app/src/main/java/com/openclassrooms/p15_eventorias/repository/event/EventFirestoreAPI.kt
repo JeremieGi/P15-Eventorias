@@ -17,8 +17,6 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class EventFirestoreAPI : EventApi {
 
-    // TODo JG : Faire EventDTO
-
     // Variable globale de Firebase Storage (pour stocker les images)
     private val _storageRef = Firebase.storage.reference
 
@@ -26,8 +24,10 @@ class EventFirestoreAPI : EventApi {
 
         private const val COLLECTION_EVENTS: String = "events"
 
+        // TODO Denis : Je dois maintenir ces noms de champs avec les @property du DTO
         private const val COLLECTION_EVENT_ID: String = "id"
-        private const val COLLECTION_EVENT_TITLE: String = "sTitle"
+        private const val COLLECTION_EVENT_TITLE: String = "title"
+        private const val COLLECTION_EVENT_DATETIME: String = "datetime"
 
     }
 
@@ -68,8 +68,12 @@ class EventFirestoreAPI : EventApi {
                     if (snapshot != null && !snapshot.isEmpty) {
 
                         // Utiliser toObjects necessite un constructeur par défaut pour tous les objets associés
-                        // J'ai du ajouter des paramètres par défaut aux 2 data class
-                        val events = snapshot.toObjects(Event::class.java)
+                        // J'ai du ajouter des paramètres par défaut aux data class
+                        val eventsDTO = snapshot.toObjects(FirebaseEventDTO::class.java)
+
+                        val events = eventsDTO.map {
+                            it.toModel()
+                        }
 
                         result = trySend(ResultCustom.Success(events)) // Émettre la liste des évènements
 
@@ -110,8 +114,8 @@ class EventFirestoreAPI : EventApi {
 
         when (bOrderByDatetimeP){
             null -> {}  // Pas de tri
-            true -> result.orderBy("") // Ascendant
-            false -> result.orderBy("", Query.Direction.DESCENDING) // Descendant
+            true -> result.orderBy(COLLECTION_EVENT_DATETIME) // Ascendant
+            false -> result.orderBy(COLLECTION_EVENT_DATETIME, Query.Direction.DESCENDING) // Descendant
         }
 
         return result
@@ -133,7 +137,7 @@ class EventFirestoreAPI : EventApi {
                 // On rentre ici, que si le Flow est écouté
 
                 // Si une photo de l'évènement est présente, il faut l'uploader
-                if (event.sURLEventPicture != null){
+                if (event.sURLEventPicture.isNotEmpty()){
 
                     // Récupération du content (content://media/picker/0/com.android.providers.media.photopicker/media/1000000035)
                     // dans une URI
@@ -163,7 +167,8 @@ class EventFirestoreAPI : EventApi {
                                     val updatedEvent = event.copy(sURLEventPicture = uri.toString())
 
                                     // Mise à jour dans la base de données Firestore
-                                    eventDocument.set(updatedEvent)
+                                    val eventDTO = FirebaseEventDTO(updatedEvent)
+                                    eventDocument.set(eventDTO)
                                         .addOnSuccessListener {
                                             // Succès de l'ajout dans Firestore
                                             trySend(ResultCustomAddEvent.Success("Event saved"))
@@ -207,7 +212,8 @@ class EventFirestoreAPI : EventApi {
 
                     // Si aucune photo n'est présente, ajouter directement le post dans Firestore
                     //getPostCollection().add(post)
-                    eventDocument.set(event)
+                    val eventDTO = FirebaseEventDTO(event)
+                    eventDocument.set(eventDTO)
                         .addOnSuccessListener {
                             // Succès de l'ajout dans Firestore
                             trySend(ResultCustomAddEvent.Success("Event saved"))
@@ -252,8 +258,8 @@ class EventFirestoreAPI : EventApi {
                     if (!querySnapshot.isEmpty) {
                         // Récupérer le premier document (puisque ID est unique)
                         val documentSnapshot = querySnapshot.documents[0]
-                        val event = documentSnapshot.toObject(Event::class.java)
-
+                        val eventDTO = documentSnapshot.toObject(FirebaseEventDTO::class.java)
+                        val event = eventDTO?.toModel()
                         if (event==null){
                             trySend(ResultCustom.Failure("Echec du toObject"))
                         }

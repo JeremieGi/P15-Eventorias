@@ -341,7 +341,7 @@ fun InputFormComposable(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(ColorCardAndInput),
-            value = currentEvent.sAdress,
+            value = currentEvent.sAddress,
             textStyle = MaterialTheme.typography.labelLarge,
             isError = (uiStateP.formError is FormErrorAddEvent.AddressError),
             onValueChange =  {

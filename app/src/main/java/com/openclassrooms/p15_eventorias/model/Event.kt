@@ -27,7 +27,7 @@ data class Event (
     /**
      * Adresse de l'évènement.
      */
-    val sAdress : String = "",
+    val sAddress : String = "",
     // On va stocker les coordonnées GPS à la création de l'évènement (çà évitera d'appeler geocode à chaque affichage de l'écran de détail)
     var coordGPS  : CoordinatesGPS? = null,
 
@@ -49,14 +49,14 @@ data class Event (
     suspend fun geolocate(context: Context): String {
 
         // Vérification que l'adresse textuelle est remplie
-        if (this.sAdress.isEmpty()){
+        if (this.sAddress.isEmpty()){
             return context.getString(R.string.eventNoAddress)
         }
         else{
 
             try{
                 // Appel à l'APi Google
-                val coorGPS = getCoordinatesFromAddress(this.sAdress)
+                val coorGPS = getCoordinatesFromAddress(this.sAddress)
                 if (coorGPS!=null){
                     this.coordGPS = coorGPS
                 }

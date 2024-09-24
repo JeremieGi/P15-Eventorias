@@ -240,7 +240,7 @@ fun AdresseComposable(event : Event) {
 
         Text(
             modifier = Modifier.weight(1f), // Chaque champ utilise la moitié de l'écran
-            text = event.sAdress
+            text = event.sAddress
         )
 
         // https://developers.google.com/maps/documentation/maps-static/overview?hl=fr
