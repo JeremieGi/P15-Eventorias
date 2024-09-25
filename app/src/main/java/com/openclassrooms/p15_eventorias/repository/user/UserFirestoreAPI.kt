@@ -50,6 +50,8 @@ class UserFirestoreAPI : UserApi {
 
     override fun setNotificationEnabled(bNotificationEnabled: Boolean) {
 
+        // Lors de cet appel _currentUser a déjà été chargé
+
         // let -> permet de travailler sur currentUser non null et aussi protège la variable des changements possibles depuis d'autres threads
         _currentUser?.let { currentUser ->
 

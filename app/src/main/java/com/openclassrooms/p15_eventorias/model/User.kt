@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias.model
 
+// TODO Denis : Je me demande si je garde les rubriques qui existent déjà dans FibaseUser => par exemple : nom, email, avatar. Ca peut faire des souçis de doublon
 
 data class User(
     /**

@@ -14,7 +14,6 @@ import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 
 class EventFirestoreAPI : EventApi {
 
@@ -129,19 +128,30 @@ class EventFirestoreAPI : EventApi {
 
             uploadImageAndSaveEvent(event,event.sURLEventPicture,"PhotoEvent", bEventImage = true).collect{ resultEventPhoto ->
 
-                if (resultEventPhoto is ResultCustomAddEvent.Success){
+                trySend(resultEventPhoto)
 
-                    val uploadedEvent = resultEventPhoto.value
+                // TODO Denis : Je ne pense pas à devoir mettre les photos des avatars sur le cloud car l'adresse est une adresse non locale :
+                // Pour google : https://lh3.googleusercontent.com/a/ACg8ocJ-lButtYyx-Tylf7WELXM4fom_WbxS3Bj3Xk4T8n91DEI9sNc=s96-c
+                // Si il faut le faire, A voir comment on copie une adresse distante vers firebase
 
-                    // TODO JG : l'URL fournit par FirebaseUser provoque une erreur
-                    uploadImageAndSaveEvent(uploadedEvent,event.sURLPhotoAuthor,"AvatarCreatorEvent", bEventImage = false).collect{ resultPhotoAuthor ->
-                        trySend(resultPhotoAuthor)
-                    }
-
-                }
-                else{
-                    trySend(resultEventPhoto)
-                }
+//                if (resultEventPhoto is ResultCustomAddEvent.Success){
+//
+//                    // L'avatar de l'utilisateur courant peut ne pas être exister (Identification par mail ou pas d'avatar dans son compte Google)
+//                    if (event.sURLPhotoAuthor.isNotEmpty()) {
+//
+//                        val uploadedEvent = resultEventPhoto.value
+//
+//                        // TODO JG : Si il faut le faire, A voir comment on copie une adresse distante vers firebase
+//                        uploadImageAndSaveEvent(uploadedEvent,event.sURLPhotoAuthor,"AvatarCreatorEvent", bEventImage = false).collect{ resultPhotoAuthor ->
+//                            trySend(resultPhotoAuthor)
+//                        }
+//
+//                    }
+//
+//                }
+//                else{
+//                    trySend(resultEventPhoto)
+//                }
 
             }
 
