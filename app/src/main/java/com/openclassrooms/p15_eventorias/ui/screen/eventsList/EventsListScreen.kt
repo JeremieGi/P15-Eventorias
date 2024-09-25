@@ -49,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.BottomBarComposable
@@ -285,7 +286,8 @@ fun EventListComposable(
             EventItemListComposable(
                 modifier = Modifier.padding(
                     bottom = 5.dp   // Pour mettre un espace bien visible entre les éléments
-                ),
+                )
+                , // Ajouter un tag pour compter le nombre d'élément dans le test
                 onEventClickP = onEventClickP,
                 eventP = event
             )
@@ -305,6 +307,7 @@ fun EventItemListComposable(
 
     Card(
         modifier = modifier
+            .testTag("event_item") // Permet de compter le nombre de ligne dans le test instrumenté
             .fillMaxWidth()
             .height(80.dp)
             .clickable()

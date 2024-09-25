@@ -42,7 +42,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true // code obfusqué // TODO Denis : y a t il des risques ?
+            isMinifyEnabled = false //true // code obfusqué // TODO Denis : y a t il des risques ?
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -131,7 +131,7 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
 
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    androidTestImplementation(libs.hilt.android.testing)
     //kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
 
 }

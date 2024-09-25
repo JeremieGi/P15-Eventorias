@@ -1,11 +1,14 @@
 package com.openclassrooms.p15_eventorias
 
-import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -20,16 +23,16 @@ class MainTest {
 
     // https://developer.android.com/codelabs/jetpack-compose-testing?hl=fr#2
 
-    companion object {
-        private const val IDCUSTOMER = 1
-    }
 
     @get:Rule(order = 1)
     var hiltRule = HiltAndroidRule(this)
 
-    // Lancement de l'activité principale en début de test
+//    // Lancement de l'activité principale en début de test
+//    @get:Rule(order = 2)
+//    var activityTest = ActivityScenarioRule(MainActivity::class.java)
+
     @get:Rule(order = 2)
-    var activityTest = ActivityScenarioRule(MainActivity::class.java)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Before
     fun init() {
@@ -37,10 +40,31 @@ class MainTest {
     }
 
     @Test
-    fun add_classic() {
+    fun add_classic() { // TODo Denis : Debug du test impossible
 
-        val test = ""
+        // Détection du titre
+        val sTitleEventList = composeTestRule.activity.getString(R.string.event_list)
+        composeTestRule.onNodeWithText(sTitleEventList)
+            .assertIsDisplayed()
+
+        // Vérification du nombre d'éléments
+        val fakeListEvent = EventFakeAPI.initFakeEvents()
+        composeTestRule.onAllNodesWithTag("event_item")
+            .assertCountEquals(fakeListEvent.size)
+
+        // Clique sur le bouton '+'
+        val sContentDescButton = composeTestRule.activity.getString(R.string.addEvent)
+        composeTestRule.onNodeWithContentDescription(sContentDescButton).performClick()
+
+        // Détection du titre de la fenêtre d'ouverture
+        val sTitleAdd = composeTestRule.activity.getString(R.string.event_creation)
+        composeTestRule.onNodeWithText(sTitleAdd)
+            .assertIsDisplayed()
+
+
 
     }
+
+
 
 }
