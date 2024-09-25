@@ -29,7 +29,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.openclassrooms.p15_eventorias.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -41,7 +42,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true // code obfusqué // TODO Denis : y a t il des risques ?
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -129,5 +130,8 @@ dependencies {
 
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
+
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    //kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
 
 }

@@ -5,3 +5,5 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class EventoriasApplication  : Application()
+
+// TODO Denis : SHA1 : Explication
