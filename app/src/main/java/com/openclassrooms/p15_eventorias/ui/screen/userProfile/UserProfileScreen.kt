@@ -1,7 +1,10 @@
 package com.openclassrooms.p15_eventorias.ui.screen.userProfile
 
 import android.content.Context
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.tasks.Task
@@ -54,6 +58,8 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
+import android.Manifest
+import androidx.core.content.PermissionChecker
 
 @Composable
 fun UserProfileScreen(
@@ -261,27 +267,11 @@ fun UserProfileComposable(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ){
+        SwitchNotificationComposable(
+            bNotificationEnabledP = userP.bNotificationEnabled,
+            onChangeNotificationEnableP = onChangeNotificationEnableP
+        )
 
-            // Pour ne pas redessiner toute la vue, j'utilise un remember
-            var varIsChecked by rememberSaveable { mutableStateOf(userP.bNotificationEnabled) }
-
-            Switch(
-                checked = varIsChecked,
-                onCheckedChange = {
-                    onChangeNotificationEnableP(it)
-                    varIsChecked = it
-                }
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = stringResource(id = R.string.notifications),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -322,6 +312,90 @@ fun UserProfileComposable(
     }
 
 
+
+}
+
+@Composable
+fun SwitchNotificationComposable(
+    bNotificationEnabledP : Boolean,
+    onChangeNotificationEnableP : (Boolean) -> Unit,
+) {
+
+
+    val context = LocalContext.current
+
+    // Pour ne pas redessiner toute la vue, j'utilise un remember
+    var varIsChecked by rememberSaveable { mutableStateOf(bNotificationEnabledP) }
+
+    // Launcher pour demander la permission de notification (uniquement à partir d'Android 13)
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // La permission a été accordée
+            // inscription aux notifications
+            onChangeNotificationEnableP(true)
+            varIsChecked = true
+        } else {
+            // La permission a été refusée
+            onChangeNotificationEnableP(false)
+            varIsChecked = false
+        }
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ){
+
+
+        Switch(
+            checked = varIsChecked,
+            onCheckedChange = {
+
+                // On est en train d'activer les notification
+                val bActivation = !varIsChecked
+
+                if (bActivation){
+
+                    // Vérifie si on est sur Android 13 ou supérieur
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        // Vérifie si la permission n'a pas déjà été accordée
+                        val isNotificationPermissionGranted = ContextCompat.checkSelfPermission(
+                            context, Manifest.permission.POST_NOTIFICATIONS
+                        ) == PermissionChecker.PERMISSION_GRANTED
+
+                        if (!isNotificationPermissionGranted) {
+                            // Lance la pop-up qui demande l'autorisation
+                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        else{
+                            onChangeNotificationEnableP(it)
+                            varIsChecked = it
+                        }
+                    }
+                    else{
+                        // Pas de permission pour les versions d'Android < 13
+                        onChangeNotificationEnableP(it)
+                        varIsChecked = it
+                    }
+
+                }
+                else{
+                    // cas de la désactivation
+                    onChangeNotificationEnableP(it)
+                    varIsChecked = it
+                }
+
+
+            }
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = stringResource(id = R.string.notifications),
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+    }
 
 }
 
