@@ -5,6 +5,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -115,44 +116,55 @@ class MainTest {
     @Test
     fun navigation_bottom_bar() = runTest {
 
-        // Détection du titre
+        val fakeListEvent = EventFakeAPI.initFakeEvents()
+
+        // Attend tant que la liste d'évènement n'est pas chargée complétement
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
+        }
+
+        // Détection du titre 'Event List"
         val sTitleEventList = composeTestRule.activity.getString(R.string.event_list)
         composeTestRule.onNodeWithText(sTitleEventList)
             .assertIsDisplayed()
 
-//        // Clique sur le bouton 'Events'
-//        val sEventButton = composeTestRule.activity.getString(R.string.events)
-//        composeTestRule.onNodeWithText(sEventButton).performClick()
-//
-//        //composeTestRule.awaitIdle()
-//
-//        // il ne se passe rien
-//        composeTestRule.onNodeWithText(sTitleEventList)
-//            .assertIsDisplayed()
+        // Clique sur le bouton 'Events' de la bottom bar
+        composeTestRule.onNodeWithTag("iconEvent")
+            .performClick()
 
+        // Attente des redessins
+        composeTestRule.awaitIdle()
+
+        // il ne se passe rien
+        composeTestRule.onNodeWithText(sTitleEventList).assertIsDisplayed()
 
         // Clique sur le bouton 'Profile'
-        val sProfileButton = composeTestRule.activity.getString(R.string.profile)
         composeTestRule
-            .onNodeWithText(sProfileButton).performClick()
-            .assertIsDisplayed()
-
+            .onNodeWithTag("iconProfile").performClick()
 
         composeTestRule.awaitIdle()
 
-//        // La fenêtre du profil est bien ouverte
+        // La fenêtre du profil est bien ouverte
         val sTitleUserProfile = composeTestRule.activity.getString(R.string.userprofile)
-//        composeTestRule.onNodeWithText(sTitleUserProfile)
-//            .assertIsDisplayed()
-
-//        composeTestRule.waitUntil(timeoutMillis = 5000) {
-//            // Condition d'attente
-//            false
-//        }
-//
         composeTestRule.onNodeWithText(sTitleUserProfile).assertExists()
 
+        // Clique sur le bouton 'Profile'
+        composeTestRule
+            .onNodeWithTag("iconProfile").performClick()
 
+        composeTestRule.awaitIdle()
+
+        // il ne se passe rien
+        composeTestRule.onNodeWithText(sTitleUserProfile).assertExists()
+
+        // Clique sur le bouton 'Events' de la bottom bar
+        composeTestRule.onNodeWithTag("iconEvent")
+            .performClick()
+
+        composeTestRule.awaitIdle()
+
+        // Retour à l'écran de liste des évènements
+        composeTestRule.onNodeWithText(sTitleEventList).assertIsDisplayed()
 
 
     }
