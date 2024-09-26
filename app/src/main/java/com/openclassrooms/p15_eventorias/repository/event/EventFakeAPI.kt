@@ -28,7 +28,7 @@ class EventFakeAPI : EventApi {
 
                 Event("2","Event2","Description de l'évent 2",1451638679000 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "84 Avenue des Champs Elysées, 75008 Paris, France", coordParis, sPhotoUser2),
 
-                Event("3","Event3","sans avatar créateur",1451638679000 /* 01/01/2016 */, "", "", null, ""),
+                Event("3","Event3","sans avatar créateur",1483228800000 /* 01/01/2017 */, "", "", null, ""),
                 )
         }
 

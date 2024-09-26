@@ -151,7 +151,7 @@ fun EventsListScreen(
                             modifier = Modifier
                                 .graphicsLayer(rotationZ = 90f), // rotation de 90 degrés
                             painter = painterResource(R.drawable.baseline_compare_arrows_24),
-                            contentDescription = stringResource(id = R.string.search),
+                            contentDescription = stringResource(id = R.string.sortByDate),
                             tint = ColorTitleWhite
                         )
 
@@ -322,6 +322,8 @@ fun EventItemListComposable(
 
         // 3 lignes
         Row(
+            //modifier = Modifier
+                //.testTag("event_id_${eventP.id}"), // Permet d'identifier une ligne dans le test instrumenté
             // Eléments de l'item centrés verticallement
             verticalAlignment = Alignment.CenterVertically
         ){

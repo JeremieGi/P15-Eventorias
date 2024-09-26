@@ -15,6 +15,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Tests concernant la fenêtre de détails d'un évènement
+ */
+
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class EventDetailsTest {
@@ -32,6 +36,9 @@ class EventDetailsTest {
         hiltRule.inject()
     }
 
+    /**
+     * Clique sur le 1er élément et vérifie les données dans l'écran ouvert
+     */
     @Test
     fun detailsfirstevent() = runTest {
 

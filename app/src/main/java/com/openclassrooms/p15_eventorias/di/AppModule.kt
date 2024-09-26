@@ -27,15 +27,15 @@ class AppModule {
     @Provides
     @Singleton
     fun provideEventAPI(): EventApi {
-        //return EventFakeAPI()
-        return EventFirestoreAPI()
+        return EventFakeAPI()
+        //return EventFirestoreAPI() // TODO JG : Remettre les APi Firestore
     }
 
     @Provides
     @Singleton
     fun provideUserAPI(): UserApi {
-        //return UserFakeAPI() //
-        return UserFirestoreAPI() // Utilisation de FireStore
+        return UserFakeAPI() //
+        // UserFirestoreAPI() // Utilisation de FireStore // TODO JG : Remettre les APi Firestore
     }
 
 
