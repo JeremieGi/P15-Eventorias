@@ -89,12 +89,14 @@ fun EventsListScreen(
 
                     if (isSearchVisible) {
                         TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("TagSearchField"), // Pour détecter le champ dans les tests instrumentés
                             value = sFilterByTitle,
                             onValueChange = {
                                 sFilterByTitle = it
                                 viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
                             },
-                            modifier = Modifier.fillMaxWidth(),
                             singleLine = true
                         )
                     } else {

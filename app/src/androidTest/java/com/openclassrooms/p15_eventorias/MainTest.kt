@@ -9,6 +9,8 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
@@ -40,11 +42,52 @@ class MainTest {
         hiltRule.inject()
     }
 
+    /**
+     * Test de la recherche par titre
+     */
     @Test
     fun event_search() = runTest {
 
+        // Attend tant que la liste d'évènement n'est pas chargée complétement
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
+        }
+
+        // Clique sur l'icone de recherche
+        val sContentDescSearchIcon = composeTestRule.activity.getString(R.string.search)
+        composeTestRule.onNodeWithContentDescription(sContentDescSearchIcon)
+            .performClick()
+
+        composeTestRule.awaitIdle()
+
+        // Cherche "Event 1"
+        val event0 = fakeListEvent[0]
+        composeTestRule.onNodeWithTag("TagSearchField")
+            .performTextInput(event0.sTitle)
+
+        composeTestRule.awaitIdle()
+
+        // La LazyColumn doit faire un seul élément
+        val expectedOneEventList = listOf(event0)
+        assertLazyColumn(expectedOneEventList)
+
+        // remise à vide du champ
+        composeTestRule.onNodeWithTag("TagSearchField")
+            .performTextClearance()
+
+
+        composeTestRule.awaitIdle()
+
+        // La LazyColumn raffiche tous les éléments
+        val expectedAllsEventsList = fakeListEvent
+        assertLazyColumn(expectedAllsEventsList)
+
+
     }
 
+    /**
+     * Test du tri par date
+     */
     @Test
     fun event_order() = runTest {
 
