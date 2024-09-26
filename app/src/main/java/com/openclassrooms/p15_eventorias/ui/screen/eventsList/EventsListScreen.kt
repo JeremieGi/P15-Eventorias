@@ -2,6 +2,7 @@ package com.openclassrooms.p15_eventorias.ui.screen.eventsList
 
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -48,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -330,14 +333,21 @@ fun EventItemListComposable(
             verticalAlignment = Alignment.CenterVertically
         ){
 
-            // 1er élément de la ligne : Avatar du créateur
-            URLImageAvatarComposable(
-                modifier = Modifier
-                    .weight(2f) // 20% de la largeur
-                    .padding(10.dp) // Pour pas que le rond prenne toute la place
-                    ,
-                sURLP = eventP.sURLPhotoAuthor
-            )
+            // La box va permettre de respecter les 20% de largeur
+            Box(
+               modifier =  Modifier
+                .weight(2f), // 20% de la largeur
+               contentAlignment = Alignment.Center
+            ){
+                // 1er élément de la ligne : Avatar du créateur
+                URLImageAvatarComposable(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .padding(5.dp), // Pour pas que le rond prenne toute la place,
+                    sURLP = eventP.sURLPhotoAuthor
+                )
+            }
+
 
             // 2ème élément de la ligne : Titre de l'évènement + date
             Column(

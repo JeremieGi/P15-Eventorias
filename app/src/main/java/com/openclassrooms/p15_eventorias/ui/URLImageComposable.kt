@@ -1,20 +1,15 @@
 package com.openclassrooms.p15_eventorias.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.openclassrooms.p15_eventorias.R
@@ -32,7 +27,7 @@ fun URLImageAvatarComposable(
     SubcomposeAsyncImage(
         modifier = modifier
             //.size(50.dp)
-            .clip(CircleShape)
+            //.clip(CircleShape)
             /*.aspectRatio(1f)*/,
         model = ImageRequest.Builder(LocalContext.current)
             .data(sURLP)
