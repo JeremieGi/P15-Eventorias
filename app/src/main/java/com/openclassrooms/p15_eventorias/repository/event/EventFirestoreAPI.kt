@@ -141,7 +141,7 @@ class EventFirestoreAPI : EventApi {
 //
 //                        val uploadedEvent = resultEventPhoto.value
 //
-//                        // TODO JG : Si il faut le faire, A voir comment on copie une adresse distante vers firebase
+//                        // Si il faut le faire, A voir comment on copie une adresse distante vers firebase
 //                        uploadImageAndSaveEvent(uploadedEvent,event.sURLPhotoAuthor,"AvatarCreatorEvent", bEventImage = false).collect{ resultPhotoAuthor ->
 //                            trySend(resultPhotoAuthor)
 //                        }
@@ -193,7 +193,7 @@ class EventFirestoreAPI : EventApi {
                 .addOnFailureListener { exception ->
 
                     // Gestion des erreurs lors de l'upload
-                    trySend(ResultCustomAddEvent.NetworkFailure("Upload failed: ${exception.message}"))
+                    trySend(ResultCustomAddEvent.Failure("Upload failed: ${exception.message}"))
 
                 }
                 .addOnSuccessListener {
@@ -220,36 +220,36 @@ class EventFirestoreAPI : EventApi {
                                 }
                                 .addOnFailureListener { firestoreException ->
                                     // Gestion des erreurs lors de l'ajout dans Firestore
-                                    trySend(ResultCustomAddEvent.NetworkFailure("Failed to add post to Firestore: ${firestoreException.message}"))
+                                    trySend(ResultCustomAddEvent.Failure("Failed to add post to Firestore: ${firestoreException.message}"))
                                 }
 
                                 .addOnCanceledListener {
-                                    trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                                    trySend(ResultCustomAddEvent.Failure("addOnCanceledListener"))
                                 }
 
                         }
 
                         .addOnFailureListener { urlException ->
                             // Gestion des erreurs lors de la récupération de l'URL de téléchargement
-                            trySend(ResultCustomAddEvent.NetworkFailure("Failed to get download URL: ${urlException.message}"))
+                            trySend(ResultCustomAddEvent.Failure("Failed to get download URL: ${urlException.message}"))
                         }
 
                         .addOnCanceledListener {
-                            trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                            trySend(ResultCustomAddEvent.Failure("addOnCanceledListener"))
                         }
 
 
                 }
                 .addOnCanceledListener {
-                    trySend(ResultCustomAddEvent.NetworkFailure("addOnCanceledListener"))
+                    trySend(ResultCustomAddEvent.Failure("addOnCanceledListener"))
                 }
                 .addOnPausedListener {
-                    trySend(ResultCustomAddEvent.NetworkFailure("addOnPausedListener"))
+                    trySend(ResultCustomAddEvent.Failure("addOnPausedListener"))
                 }
 
 
         } catch (e: Exception) {
-            trySend(ResultCustomAddEvent.NetworkFailure("Exception occurred: ${e.message}"))
+            trySend(ResultCustomAddEvent.Failure("Exception occurred: ${e.message}"))
         }
 
         awaitClose {

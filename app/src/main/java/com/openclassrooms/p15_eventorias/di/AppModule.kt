@@ -16,9 +16,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * This class acts as a Dagger Hilt module, responsible for providing dependencies to other parts of the application.
- * It's installed in the SingletonComponent, ensuring that dependencies provided by this module are created only once
- * and remain available throughout the application's lifecycle.
+ * Classe permettant de gérer les injections de dépendance
  */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,15 +25,15 @@ class AppModule {
     @Provides
     @Singleton
     fun provideEventAPI(): EventApi {
-        return EventFakeAPI()
-        //return EventFirestoreAPI() // TODO JG : Remettre les APi Firestore
+        //return EventFakeAPI()
+        return EventFirestoreAPI()
     }
 
     @Provides
     @Singleton
     fun provideUserAPI(): UserApi {
-        return UserFakeAPI() //
-        // UserFirestoreAPI() // Utilisation de FireStore // TODO JG : Remettre les APi Firestore
+        //return UserFakeAPI() //
+        return UserFirestoreAPI() // Utilisation de FireStore
     }
 
 

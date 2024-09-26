@@ -18,7 +18,7 @@ suspend fun googleAPIDrawCard(
     coordGPS : CoordinatesGPS?
 ): String {
 
-    // TODO JG : Remettre appel API Google
+    // TODO JG : Remettre appel API Google + relancer les tests instrumentés
     return ""
 
 //    if (coordGPS==null){

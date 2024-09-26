@@ -94,7 +94,8 @@ class FirebaseNotificationService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         // Mais je ne gère pas les tokens dans ce projet
 
-        // TODO : denis : plus d'explication sur les tokens
+        // TODO Denis info : plus d'explication sur les tokens
+        // Etape 9 : Assurer la gestion correcte des tokens de notification.
 
         /**
          * Le token d'inscription est un identifiant unique attribué à chaque appareil ou instance d'application.

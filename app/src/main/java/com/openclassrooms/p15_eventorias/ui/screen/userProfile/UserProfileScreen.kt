@@ -123,10 +123,6 @@ fun UserProfileStateComposable(
                 },
                 actions = {
 
-                    // TODO Denis : Au clic, il faudrait pouvoir uploader une photo ?
-                    // car pas possible de le faire à la création du compte apparemment
-                    // Voir getPhotoUrl : https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseUser
-
                     if (uiStateUserP is UserUIState.Success){
                         URLImageAvatarComposable(
                             modifier = Modifier

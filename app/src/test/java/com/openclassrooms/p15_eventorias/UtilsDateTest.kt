@@ -8,7 +8,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Tests des fonctions utilitaires de
+ * Tests des fonctions utilitaires de Date
  */
 
 class UtilsDateTest {

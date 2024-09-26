@@ -42,7 +42,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false //true // code obfusqué // TODO Denis : y a t il des risques ?
+            // TODO Denis question : y a t il des risques de changement de comportement ? => dois-je faire un build Debug ?
+            isMinifyEnabled = false //true // code obfusqué
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -87,6 +89,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+    //implementation(libs.androidx.espresso.contrib)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

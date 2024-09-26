@@ -81,7 +81,7 @@ fun LaunchScreen(
             // Ici : Authenfication mail / mot de passe + Google
             val providers = arrayListOf(
                 AuthUI.IdpConfig.EmailBuilder().build(),
-                AuthUI.IdpConfig.GoogleBuilder().build() // TODo JG : A etster
+                AuthUI.IdpConfig.GoogleBuilder().build()
             )
 
             // Create and launch sign-in intent

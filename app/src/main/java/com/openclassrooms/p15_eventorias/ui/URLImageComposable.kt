@@ -33,7 +33,7 @@ fun URLImageAvatarComposable(
         modifier = modifier
             //.size(50.dp)
             .clip(CircleShape)
-            .aspectRatio(1f), // Ajustez le rapport selon vos besoins,
+            /*.aspectRatio(1f)*/,
         model = ImageRequest.Builder(LocalContext.current)
             .data(sURLP)
             .build(),

@@ -1,5 +1,6 @@
 package com.openclassrooms.p15_eventorias
 
+import android.widget.DatePicker
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -8,16 +9,20 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+
 
 /**
  * Test d'ajout d'évènements
@@ -86,9 +91,25 @@ class EventAddTest {
         // Date
         val sLabelDate = composeTestRule.activity.getString(R.string.date)
 
-        // TODO Denis : comment ouvrir le picker (ou injecter directement une valeur dans le champ ?)
+        // TODO Denis : comment ouvrir le picker (ou injecter directement une valeur dans le champ ?) + idem pour la photo
         // le picker n'est pas en compose (par d'élément dans le layout inspector
-        composeTestRule.onNodeWithText(sLabelDate).performClick()
+        composeTestRule.onNodeWithText(sLabelDate).performClick() // Ouvre le picker que je ne peux pas piloter
+
+        //composeTestRule.onNodeWithText(sLabelDate).performTextInput("12/31/2024") // Plante car le champ est inactif
+
+        //composeTestRule.onNodeWithText(sLabelDate).performTextReplacement("12/31/2024")
+
+       // composeTestRule.onNodeWithTag("tagPickerDate").performTextInput("12/31/2024")
+       // composeTestRule.onNodeWithTag("tagPickerDate").performTextReplacement("12/31/2024")
+
+
+//        onView(withClassName(Matchers.equalTo<String>(DatePicker::class.java.name))).perform(
+//            PickerActions.setDate(2024, 10, 1)
+//        )
+
+
+ //       composeTestRule.onRoot().printToLog("ARBITRARY_LOG_TAG")
+        //Actions = [GetTextLayoutResult, SetText, InsertTextAtCursor, SetSelection, PerformImeAction, OnClick, OnLongClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution]
 
 //        composeTestRule.onNodeWithText(sLabelDate)
 //            .performTextInput(sDateVal)
@@ -108,6 +129,8 @@ class EventAddTest {
         composeTestRule.onNodeWithText(sAddButton).performClick()
 
     }
+
+    // TODO JG : Ecrire les tests aux limites (champs obligatoires manquants)
 
 
 }

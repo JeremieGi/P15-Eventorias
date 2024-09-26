@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -65,10 +69,8 @@ fun EventItemScreen(
     val uiStateItem by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(eventId) {
-        // TODO JG : Code à reprendre ? Vérifier si il y a un Load à la rotation après branchement de Firebase
-        //if (uiStateItem !is EventItemUIState.Success) {
-            viewModel.loadEventByID(eventId)
-        //}
+        //if (uiStateItem !is EventItemUIState.Success) { // plus besoin avec l'API Firebase => du au delay() avec FakeAPI
+        viewModel.loadEventByID(eventId)
     }
 
     EventItemStateComposable(
@@ -204,14 +206,12 @@ fun EventItemSuccessComposable(
                 // Partie date et heure avec les pictos
                 FormatedDateComposant(
                     modifier = Modifier
-                        .weight(8f),    // 80% de la largeur
+                        .weight(1f), // Totalité de la largeur
                     eventP.lDatetime
                 )
 
 
                 URLImageAvatarComposable(
-                    modifier = Modifier
-                        .weight(2f),    // 20% pour l'avatar
                     sURLP = eventP.sURLPhotoAuthor
                 )
 

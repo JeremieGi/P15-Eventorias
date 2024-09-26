@@ -7,8 +7,8 @@ sealed class ResultCustomAddEvent<out T> {
 
     data object Loading : ResultCustomAddEvent<Nothing>()
 
-    data class NetworkFailure( // TODO JG : Renommer en VariousFailure
-        val errorNetwork: String? = null,
+    data class Failure(
+        val error : String? = null,
     ) : ResultCustomAddEvent<Nothing>()
 
     data class AdressFailure(

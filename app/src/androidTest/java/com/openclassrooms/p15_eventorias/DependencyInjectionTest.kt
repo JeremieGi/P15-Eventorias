@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [AppModule::class]               // Remplace l'injection de dépendance de production
+    replaces = [AppModule::class]   // Remplace l'injection de dépendance de production
 )
 class DependencyInjectionTest {
 

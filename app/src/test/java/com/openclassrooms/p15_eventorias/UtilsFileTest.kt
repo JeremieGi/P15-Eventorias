@@ -15,7 +15,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import java.io.File
 
-// TODO Denis : d'autres tests unitaires ?
+// TODO Denis : d'autres tests unitaires ? EventRepository (aussi couvert par les tests instrumentés) ?
+//  UserRepositoy est un passe-plat ?
 
 class UtilsFileTest {
 

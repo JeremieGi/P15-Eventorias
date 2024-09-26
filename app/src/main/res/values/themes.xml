@@ -23,16 +23,15 @@
 
     <style name="FirebaseLoginTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <!-- TODO JG : A remettre -->
-        <!--<item name="android:colorBackground">@color/backgroundLogin</item>-->
+        <item name="android:background">@color/backgroundLogin</item>
+        <!-- <item name="android:colorBackground">@color/backgroundLogin</item> -->
 
         <!-- Couleur des boutons -->
         <item name="colorPrimary">@color/primaryLogin</item>
 
         <!-- Couleur de fond des champs de saisie -->
-        <!-- TODO Denis : Couleur de fond des champs de saisie -->
+        <!-- TODO Denis : Couleur de fond des champs de saisie pas prise en compte -->
         <item name="android:editTextBackground">@color/cardAndInput</item>
-
 
         <!-- TODO Denis : Centrer les éléments - Marche pas pour la 1ere page -->
         <item name="android:gravity">center</item>
@@ -41,6 +40,7 @@
         <!-- On API 21+ you can use android:statusBarColor -->
         <!-- Barre système en haut -->
         <item name="colorPrimaryDark">@color/backgroundLogin</item>
+
     </style>
 
 </resources>

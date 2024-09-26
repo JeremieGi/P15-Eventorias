@@ -154,10 +154,10 @@ class EventAddViewModel @Inject constructor (
                     // Transmission au UIState dédié
 
                     // Echec du au réseau
-                    is ResultCustomAddEvent.NetworkFailure -> {
+                    is ResultCustomAddEvent.Failure -> {
 
                         // Récupération du message d'erreur
-                        val sErrorNetwork = resultFlow.errorNetwork
+                        val sErrorNetwork = resultFlow.error
 
                         // Affiche la fenêtre d'erreur
                         _uiState.update { currentState ->

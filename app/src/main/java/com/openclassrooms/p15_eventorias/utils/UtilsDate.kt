@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Convertit un long en date textuelle (TODO JG : Test unitaire possible à faire)
+ * Convertit un long en date textuelle
  * @param timestampInMs : Date in long format
  * @param sPattern : Pattern Ex "MMMM dd, yyyy" ou "HH:mm" :  https://developer.android.com/reference/android/icu/text/SimpleDateFormat
  */

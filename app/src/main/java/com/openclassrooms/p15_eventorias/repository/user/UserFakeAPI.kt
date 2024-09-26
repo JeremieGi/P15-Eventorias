@@ -43,7 +43,7 @@ class UserFakeAPI : UserApi {
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
-            //delay(1*1000) // TODO JG : Penser à enlever les delay de test
+            //delay(1*1000)
 
             trySend(ResultCustom.Success(userFake))
 

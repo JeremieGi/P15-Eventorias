@@ -85,7 +85,7 @@ class EventRepository @Inject constructor(
         if (!injectedContext.isInternetAvailable()){
 
             emit(
-                ResultCustomAddEvent.NetworkFailure(
+                ResultCustomAddEvent.Failure(
                     injectedContext.getInjectedContext().getString(R.string.no_network)
                 )
             )

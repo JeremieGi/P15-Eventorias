@@ -7,3 +7,5 @@ import dagger.hilt.android.HiltAndroidApp
 class EventoriasApplication  : Application()
 
 // TODO Denis : SHA1 : Explication
+
+// TODO Denis : Erreur en Android 7 : update de Google Play Service (Play Store marche pas)
