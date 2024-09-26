@@ -62,6 +62,8 @@ class EventFirestoreAPI : EventApi {
 
                     if (snapshot != null && !snapshot.isEmpty) {
 
+                        // TODO JG Bug : Le filtre ne s'applique pas + trouver le filtre "Contient"
+
                         // Utiliser toObjects necessite un constructeur par défaut pour tous les objets associés
                         // J'ai du ajouter des paramètres par défaut aux data class
                         val eventsDTO = snapshot.toObjects(FirebaseEventDTO::class.java)
@@ -104,7 +106,9 @@ class EventFirestoreAPI : EventApi {
 
 
         if (sFilterTitleP.isNotEmpty()){
-            result.whereArrayContains(FirebaseEventDTO.COLLECTION_EVENT_TITLE, sFilterTitleP)
+            //result.whereArrayContains(FirebaseEventDTO.COLLECTION_EVENT_TITLE, sFilterTitleP)
+            //result.whereIn(FirebaseEventDTO.COLLECTION_EVENT_TITLE, mutableListOf(sFilterTitleP))
+            result.whereEqualTo(FirebaseEventDTO.COLLECTION_EVENT_TITLE,sFilterTitleP)
         }
 
         when (bOrderByDatetimeP){
