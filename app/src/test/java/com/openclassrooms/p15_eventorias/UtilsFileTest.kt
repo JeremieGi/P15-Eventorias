@@ -16,8 +16,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import java.io.File
 
-// TODO JG : d'autres tests unitaires : EventRepository
-
 class UtilsFileTest {
 
     private lateinit var mockedContext: Context

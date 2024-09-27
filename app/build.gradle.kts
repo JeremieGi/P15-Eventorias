@@ -176,4 +176,7 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     //kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
 
+    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC2")
+
 }
