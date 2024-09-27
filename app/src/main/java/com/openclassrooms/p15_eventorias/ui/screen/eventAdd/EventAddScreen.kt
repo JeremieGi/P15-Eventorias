@@ -65,6 +65,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.openclassrooms.p15_eventorias.BuildConfig
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
+import com.openclassrooms.p15_eventorias.repository.user.UserFakeAPI
 import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
@@ -79,6 +80,7 @@ import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 import java.util.Calendar
 import java.util.Objects
 
@@ -380,6 +382,7 @@ fun InputFormComposable(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
         PhotoSelectorComposable(
             modifier = Modifier.height(300.dp), // Hauteur fixe
             sURLValueP = currentEvent.sURLEventPicture,
@@ -564,13 +567,17 @@ fun PhotoSelectorComposable(
             //2 ème élément la photo si elle existe
 
             if (sURLValueP.isNotEmpty()){
+
                 Image(
+                    modifier = Modifier
+                        .size(200.dp)
+                        ,
                     painter = rememberAsyncImagePainter(sURLValueP), //  l'image est chargée et affichée à l'aide de Coil
                     contentDescription = null,
-                    modifier = Modifier.size(200.dp),
                     contentScale = ContentScale.Crop
                 )
             }
+
 
         }
 

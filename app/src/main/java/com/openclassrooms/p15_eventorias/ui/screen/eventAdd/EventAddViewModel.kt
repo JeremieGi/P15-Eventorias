@@ -2,7 +2,9 @@ package com.openclassrooms.p15_eventorias.ui.screen.eventAdd
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.openclassrooms.p15_eventorias.TestEnvironment
 import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
+import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.repository.event.EventRepository
 import com.openclassrooms.p15_eventorias.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +27,21 @@ class EventAddViewModel @Inject constructor (
     private val _uiState = MutableStateFlow(EventAddUIState())
     val uiState: StateFlow<EventAddUIState> = _uiState.asStateFlow() // Accès en lecture seule de l'extérieur
 
+    init{
+
+        // TODO Denis : Obligé de faire çà pour affecter une URL au composable Image dans les tests instrumentés...
+        if (TestEnvironment.isTesting) {
+
+            val fakeListEvent = EventFakeAPI.initFakeEvents()
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    currentEvent = currentState.currentEvent.copy(sURLEventPicture = fakeListEvent[0].sURLEventPicture)
+                )
+            }
+        }
+
+    }
 
     // Récupère les saisies des différents champs
     fun onAction(formDataAddEvent : FormDataAddEvent) {
