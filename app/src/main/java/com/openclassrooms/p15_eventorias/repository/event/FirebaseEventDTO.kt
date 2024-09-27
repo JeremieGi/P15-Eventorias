@@ -6,7 +6,7 @@ import com.openclassrooms.p15_eventorias.model.Event
 
 data class FirebaseEventDTO (
 
-    // TODO Denis : J'ai été obligé de mettre les propriétés en var + @get:PropertyName et  @set:PropertyName ...
+    // J'ai été obligé de mettre les propriétés en var + @get:PropertyName et  @set:PropertyName ...
 
     @get:PropertyName(COLLECTION_EVENT_ID)
     @set:PropertyName(COLLECTION_EVENT_ID)

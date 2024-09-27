@@ -4,6 +4,9 @@ package com.openclassrooms.p15_eventorias
 import android.widget.DatePicker
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -101,20 +104,7 @@ class EventAddTest {
             .performTextInput(sAdressVal)
 
         // Clic sur le picker de date
-        val sLabelDate = composeTestRule.activity.getString(R.string.date)
-        composeTestRule.onNodeWithText(sLabelDate).performClick() // Ouvre le picker que je ne peux pas piloter
-
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_MONTH, 1)  // Ajoute un jour
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH) + 1 // Les mois commencent à 0
-        val year = calendar.get(Calendar.YEAR)
-
-        onView(withClassName(Matchers.equalTo(DatePicker::class.java.name)))
-            .perform(PickerActions.setDate(year, month, day))
-
-        onView(withText("OK")).perform(click()) // Appuyez sur le bouton OK du picker
-
+        getPicketDate()
 
         // Photo => déjà présente en mode test
 
@@ -158,7 +148,103 @@ class EventAddTest {
 
     }
 
-    // TODO JG : Ecrire les tests aux limites (champs obligatoires manquants)
+    /**
+     * Vérification des champs obligatoires
+     */
+    @Test
+    fun addEventLimit() = runTest {
+
+        // Clique sur le bouton '+'
+        val sContentDescButton = composeTestRule.activity.getString(R.string.addEvent)
+        composeTestRule.onNodeWithContentDescription(sContentDescButton)
+            .performClick()
+
+        composeTestRule.awaitIdle()
+
+        // Le bouton valider est grisé
+        val sValidateButton = composeTestRule.activity.getString(R.string.validate)
+        composeTestRule.onNodeWithText(sValidateButton)
+            .assertIsNotEnabled()
+
+        // Saisie du titre
+        val sTitleVal = "Event Title Test"
+        val sLabelTitle = composeTestRule.activity.getString(R.string.title)
+        composeTestRule.onNodeWithText(sLabelTitle)
+            .performTextInput(sTitleVal)
+
+
+        // Erreur Mandatory description
+        val sDescriptionError = composeTestRule.activity.getString(R.string.mandatorydescription)
+        composeTestRule.onNodeWithText(sDescriptionError)
+            .assertIsDisplayed()
+
+        // Saisie de la description
+        val sLabelDesc = composeTestRule.activity.getString(R.string.description)
+        composeTestRule.onNodeWithText(sLabelDesc)
+            .performTextInput("Description Test")
+
+        // Plus d'erreur
+        composeTestRule.onNodeWithText(sDescriptionError)
+            .assertIsNotDisplayed()
+
+        // Bouton validé toujours grisé
+        composeTestRule.onNodeWithText(sValidateButton)
+            .assertIsNotEnabled()
+
+        // Erreur Mandatory date
+        val sDateError = composeTestRule.activity.getString(R.string.mandatorydatetime)
+        composeTestRule.onNodeWithText(sDateError)
+            .assertIsDisplayed()
+
+        // Saisie de la date
+        getPicketDate()
+
+        // Plus d'erreur
+        composeTestRule.onNodeWithText(sDateError)
+            .assertIsNotDisplayed()
+
+        // Bouton validé toujours grisé
+        composeTestRule.onNodeWithText(sValidateButton)
+            .assertIsNotEnabled()
+
+        // Erreur Mandatory address
+        val sAddressError = composeTestRule.activity.getString(R.string.mandatoryaddress)
+        composeTestRule.onNodeWithText(sAddressError)
+            .assertIsDisplayed()
+
+        // Address
+        val sLabelAddress = composeTestRule.activity.getString(R.string.address)
+        composeTestRule.onNodeWithText(sLabelAddress)
+            .performTextInput("Paris")
+
+        // Plus d'erreur
+        composeTestRule.onNodeWithText(sAddressError)
+            .assertIsNotDisplayed()
+
+        // La photo est déjà remplie en mode test
+
+        // Bouton validé dégrisé
+        composeTestRule.onNodeWithText(sValidateButton)
+            .assertIsEnabled()
+
+    }
+
+    private fun getPicketDate() {
+        val sLabelDate = composeTestRule.activity.getString(R.string.date)
+        composeTestRule.onNodeWithText(sLabelDate)
+            .performClick() // Ouvre le picker que je ne peux pas piloter
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, 1)  // Ajoute un jour
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1 // Les mois commencent à 0
+        val year = calendar.get(Calendar.YEAR)
+
+        onView(withClassName(Matchers.equalTo(DatePicker::class.java.name)))
+            .perform(PickerActions.setDate(year, month, day))
+
+        onView(withText("OK")).perform(click()) // Appuyez sur le bouton OK du picker
+    }
 
 
 }

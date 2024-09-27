@@ -39,14 +39,14 @@ class UtilsFileTest {
         `when`(mockedPhotoDir.mkdirs()).thenReturn(true)  // Le répertoire est créé avec succès
     }
 
-    @Ignore // TODO JG : A Enlever
+    @Ignore // TODO Denis JG : Test qui passe pas
     @Test
     fun testCreateImageFile_createsFileSuccessfully() {
 
         // Simuler la création réussie du fichier temporaire
         val mockFile = mock(File::class.java)
         `when`(
-            File.createTempFile(anyString(), eq(".jpg"), eq(mockedPhotoDir)) // TODO Denis : Test qui passe pas : Prefix string "" too short: length must be at least 3
+            File.createTempFile(anyString(), eq(".jpg"), eq(mockedPhotoDir)) // Prefix string "" too short: length must be at least 3
         ).thenReturn(mockFile)
 
         // fonction à tester

@@ -11,5 +11,4 @@ sealed class FormDataAddEvent {
     data class AdressChanged(val adress: String) : FormDataAddEvent()
     data class PhotoChanged(val url: String) : FormDataAddEvent()
 
-
 }
