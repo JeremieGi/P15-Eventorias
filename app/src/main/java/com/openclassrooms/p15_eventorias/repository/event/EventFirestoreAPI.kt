@@ -10,7 +10,6 @@ import com.google.firebase.storage.storage
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import com.openclassrooms.p15_eventorias.repository.ResultCustomAddEvent
-import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -39,65 +38,26 @@ class EventFirestoreAPI : EventApi {
     ): Flow<ResultCustom<List<Event>>> {
 
 
-        val queryEvents = requestListEvent(sFilterTitleP,bOrderByDatetimeP)
+        val queryEvents = requestListEvent(/*sFilterTitleP,*/bOrderByDatetimeP)
 
         // Cette méthode crée un Flow qui est basé sur des callbacks, ce qui est idéal pour intégrer des API asynchrones comme Firestore.
         return callbackFlow {
 
             trySend(ResultCustom.Loading)
 
-            // addSnapshotListener : Ajoute un listener pour écouter les mises à jour en temps réel sur la requête. Chaque fois qu'il y a un changement dans Firestore, ce listener est appelé.
-//            val listenerRegistration = queryEvents.addSnapshotListener { snapshot, firebaseException ->
-//
-//                if (firebaseException != null) {
-//
-//                    trySend(ResultCustom.Failure(firebaseException.message))
-//
-//                    close(firebaseException) // Fermer le flux en cas d'erreur
-//
-//                }
-//                else{
-//
-//                    val result : ChannelResult<Unit>
-//
-//                    if (snapshot != null && !snapshot.isEmpty) {
-//
-//                        // TODO JG Bug : Le filtre ne s'applique pas + trouver le filtre "Contient"
-//
-//                        // Utiliser toObjects necessite un constructeur par défaut pour tous les objets associés
-//                        // J'ai du ajouter des paramètres par défaut aux data class
-//                        val eventsDTO = snapshot.toObjects(FirebaseEventDTO::class.java)
-//
-//                        val events = eventsDTO.map {
-//                            it.toModel()
-//                        }
-//
-//                        result = trySend(ResultCustom.Success(events)) // Émettre la liste des évènements
-//
-//                    } else {
-//
-//                        result = trySend(ResultCustom.Success(emptyList())) // Émettre une liste vide si aucun post n'est trouvé
-//
-//                    }
-//
-//                    if (result.isFailure) {
-//                        trySend(ResultCustom.Failure(result.toString()))
-//                        close(result.exceptionOrNull())
-//                    }
-//
-//                }
-//
-//            }
-
             queryEvents.get()
                 .addOnSuccessListener { documents ->
 
                     val eventsDTOList = documents.map { document ->
-                        document.toObject(FirebaseEventDTO::class.java) ?: FirebaseEventDTO()
+                        document.toObject(FirebaseEventDTO::class.java)
                     }
 
-                    val events = eventsDTOList.map {
+                    var events = eventsDTOList.map {
                         it.toModel()
+                    }
+
+                    if (sFilterTitleP.isNotEmpty()){
+                        events = events.filter { it.sTitle.contains(sFilterTitleP) }
                     }
 
                     trySend(ResultCustom.Success(events)) // Émettre la liste des évènements
@@ -116,7 +76,7 @@ class EventFirestoreAPI : EventApi {
     }
 
     private fun requestListEvent(
-        sFilterTitleP: String,
+        //sFilterTitleP: String,
         bOrderByDatetimeP: Boolean?
     ): Query {
 
@@ -124,13 +84,10 @@ class EventFirestoreAPI : EventApi {
 
         var result: Query = FirebaseFirestore.getInstance().collection(COLLECTION_EVENTS)
 
-        if (sFilterTitleP.isNotEmpty()){
-
-            //result.whereArrayContains(FirebaseEventDTO.COLLECTION_EVENT_TITLE, sFilterTitleP)
-            result = result.whereEqualTo(FirebaseEventDTO.COLLECTION_EVENT_TITLE,sFilterTitleP)
-           // result.whereIn(FirebaseEventDTO.COLLECTION_EVENT_TITLE, mutableListOf(sFilterTitleP))
-
-        }
+//        if (sFilterTitleP.isNotEmpty()){
+//            // Il n'y a pas de condition "content" en firebase (je vais donc filter lors de la lecture de la requête)
+//            result = result.whereEqualTo(FirebaseEventDTO.COLLECTION_EVENT_TITLE,sFilterTitleP)
+//        }
 
         when (bOrderByDatetimeP){
             null -> {}  // Pas de tri
@@ -149,37 +106,9 @@ class EventFirestoreAPI : EventApi {
 
             // On rentre ici, que si le Flow est écouté
 
-            // les deux appels se produisent de manière concurrente.
-
-            uploadImageAndSaveEvent(event,event.sURLEventPicture,"PhotoEvent", bEventImage = true).collect{ resultEventPhoto ->
-
+            uploadImageAndSaveEvent(event,event.sURLEventPicture).collect{ resultEventPhoto ->
                 trySend(resultEventPhoto)
-
-                // TODO Denis : Je ne pense pas à devoir mettre les photos des avatars sur le cloud car l'adresse est une adresse non locale :
-                // Pour google : https://lh3.googleusercontent.com/a/ACg8ocJ-lButtYyx-Tylf7WELXM4fom_WbxS3Bj3Xk4T8n91DEI9sNc=s96-c
-                // Si il faut le faire, A voir comment on copie une adresse distante vers firebase
-
-//                if (resultEventPhoto is ResultCustomAddEvent.Success){
-//
-//                    // L'avatar de l'utilisateur courant peut ne pas être exister (Identification par mail ou pas d'avatar dans son compte Google)
-//                    if (event.sURLPhotoAuthor.isNotEmpty()) {
-//
-//                        val uploadedEvent = resultEventPhoto.value
-//
-//                        // Si il faut le faire, A voir comment on copie une adresse distante vers firebase
-//                        uploadImageAndSaveEvent(uploadedEvent,event.sURLPhotoAuthor,"AvatarCreatorEvent", bEventImage = false).collect{ resultPhotoAuthor ->
-//                            trySend(resultPhotoAuthor)
-//                        }
-//
-//                    }
-//
-//                }
-//                else{
-//                    trySend(resultEventPhoto)
-//                }
-
             }
-
 
             // awaitClose : Permet d'exécuter du code quand le flow n'est plus écouté
             awaitClose {
@@ -192,10 +121,7 @@ class EventFirestoreAPI : EventApi {
 
     private fun uploadImageAndSaveEvent(
         eventP : Event,
-        sURLP : String,
-        sPrefixFileP : String,
-        bEventImage : Boolean) = callbackFlow {
-
+        sURLP : String) = callbackFlow {
         try {
 
             // Utilisation de l'ID du post pour créer une référence de document
@@ -208,7 +134,7 @@ class EventFirestoreAPI : EventApi {
             val uri = Uri.parse(sURLP)
 
             // Référence vers le fichier distant
-            val storageRefImage = _storageRef.child("images/$sPrefixFileP${eventP.id}.jpg")
+            val storageRefImage = _storageRef.child("images/PhotoEvent${eventP.id}.jpg")
 
             // Upload
             val uploadTask = storageRefImage.putFile(uri)
@@ -228,13 +154,7 @@ class EventFirestoreAPI : EventApi {
                         .addOnSuccessListener { uri ->
 
                             // Mettre à jour l'objet Event avec l'URL de l'image
-                            val updatedEvent : Event
-                            if (bEventImage){
-                                updatedEvent = eventP.copy(sURLEventPicture = uri.toString())
-                            }
-                            else{
-                                updatedEvent = eventP.copy(sURLPhotoAuthor = uri.toString())
-                            }
+                            val updatedEvent : Event = eventP.copy(sURLEventPicture = uri.toString())
 
                             // Mise à jour dans la base de données Firestore
                             val eventDTO = FirebaseEventDTO(updatedEvent)

@@ -25,7 +25,7 @@
 
     <style name="FirebaseLoginTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <!-- TODO Denis : Je n'ai pas réussi à modifier les styles des champs de saisie -->
+        <!-- TODO Denis : Je n'ai pas réussi à modifier les styles des champs de saisie comme indiquer dans les maquettes -->
 
         <!-- Couleur des boutons -->
         <item name="colorPrimary">@color/primaryLogin</item>
