@@ -21,19 +21,21 @@
 
     </style>
 
+
+
     <style name="FirebaseLoginTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <item name="android:background">@color/backgroundLogin</item>
-        <!-- <item name="android:colorBackground">@color/backgroundLogin</item> -->
+        <!-- TODO Denis : Je n'ai pas réussi à modifier les styles des champs de saisie -->
 
         <!-- Couleur des boutons -->
         <item name="colorPrimary">@color/primaryLogin</item>
 
-        <!-- Couleur de fond des champs de saisie -->
-        <!-- TODO Denis : Couleur de fond des champs de saisie pas prise en compte -->
+        <!-- Couleur de fond des champs de saisie pas prise en compte -->
         <item name="android:editTextBackground">@color/cardAndInput</item>
+        <!-- donc je change la couleur de fond -->
+        <item name="android:background">@color/backgroundLoginLight</item>
 
-        <!-- TODO Denis : Centrer les éléments - Marche pas pour la 1ere page -->
+        <!-- Centrer les éléments - Marche pas pour la 1ere page -->
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
 
@@ -41,6 +43,18 @@
         <!-- Barre système en haut -->
         <item name="colorPrimaryDark">@color/backgroundLogin</item>
 
+
     </style>
+
+    <!--
+    <style name="CustomTextInput" parent="Widget.Material3.TextInputLayout.FilledBox">
+         Couleur de la bordure
+
+        <item name="android:background">@color/white</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+
+    </style>
+    -->
 
 </resources>

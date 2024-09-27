@@ -47,51 +47,69 @@ class EventFirestoreAPI : EventApi {
             trySend(ResultCustom.Loading)
 
             // addSnapshotListener : Ajoute un listener pour écouter les mises à jour en temps réel sur la requête. Chaque fois qu'il y a un changement dans Firestore, ce listener est appelé.
-            val listenerRegistration = queryEvents.addSnapshotListener { snapshot, firebaseException ->
+//            val listenerRegistration = queryEvents.addSnapshotListener { snapshot, firebaseException ->
+//
+//                if (firebaseException != null) {
+//
+//                    trySend(ResultCustom.Failure(firebaseException.message))
+//
+//                    close(firebaseException) // Fermer le flux en cas d'erreur
+//
+//                }
+//                else{
+//
+//                    val result : ChannelResult<Unit>
+//
+//                    if (snapshot != null && !snapshot.isEmpty) {
+//
+//                        // TODO JG Bug : Le filtre ne s'applique pas + trouver le filtre "Contient"
+//
+//                        // Utiliser toObjects necessite un constructeur par défaut pour tous les objets associés
+//                        // J'ai du ajouter des paramètres par défaut aux data class
+//                        val eventsDTO = snapshot.toObjects(FirebaseEventDTO::class.java)
+//
+//                        val events = eventsDTO.map {
+//                            it.toModel()
+//                        }
+//
+//                        result = trySend(ResultCustom.Success(events)) // Émettre la liste des évènements
+//
+//                    } else {
+//
+//                        result = trySend(ResultCustom.Success(emptyList())) // Émettre une liste vide si aucun post n'est trouvé
+//
+//                    }
+//
+//                    if (result.isFailure) {
+//                        trySend(ResultCustom.Failure(result.toString()))
+//                        close(result.exceptionOrNull())
+//                    }
+//
+//                }
+//
+//            }
 
-                if (firebaseException != null) {
+            queryEvents.get()
+                .addOnSuccessListener { documents ->
 
-                    trySend(ResultCustom.Failure(firebaseException.message))
-
-                    close(firebaseException) // Fermer le flux en cas d'erreur
-
-                }
-                else{
-
-                    val result : ChannelResult<Unit>
-
-                    if (snapshot != null && !snapshot.isEmpty) {
-
-                        // TODO JG Bug : Le filtre ne s'applique pas + trouver le filtre "Contient"
-
-                        // Utiliser toObjects necessite un constructeur par défaut pour tous les objets associés
-                        // J'ai du ajouter des paramètres par défaut aux data class
-                        val eventsDTO = snapshot.toObjects(FirebaseEventDTO::class.java)
-
-                        val events = eventsDTO.map {
-                            it.toModel()
-                        }
-
-                        result = trySend(ResultCustom.Success(events)) // Émettre la liste des évènements
-
-                    } else {
-
-                        result = trySend(ResultCustom.Success(emptyList())) // Émettre une liste vide si aucun post n'est trouvé
-
+                    val eventsDTOList = documents.map { document ->
+                        document.toObject(FirebaseEventDTO::class.java) ?: FirebaseEventDTO()
                     }
 
-                    if (result.isFailure) {
-                        trySend(ResultCustom.Failure(result.toString()))
-                        close(result.exceptionOrNull())
+                    val events = eventsDTOList.map {
+                        it.toModel()
                     }
 
-                }
+                    trySend(ResultCustom.Success(events)) // Émettre la liste des évènements
 
-            }
+                }
+                .addOnFailureListener { exception ->
+                    trySend(ResultCustom.Failure(exception.message))
+                }
 
             // awaitClose : Permet d'exécuter du code quand le flow n'est plus écouté
             awaitClose {
-                listenerRegistration.remove() // Ferme le listener pour éviter une fuite mémoire
+                //listenerRegistration.remove() // Ferme le listener pour éviter une fuite mémoire
             }
 
         }
@@ -102,19 +120,22 @@ class EventFirestoreAPI : EventApi {
         bOrderByDatetimeP: Boolean?
     ): Query {
 
-        val result: Query = FirebaseFirestore.getInstance().collection(COLLECTION_EVENTS)
+        // TODO JG : Recherche 'Contient' ne fonctionnent pas, essayer * + il faut créer un index
 
+        var result: Query = FirebaseFirestore.getInstance().collection(COLLECTION_EVENTS)
 
         if (sFilterTitleP.isNotEmpty()){
+
             //result.whereArrayContains(FirebaseEventDTO.COLLECTION_EVENT_TITLE, sFilterTitleP)
-            //result.whereIn(FirebaseEventDTO.COLLECTION_EVENT_TITLE, mutableListOf(sFilterTitleP))
-            result.whereEqualTo(FirebaseEventDTO.COLLECTION_EVENT_TITLE,sFilterTitleP)
+            result = result.whereEqualTo(FirebaseEventDTO.COLLECTION_EVENT_TITLE,sFilterTitleP)
+           // result.whereIn(FirebaseEventDTO.COLLECTION_EVENT_TITLE, mutableListOf(sFilterTitleP))
+
         }
 
         when (bOrderByDatetimeP){
             null -> {}  // Pas de tri
-            true -> result.orderBy(FirebaseEventDTO.COLLECTION_EVENT_DATETIME) // Ascendant
-            false -> result.orderBy(FirebaseEventDTO.COLLECTION_EVENT_DATETIME, Query.Direction.DESCENDING) // Descendant
+            true -> result = result.orderBy(FirebaseEventDTO.COLLECTION_EVENT_DATETIME) // Ascendant
+            false -> result = result.orderBy(FirebaseEventDTO.COLLECTION_EVENT_DATETIME, Query.Direction.DESCENDING) // Descendant
         }
 
         return result

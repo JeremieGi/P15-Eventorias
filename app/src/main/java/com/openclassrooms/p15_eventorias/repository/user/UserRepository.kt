@@ -56,6 +56,7 @@ class UserRepository @Inject constructor(
      * Log out current user
      */
     fun signOut(context : Context) : Task<Void> {
+        // TODo JG : A descendre dans l'API
         return AuthUI.getInstance().signOut(context)
     }
 }

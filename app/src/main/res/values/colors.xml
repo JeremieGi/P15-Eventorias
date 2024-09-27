@@ -16,9 +16,11 @@
     -->
 
     <color name="backgroundLogin">#FF1d1b20</color>
+    <color name="backgroundLoginLight">#FF7f7f7f</color>
     <color name="primaryLogin">#FFD0021B</color>
 
     <color name="cardAndInput">#FF49454F</color>
+    <color name="white">#FFFFFFFF</color>
 
 
 </resources>

@@ -42,8 +42,7 @@ android {
 
     buildTypes {
         release {
-            // TODO Denis question : y a t il des risques de changement de comportement ? => dois-je faire un build Debug ?
-            isMinifyEnabled = false //true // code obfusqué
+            isMinifyEnabled = true // code obfusqué (https://developer.android.com/build/shrink-code?hl=fr)
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -97,6 +96,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
 
     implementation(libs.kotlinx.coroutines.android)
 

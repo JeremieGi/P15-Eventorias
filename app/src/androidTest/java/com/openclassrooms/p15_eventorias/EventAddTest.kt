@@ -1,17 +1,23 @@
 package com.openclassrooms.p15_eventorias
 
+import android.graphics.BitmapFactory
 import android.widget.DatePicker
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -49,7 +55,7 @@ class EventAddTest {
      * Cas basique, d'ajout d'un élément sans erreur
      */
     @Test
-    fun add_classic() = runTest { // TODo Denis : Debug du test impossible pendant un temps...
+    fun add_classic() = runTest {
 
         // Détection du titre
         val sTitleEventList = composeTestRule.activity.getString(R.string.event_list)
@@ -91,42 +97,35 @@ class EventAddTest {
         // Date
         val sLabelDate = composeTestRule.activity.getString(R.string.date)
 
-        // TODO Denis : comment ouvrir le picker (ou injecter directement une valeur dans le champ ?) + idem pour la photo
-        // le picker n'est pas en compose (par d'élément dans le layout inspector
+       // le picker n'est pas en compose (par d'élément dans le layout inspector
         composeTestRule.onNodeWithText(sLabelDate).performClick() // Ouvre le picker que je ne peux pas piloter
 
-        //composeTestRule.onNodeWithText(sLabelDate).performTextInput("12/31/2024") // Plante car le champ est inactif
+        // TODO JG Mettre date du jour + 1
+        onView(withClassName(Matchers.equalTo(DatePicker::class.java.name)))
+            .perform(PickerActions.setDate(2025, 12, 31))
 
-        //composeTestRule.onNodeWithText(sLabelDate).performTextReplacement("12/31/2024")
+        onView(withText("OK")).perform(click()) // Appuyez sur le bouton OK
 
-       // composeTestRule.onNodeWithTag("tagPickerDate").performTextInput("12/31/2024")
-       // composeTestRule.onNodeWithTag("tagPickerDate").performTextReplacement("12/31/2024")
-
-
-//        onView(withClassName(Matchers.equalTo<String>(DatePicker::class.java.name))).perform(
-//            PickerActions.setDate(2024, 10, 1)
-//        )
-
-
- //       composeTestRule.onRoot().printToLog("ARBITRARY_LOG_TAG")
-        //Actions = [GetTextLayoutResult, SetText, InsertTextAtCursor, SetSelection, PerformImeAction, OnClick, OnLongClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution, ClearTextSubstitution]
-
-//        composeTestRule.onNodeWithText(sLabelDate)
-//            .performTextInput(sDateVal)
+        // Photo
+        // TODO JG Charger une image directement sans le sélecteur
+//        val context = InstrumentationRegistry.getInstrumentation().targetContext
+//        val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.baseline_face_24)
 //
-//        // Heure
-//        val sLabelTime = composeTestRule.activity.getString(R.string.time)
-//        composeTestRule.onNodeWithText(sLabelTime)
-//            .performTextInput(sTimeVal)
-//
-//        // Adresse
-//        val sLabelAddress = composeTestRule.activity.getString(R.string.address)
-//        composeTestRule.onNodeWithText(sLabelAddress)
-//            .performTextInput(sAdress)
+//        composeTestRule.onAllNodesWithContentDescription()
+//        onView(with(R.id.image_view))
+//            .perform {
+//                imageView.setImageBitmap(bitmap)
+//            }
+
+//// Vérifier que l'image est affichée
+//        onView(withId(R.id.image_view))
+//            .check(matches(isDisplayed()))
 
         // Clique sur le bouton 'Validate'
         val sAddButton = composeTestRule.activity.getString(R.string.validate)
         composeTestRule.onNodeWithText(sAddButton).performClick()
+
+        // Vérifier l'ajout dans la liste d'évènement
 
     }
 
