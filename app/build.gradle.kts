@@ -1,3 +1,4 @@
+import com.android.build.gradle.BaseExtension
 import java.util.Properties
 
 plugins {
@@ -7,7 +8,14 @@ plugins {
     alias(libs.plugins.hilt)
 
     id("com.google.gms.google-services")
+    id("jacoco")
+}
 
+tasks.withType<Test> {
+    extensions.configure(JacocoTaskExtension::class) {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
 }
 
 val localProperties = Properties()
@@ -21,6 +29,10 @@ val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 android {
     namespace = "com.openclassrooms.p15_eventorias"
     compileSdk = 34
+
+    testCoverage {
+        version = "0.8.8"
+    }
 
     defaultConfig {
         applicationId = "com.openclassrooms.p15_eventorias"
@@ -49,6 +61,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -69,6 +85,28 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+val androidExtension = extensions.getByType<BaseExtension>()
+
+val jacocoTestReport by tasks.registering(JacocoReport::class) {
+    dependsOn("testDebugUnitTest", "createDebugCoverageReport")
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val debugTree = fileTree("${buildDir}/tmp/kotlin-classes/debug")
+    val mainSrc = androidExtension.sourceSets.getByName("main").java.srcDirs
+
+    classDirectories.setFrom(debugTree)
+    sourceDirectories.setFrom(files(mainSrc))
+    executionData.setFrom(fileTree(buildDir) {
+        include("**/*.exec", "**/*.ec")
+    })
 }
 
 dependencies {
@@ -97,7 +135,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
+    androidTestImplementation(libs.androidx.espresso.contrib)
 
     implementation(libs.kotlinx.coroutines.android)
 

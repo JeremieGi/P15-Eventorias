@@ -80,7 +80,6 @@ class EventFirestoreAPI : EventApi {
         bOrderByDatetimeP: Boolean?
     ): Query {
 
-        // TODO JG : Recherche 'Contient' ne fonctionnent pas, essayer * + il faut créer un index
 
         var result: Query = FirebaseFirestore.getInstance().collection(COLLECTION_EVENTS)
 
