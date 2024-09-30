@@ -59,6 +59,8 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import android.Manifest
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.core.content.PermissionChecker
@@ -218,7 +220,8 @@ fun UserProfileComposable(
             .padding(
                 horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                 vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-            ),
+            )
+            .verticalScroll(rememberScrollState()) // permet de rendre la colonne défilable verticalement si le contenu dépasse la taille de l'écran.,
         //verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
     ){
 

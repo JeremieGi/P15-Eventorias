@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
@@ -174,22 +177,24 @@ fun EventItemSuccessComposable(
             .padding(
                 horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                 vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-            ),
+            )
+            .verticalScroll(rememberScrollState()) // permet de rendre la colonne défilable verticalement si le contenu dépasse la taille de l'écran.
+        ,
         verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
     ){
 
 
         URLImageEventComposable(
             modifier = Modifier
-                .weight(5f)     // Image prend la moitié de l'écran
-                //.height(365.dp)
+                //.weight(5f)     // Image prend la moitié de l'écran
+                .height(200.dp)
                 .clip(RoundedCornerShape(12.dp)),
             sURLP = eventP.sURLEventPicture )
 
 
         Column(
             modifier = Modifier
-                .weight(5f)     // L'autre moitié de l'écran pour les autres infos
+                //.weight(5f)     // L'autre moitié de l'écran pour les autres infos
             ,
             verticalArrangement = Arrangement.spacedBy(16.dp), // Espacement entre les éléments
         ){
@@ -232,7 +237,7 @@ fun EventItemSuccessComposable(
 @Composable
 fun AdresseComposable(event : Event) {
 
-    Row {
+    Row{
 
         Text(
             modifier = Modifier.weight(1f), // Chaque champ utilise la moitié de l'écran
@@ -251,6 +256,13 @@ fun AdresseComposable(event : Event) {
 
         SubcomposeAsyncImage(
             modifier = Modifier
+//                .heightIn(
+//                    min = 300.dp
+//                )
+                .size(
+                    height = 300.dp,
+                    width = 300.dp
+                )
                 .weight(1f)
         ,
             model = ImageRequest.Builder(LocalContext.current)
