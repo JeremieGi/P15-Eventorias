@@ -71,16 +71,48 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsListScreen(
-    //modifier: Modifier = Modifier,
     viewModel: EventsListViewModel = hiltViewModel(),
     onEventClickP: (Event) -> Unit,
     onClickAddP: () -> Unit,
     onClickProfileP : () -> Unit
 ) {
 
+    // lorsque la valeur uiState est modifiée,
+    // la recomposition a lieu pour les composables utilisant la valeur uiState.
+    val uiStateList by viewModel.uiState.collectAsState()
+
+    // Recharger les évents quand l'écran est visible
+    LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
+        //viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
+        viewModel.loadAllEvents(sFilterTitleP = "", bOrderByDatetime = null)
+    }
+
+
+    EventListStateComposable(
+        uiStateListP = uiStateList,
+        loadAllEventsP = viewModel::loadAllEvents,
+        onEventClickP = onEventClickP,
+        onClickAddP = onClickAddP,
+        onClickProfileP = onClickProfileP
+    )
+
+
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EventListStateComposable(
+    modifier: Modifier = Modifier,
+    uiStateListP: EventListUIState,
+    loadAllEventsP: (String, Boolean?) -> Unit,
+    onEventClickP: (Event) -> Unit,
+    onClickAddP: () -> Unit,
+    onClickProfileP : () -> Unit
+) {
     // Tri en cours
     var bSortAsc by rememberSaveable { mutableStateOf<Boolean?>(null) }
 
@@ -95,7 +127,7 @@ fun EventsListScreen(
     val context = LocalContext.current
 
     // Créer un FocusRequester
-    val focusRequester = remember() { FocusRequester() }
+    val focusRequester = remember { FocusRequester() }
 
 
     Scaffold(
@@ -117,7 +149,7 @@ fun EventsListScreen(
                             value = searchText,
                             onValueChange = {
                                 searchText = it
-                                viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
+                                loadAllEventsP(searchText.text, bSortAsc)
                             },
                             singleLine = true
                         )
@@ -175,7 +207,7 @@ fun EventsListScreen(
                             }
 
                             // Tri par date
-                            viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
+                            loadAllEventsP(searchText.text, bSortAsc)
                         }
                     ) {
                         Icon(
@@ -212,25 +244,45 @@ fun EventsListScreen(
 
         content = { innerPadding ->
 
+            when (uiStateListP) {
 
-            // lorsque la valeur uiState est modifiée,
-            // la recomposition a lieu pour les composables utilisant la valeur uiState.
-            val uiStateList by viewModel.uiState.collectAsState()
+                // Chargement
+                is EventListUIState.IsLoading -> {
+                    LoadingComposable(modifier.padding(innerPadding))
+                }
 
-            // Recharger les évents quand l'écran est visible
-            LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-                viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
+                // Récupération des données avec succès
+                is EventListUIState.Success -> {
+
+                    EventListComposable(
+                        modifier = modifier.padding(innerPadding),
+                        listEvents = uiStateListP.listEvents,
+                        onEventClickP = onEventClickP
+                    )
+
+                }
+
+                // Exception
+                is EventListUIState.Error -> {
+
+                    val error = uiStateListP.sError ?: stringResource(
+                        R.string.unknown_error
+                    )
+
+                    ErrorComposable(
+                        modifier= modifier.padding(innerPadding),
+                        sErrorMessage = error,
+                        onClickRetryP = {
+                            loadAllEventsP(searchText.text, bSortAsc)
+                        }
+                    )
+
+
+                }
             }
 
 
-            EventListStateComposable(
-                modifier = Modifier.padding(innerPadding),
-                uiStateListP = uiStateList,
-                loadAllEventsP = {
-                    viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
-                },
-                onEventClickP = onEventClickP
-            )
+
 
         },
 
@@ -245,50 +297,6 @@ fun EventsListScreen(
     )
 
 
-}
-
-@Composable
-fun EventListStateComposable(
-    modifier: Modifier = Modifier,
-    uiStateListP: EventListUIState,
-    loadAllEventsP: () -> Unit,
-    onEventClickP: (Event) -> Unit
-) {
-
-    when (uiStateListP) {
-
-        // Chargement
-        is EventListUIState.IsLoading -> {
-            LoadingComposable(modifier)
-        }
-
-        // Récupération des données avec succès
-        is EventListUIState.Success -> {
-
-            EventListComposable(
-                modifier = modifier,
-                listEvents = uiStateListP.listEvents,
-                onEventClickP = onEventClickP
-            )
-
-        }
-
-        // Exception
-        is EventListUIState.Error -> {
-
-            val error = uiStateListP.sError ?: stringResource(
-                R.string.unknown_error
-            )
-
-            ErrorComposable(
-                modifier= modifier,
-                sErrorMessage = error,
-                onClickRetryP = loadAllEventsP
-            )
-
-
-        }
-    }
 
 }
 
@@ -436,8 +444,14 @@ fun EventListComposableSuccessPreview() {
 
         EventListStateComposable(
             uiStateListP = uiStateSuccess,
-            loadAllEventsP = {},
-            onEventClickP = {}
+            loadAllEventsP = { _, _ ->
+            },
+            onEventClickP = { _ ->
+            },
+            onClickAddP = {
+            },
+            onClickProfileP = {
+            }
         )
     }
 }
@@ -450,8 +464,14 @@ fun EventListComposableLoadingPreview() {
 
         EventListStateComposable(
             uiStateListP = EventListUIState.IsLoading,
-            loadAllEventsP = {},
-            onEventClickP = {}
+            loadAllEventsP = { _, _ ->
+            },
+            onEventClickP = { _ ->
+            },
+            onClickAddP = {
+            },
+            onClickProfileP = {
+            }
         )
     }
 }
@@ -465,8 +485,14 @@ fun EventListComposableErrorPreview() {
 
         EventListStateComposable(
             uiStateListP = EventListUIState.Error("Erreur de test de la preview"),
-            loadAllEventsP = {},
-            onEventClickP = {}
+            loadAllEventsP = { _, _ ->
+            },
+            onEventClickP = { _ ->
+            },
+            onClickAddP = {
+            },
+            onClickProfileP = {
+            }
         )
     }
 }
