@@ -20,6 +20,8 @@ navigationCompose = "2.7.7"
 ksp = "1.9.23-1.0.20"
 lifecycleRuntimeCompose = "2.8.4"
 lifecycleRuntimeComposeAndroid = "2.8.5"
+mockk = "1.13.12"
+kotlinx-coroutines-test = "1.8.0-RC2"
 
 
 [libraries]
@@ -58,6 +60,9 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
+
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

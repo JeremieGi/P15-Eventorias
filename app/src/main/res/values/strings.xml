@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Eventorias</string>
-    <string name="app_name_test">Eventorias Tests</string>
-    <string name="title_activity_main">Events</string>
     <string name="no_network">No network</string>
     <string name="loading">Loading</string>
     <string name="unknown_error">Unknown error</string>
@@ -33,7 +31,6 @@
     <string name="events">Events</string>
     <string name="profile">Profile</string>
     <string name="name">Name</string>
-    <string name="mandatoryname">Mandatory name</string>
     <string name="email">E-mail</string>
     <string name="userprofile">User profile</string>
     <string name="event">Event</string>

@@ -65,7 +65,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.openclassrooms.p15_eventorias.BuildConfig
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
-import com.openclassrooms.p15_eventorias.repository.user.UserFakeAPI
 import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
@@ -80,7 +79,6 @@ import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.TestOnly
 import java.util.Calendar
 import java.util.Objects
 

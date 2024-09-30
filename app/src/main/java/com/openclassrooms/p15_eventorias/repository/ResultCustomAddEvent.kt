@@ -22,7 +22,7 @@ sealed class ResultCustomAddEvent<out T> {
     // C'est une classe de données générique qui stocke le résultat de l'opération en cas de succès.
     // Elle prend un type générique R pour permettre de représenter différents types de résultats.
     data class Success<out R>(
-        val value: R // Permet de récupérer les valeurs de ResultBankAPI
+        val value: R
     ) : ResultCustomAddEvent<R>()
 
 }

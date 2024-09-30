@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.openclassrooms.p15_eventorias.repository.ResultCustom
 import com.openclassrooms.p15_eventorias.repository.event.EventRepository
-import com.openclassrooms.p15_eventorias.ui.screen.eventsList.EventListUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

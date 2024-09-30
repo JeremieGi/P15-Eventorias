@@ -172,7 +172,7 @@ class UserFirestoreAPI : UserApi {
             id = uid,
             sName = name,
             sEmail = email,
-            sURLAvatar = avatar, // TODO Denis : Ca récupère l'avatar du compte Google par exemple. on en reste là
+            sURLAvatar = avatar,
             bNotificationEnabled = false
         )
 
