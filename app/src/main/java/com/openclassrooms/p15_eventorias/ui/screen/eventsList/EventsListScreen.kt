@@ -51,6 +51,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -89,13 +91,17 @@ fun EventsListScreen(
 
     val context = LocalContext.current
 
+    // Créer un FocusRequester
+    val focusRequester = remember() { FocusRequester() }
+
+
     Scaffold(
 
         topBar = {
             TopAppBar(
                 title = {
 
-                    if (isSearchVisible) {
+                    if (isSearchVisible || sFilterByTitle.isNotEmpty()) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -103,7 +109,8 @@ fun EventsListScreen(
                                 .semantics {
                                     this.contentDescription =
                                         context.getString(R.string.search_event_by_title)
-                                },
+                                }
+                                .focusRequester(focusRequester), // Associer le FocusRequester au champ,
                             value = sFilterByTitle,
                             onValueChange = {
                                 sFilterByTitle = it
@@ -111,6 +118,12 @@ fun EventsListScreen(
                             },
                             singleLine = true
                         )
+
+                        // Donner le focus une fois que le champ est visible
+                        LaunchedEffect(Unit) {
+                            focusRequester.requestFocus()
+                        }
+
                     } else {
                         Text(stringResource(id = R.string.event_list))
                     }
@@ -137,6 +150,7 @@ fun EventsListScreen(
                             isSearchVisible = !isSearchVisible
                             if (!isSearchVisible) {
                                 sFilterByTitle = "" // Réinitialise le texte de recherche quand il se cache
+
                             }
                         }
                     ) {
@@ -282,6 +296,19 @@ fun EventListComposable(
     listEvents: List<Event>,
     onEventClickP: (Event) -> Unit
 ) {
+
+    if (listEvents.isEmpty()){
+        Text(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(
+                    horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
+                    vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
+                )
+               ,
+            text = stringResource(R.string.no_event)
+        )
+    }
 
     LazyColumn (
         modifier = modifier
