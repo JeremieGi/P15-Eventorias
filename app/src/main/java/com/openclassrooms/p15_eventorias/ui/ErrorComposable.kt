@@ -54,7 +54,7 @@ fun ErrorComposable(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onClickRetryP) {
-            Text("Try again")
+            Text(stringResource(R.string.try_again))
         }
     }
 }

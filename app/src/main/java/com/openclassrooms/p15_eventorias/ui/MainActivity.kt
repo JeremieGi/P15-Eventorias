@@ -65,6 +65,7 @@ fun NavGraph(
         // Fenêtre de lancement (Login ou directement liste des évènènements)
         composable(route = Screen.Launch.route) {
 
+            // TODO Denis, en annulant l'identification, le thème n'est pas appliqué
             LaunchScreen(
                 onEventClickP = { event ->
                     //Le clic sur un Post, ouvre le Post

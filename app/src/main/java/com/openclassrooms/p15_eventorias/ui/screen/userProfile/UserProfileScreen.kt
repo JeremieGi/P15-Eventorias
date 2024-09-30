@@ -59,10 +59,12 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import android.Manifest
+import android.app.Activity
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 
 @Composable
@@ -359,7 +361,7 @@ fun SwitchNotificationComposable(
                     }
                 },
             checked = varIsChecked,
-            onCheckedChange = {
+            onCheckedChange = { it ->
 
                 // On est en train d'activer les notification
                 val bActivation = !varIsChecked
@@ -368,19 +370,65 @@ fun SwitchNotificationComposable(
 
                     // Vérifie si on est sur Android 13 ou supérieur
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        // Vérifie si la permission n'a pas déjà été accordée
-                        val isNotificationPermissionGranted = ContextCompat.checkSelfPermission(
-                            context, Manifest.permission.POST_NOTIFICATIONS
-                        ) == PermissionChecker.PERMISSION_GRANTED
+//                        // Vérifie si la permission n'a pas déjà été accordée
+//                        val isNotificationPermissionGranted = ContextCompat.checkSelfPermission(
+//                            context, Manifest.permission.POST_NOTIFICATIONS
+//                        ) == PermissionChecker.PERMISSION_GRANTED
+//
+//                        if (!isNotificationPermissionGranted) {
+//
+//                            val activity = context as? Activity
+//                            activity?.let { activityNotNull ->
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(activityNotNull, Manifest.permission.POST_NOTIFICATIONS)) {
+//                                    // La permission a été refusée précédemment
+//                                    Toast.makeText(context,
+//                                        context.getString(R.string.permission_already_denied), Toast.LENGTH_SHORT).show()
+//                                }
+//                                else {
+//                                    // La permission n'a jamais été demandée ou a été refusée sans "Ne plus demander"
+//                                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+//                                }
+//
+//                            }
+//
+//                        }
+//                        else{
+//                            onChangeNotificationEnableP(it)
+//                            varIsChecked = it
+//                        }
 
-                        if (!isNotificationPermissionGranted) {
-                            // Lance la pop-up qui demande l'autorisation
-                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        when (ContextCompat.checkSelfPermission(
+                            context, Manifest.permission.POST_NOTIFICATIONS
+                        )) {
+                            PermissionChecker.PERMISSION_GRANTED -> {
+                                // La permission est accordée
+                                onChangeNotificationEnableP(it)
+                                varIsChecked = it
+                            }
+
+                            PermissionChecker.PERMISSION_DENIED -> {
+
+                                val activity = context as? Activity
+                                activity?.let { activityNotNull ->
+                                    // Vérifie si l'utilisateur a refusé la permission et si elle est toujours refusée
+                                    if (ActivityCompat.shouldShowRequestPermissionRationale(activityNotNull, Manifest.permission.POST_NOTIFICATIONS)) {
+                                        // L'utilisateur a refusé la permission, mais sans cocher "Ne plus demander"
+                                        Toast.makeText(context, context.getString(R.string.permission_already_denied), Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        // Soit la permission n'a jamais été demandée, soit elle a été désactivée dans les Paramètres
+                                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                    }
+                                }
+
+
+                            }
+
+                            PermissionChecker.PERMISSION_DENIED_APP_OP -> {
+                                // la permission a été refusée via les Paramètres
+                                Toast.makeText(context, context.getString(R.string.permission_already_denied), Toast.LENGTH_SHORT).show()
+                            }
                         }
-                        else{
-                            onChangeNotificationEnableP(it)
-                            varIsChecked = it
-                        }
+
                     }
                     else{
                         // Pas de permission pour les versions d'Android < 13

@@ -47,4 +47,6 @@
     <string name="event_image">Event image</string>
     <string name="search_event_by_title">Search event by title</string>
     <string name="no_event">No event</string>
+    <string name="permission_already_denied">Permission already denied. Please enable it in Settings.</string>
+    <string name="try_again">Try again</string>
 </resources>
