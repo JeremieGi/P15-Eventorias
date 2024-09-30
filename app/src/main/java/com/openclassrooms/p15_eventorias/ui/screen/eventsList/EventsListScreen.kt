@@ -59,6 +59,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.TextFieldValue
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.BottomBarComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
@@ -87,7 +88,9 @@ fun EventsListScreen(
     var isSearchVisible by remember { mutableStateOf(false) }
 
     // Filtre par titre en cours
-    var sFilterByTitle by rememberSaveable { mutableStateOf("") }
+    var searchText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(""))
+    }
 
     val context = LocalContext.current
 
@@ -100,8 +103,8 @@ fun EventsListScreen(
         topBar = {
             TopAppBar(
                 title = {
-
-                    if (isSearchVisible || sFilterByTitle.isNotEmpty()) {
+                    // Clic sur l'icone de recherche OU rotation de l'écran avec une recherche en cours
+                    if (isSearchVisible || searchText.text.isNotEmpty()) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -111,10 +114,10 @@ fun EventsListScreen(
                                         context.getString(R.string.search_event_by_title)
                                 }
                                 .focusRequester(focusRequester), // Associer le FocusRequester au champ,
-                            value = sFilterByTitle,
+                            value = searchText,
                             onValueChange = {
-                                sFilterByTitle = it
-                                viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
+                                searchText = it
+                                viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
                             },
                             singleLine = true
                         )
@@ -149,8 +152,8 @@ fun EventsListScreen(
                             // Change la visibilité du champ de recherche
                             isSearchVisible = !isSearchVisible
                             if (!isSearchVisible) {
-                                sFilterByTitle = "" // Réinitialise le texte de recherche quand il se cache
-
+                                //searchText.text = "" // Réinitialise le texte de recherche quand il se cache
+                                searchText = TextFieldValue("")
                             }
                         }
                     ) {
@@ -172,7 +175,7 @@ fun EventsListScreen(
                             }
 
                             // Tri par date
-                            viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
+                            viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
                         }
                     ) {
                         Icon(
@@ -216,7 +219,7 @@ fun EventsListScreen(
 
             // Recharger les évents quand l'écran est visible
             LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-                viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
+                viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
             }
 
 
@@ -224,7 +227,7 @@ fun EventsListScreen(
                 modifier = Modifier.padding(innerPadding),
                 uiStateListP = uiStateList,
                 loadAllEventsP = {
-                    viewModel.loadAllEvents(sFilterTitleP = sFilterByTitle, bOrderByDatetime = bSortAsc)
+                    viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
                 },
                 onEventClickP = onEventClickP
             )
