@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.openclassrooms.p15_eventorias.R
@@ -64,8 +65,9 @@ fun BottomBarComposable(
 
                 }
                 Text(
+                    modifier = Modifier.clearAndSetSemantics { }, // annonce TalkBack inutile (déjà fait pour l'icone)
                     text = stringResource(id = R.string.events),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
 
@@ -94,6 +96,7 @@ fun BottomBarComposable(
                 }
 
                 Text(
+                    modifier = Modifier.clearAndSetSemantics { }, // annonce TalkBack inutile (déjà fait pour l'icone),
                     text = stringResource(id = R.string.profile),
                     style = MaterialTheme.typography.bodyMedium
                 )

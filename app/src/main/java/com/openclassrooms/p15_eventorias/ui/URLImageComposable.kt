@@ -32,7 +32,7 @@ fun URLImageAvatarComposable(
         model = ImageRequest.Builder(LocalContext.current)
             .data(sURLP)
             .build(),
-        contentDescription = null,
+        contentDescription = stringResource(R.string.avatar_of_the_event_creator),
         contentScale = ContentScale.Crop,
         loading = {
             CircularProgressIndicator()
@@ -62,7 +62,7 @@ fun URLImageEventComposable(
         model = ImageRequest.Builder(LocalContext.current)
             .data(sURLP)
             .build(),
-        contentDescription = null,
+        contentDescription = stringResource(R.string.event_image),
         contentScale = ContentScale.Crop,  // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale
         loading = {
             CircularProgressIndicator()

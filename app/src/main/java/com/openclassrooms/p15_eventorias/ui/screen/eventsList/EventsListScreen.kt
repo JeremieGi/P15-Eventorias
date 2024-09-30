@@ -52,8 +52,11 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.BottomBarComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
@@ -84,6 +87,8 @@ fun EventsListScreen(
     // Filtre par titre en cours
     var sFilterByTitle by rememberSaveable { mutableStateOf("") }
 
+    val context = LocalContext.current
+
     Scaffold(
 
         topBar = {
@@ -94,7 +99,11 @@ fun EventsListScreen(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .testTag("TagSearchField"), // Pour détecter le champ dans les tests instrumentés
+                                .testTag("TagSearchField") // Pour détecter le champ dans les tests instrumentés
+                                .semantics {
+                                    this.contentDescription =
+                                        context.getString(R.string.search_event_by_title)
+                                },
                             value = sFilterByTitle,
                             onValueChange = {
                                 sFilterByTitle = it
@@ -385,7 +394,7 @@ fun EventItemListComposable(
 
 @Preview("Events list success")
 @Composable
-fun EventListComposableSucessPreview() {
+fun EventListComposableSuccessPreview() {
 
     val listFakeEvent = EventFakeAPI.initFakeEvents()
     val uiStateSuccess = EventListUIState.Success(listFakeEvent)

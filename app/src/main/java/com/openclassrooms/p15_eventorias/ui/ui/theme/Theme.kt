@@ -59,7 +59,7 @@ object MyButtonStyle {
     fun buttonColors(): ButtonColors {
         return ButtonDefaults.buttonColors(
             disabledContainerColor = Color.Gray,  // Couleur de fond quand désactivé
-            disabledContentColor = Color.White    // Couleur du texte quand désactivé
+            disabledContentColor = Color.Black   // Couleur du texte quand désactivé
         )
     }
 }

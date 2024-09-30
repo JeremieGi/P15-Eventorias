@@ -59,6 +59,8 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 import android.Manifest
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.core.content.PermissionChecker
 
 @Composable
@@ -345,6 +347,14 @@ fun SwitchNotificationComposable(
 
 
         Switch(
+            modifier = Modifier
+                .semantics {
+                    this.contentDescription = if (varIsChecked) {
+                        context.getString(R.string.tap_to_turn_off_notifications)
+                    } else {
+                        context.getString(R.string.tap_to_enable_notifications)
+                    }
+                },
             checked = varIsChecked,
             onCheckedChange = {
 
