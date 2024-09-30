@@ -1,7 +1,6 @@
 package com.openclassrooms.p15_eventorias.repository.user
 
 import android.content.Context
-import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.model.User
@@ -56,7 +55,6 @@ class UserRepository @Inject constructor(
      * Log out current user
      */
     fun signOut(context : Context) : Task<Void> {
-        // TODo JG : A descendre dans l'API
-        return AuthUI.getInstance().signOut(context)
+        return userApi.signOut(context)
     }
 }

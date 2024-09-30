@@ -4,6 +4,7 @@ import android.content.Context
 import com.openclassrooms.p15_eventorias.R
 import com.openclassrooms.p15_eventorias.utils.getCoordinatesFromAddress
 
+// Paramètre par défaut pour tous les élements car cet objet est utilisé dans un UI State
 
 data class Event (
 

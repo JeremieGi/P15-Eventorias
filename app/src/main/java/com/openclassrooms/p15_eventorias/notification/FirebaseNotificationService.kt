@@ -28,7 +28,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
     private val _notificationId = 1
     private val _notificationTag = "EVENTORIAS"
 
-    /**Miscellaneous
+    /**
      * Méthode appelée à la réception d'une notification
      */
     override fun onMessageReceived(message: RemoteMessage) {
@@ -90,7 +90,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         )
     }
 
-    // Je prends un warning si je n'implémente pas cette méthode
+    // Warning si je n'implémente pas cette méthode
     override fun onNewToken(token: String) {
         // Mais je ne gère pas les tokens dans ce projet
 

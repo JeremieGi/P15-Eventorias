@@ -1,31 +1,32 @@
 package com.openclassrooms.p15_eventorias.model
 
 data class User(
+
     /**
      * Unique identifier for the User.
      */
-    val id: String = "",
+    val id: String,
 
     /**
      * User's name.
      */
-    val sName: String = "",
+    val sName: String,
 
 
     /**
      * User's email.
      */
-    val sEmail: String = "",
+    val sEmail: String,
 
 
     /**
      * avatar.
      */
-    val sURLAvatar : String = "",
+    val sURLAvatar : String,
 
     /**
      * Activation des notifications
      */
-    var bNotificationEnabled : Boolean = false
+    var bNotificationEnabled : Boolean
 
 )

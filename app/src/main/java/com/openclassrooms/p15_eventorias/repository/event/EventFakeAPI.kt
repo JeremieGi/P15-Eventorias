@@ -13,7 +13,7 @@ class EventFakeAPI : EventApi {
 
     companion object {
 
-        // J'utilise cette procédure pour les previews Compose
+        // J'utilise cette procédure statique pour les previews Compose et les tests
         fun initFakeEvents() : MutableList<Event> {
 
             val sPhotoUser1 = "https://xsgames.co/randomusers/assets/avatars/male/71.jpg"

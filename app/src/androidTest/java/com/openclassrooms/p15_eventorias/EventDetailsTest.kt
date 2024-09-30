@@ -51,11 +51,11 @@ class EventDetailsTest {
 
         composeTestRule.awaitIdle()
 
-        // Détection du contenu de l'évènement
+        // Détection de la description de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sDescription)
             .assertIsDisplayed()
 
-        // Détection du contenu de l'évènement
+        // Détection de l'adresse de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sAddress)
             .assertIsDisplayed()
 

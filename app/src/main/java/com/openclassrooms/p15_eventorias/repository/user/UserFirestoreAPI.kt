@@ -28,26 +28,29 @@ class UserFirestoreAPI : UserApi {
 
     // Get the Collection Reference
     private fun getUsersCollection(): CollectionReference {
-        // collection() permet de récupérer la référence d'une collection dont le chemin est renseignée en paramètre de la méthode.
+        // collection() permet de récupérer la référence d'une collection dont le chemin est renseigné en paramètre de la méthode.
         // ici, on récupère tous les users
         return FirebaseFirestore.getInstance().collection(COLLECTION_USERS)
     }
 
+    // Utilisation du contexte utilisateur de Firebase
     private fun getCurrentFirebaseUser() : FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
     }
 
+    // ID de l'utilisateur courant
     override fun getCurrentUserID(): String {
         // L'id de l'utilisateur en base de données et celui de Firebase Auth est le même
         return getCurrentFirebaseUser()?.uid?:""
     }
 
+    // Donne l'URL de l'avatar de l'utilisateur courant
     override fun getCurrentUserAvatar(): String {
         return getCurrentFirebaseUser()?.photoUrl.toString()
         //return _currentUser?.sURLAvatar?:""
     }
 
-
+    // Modification du paramètrages des notifications
     override fun setNotificationEnabled(bNotificationEnabled: Boolean) {
 
         // Lors de cet appel _currentUser a déjà été chargé
@@ -72,60 +75,52 @@ class UserFirestoreAPI : UserApi {
 
     }
 
+    /**
+     * Chargement asynchrone d'un utilisateur
+     */
     override fun loadCurrentUser(): Flow<ResultCustom<User>> {
 
         return callbackFlow {
 
-//            // Utilisateur courant déjà en mémoire
-//            _currentUser?.let { currentUser ->
-//
-//                // On le retourne
-//                trySend(ResultCustom.Success(currentUser))
-//
-//
-//            } ?: run {
-                // Bloc de code à exécuter si _currentUser est null
-                // (1er appel à la méthode)
+            // On récupère dans Firebase
+            val userFirebase = getCurrentFirebaseUser()
+            if (userFirebase != null) {
+                // Puis en base de données pour les champs supplémentaires
+                val docUser = getUsersCollection().document(userFirebase.uid)
+                docUser.get()
+                    .addOnSuccessListener { documentSnapshot ->
+                        // Ici on est dans une coroutine
 
-                // On récupère dans Firebase
-                val userFirebase = getCurrentFirebaseUser()
-                if (userFirebase != null) {
-                    // Puis en base de données pour les champs supplémentaires
-                    val docUser = getUsersCollection().document(userFirebase.uid)
-                    docUser.get()
-                        .addOnSuccessListener { documentSnapshot ->
-                            // Ici on est dans une coroutine
+                        if (documentSnapshot.exists()) {
+                            // Le snapshot contient des données valides
 
-                            if (documentSnapshot.exists()) {
-                                // Le snapshot contient des données valides
+                            // Récupération du DTO
+                            val userDTO = documentSnapshot.toObject(FirebaseUserDTO::class.java)
 
-                                // Récupération du DTO
-                                val userDTO = documentSnapshot.toObject(FirebaseUserDTO::class.java)
+                            // Conversion en User Model
+                            _currentUser = userDTO?.toModel()
 
-                                // Conversion en User Model
-                                _currentUser = userDTO?.toModel()
-
-                                _currentUser?.let {
-                                    trySend(ResultCustom.Success(it))
-                                }?:run{
-                                    trySend(ResultCustom.Failure("documentSnapshot.toObject return null"))
-                                }
-
-
-                            } else {
-                                trySend(ResultCustom.Failure("Firebase User not find in the database (Snapshot Error)"))
+                            _currentUser?.let {
+                                trySend(ResultCustom.Success(it))
+                            }?:run{
+                                trySend(ResultCustom.Failure("documentSnapshot.toObject return null"))
                             }
 
+
+                        } else {
+                            trySend(ResultCustom.Failure("Firebase User not find in the database (Snapshot Error)"))
                         }
-                        .addOnFailureListener { e ->
-                            // Ici on est dans une coroutine
-                            trySend(ResultCustom.Failure("Failure during database access : ${e.message}"))
-                        }
-                }
-                else{
-                    trySend(ResultCustom.Failure("Firebase User not find in Authentication"))
-                }
-        //    }
+
+                    }
+                    .addOnFailureListener { e ->
+                        // Ici on est dans une coroutine
+                        trySend(ResultCustom.Failure("Failure during database access : ${e.message}"))
+                    }
+            }
+            else{
+                trySend(ResultCustom.Failure("Firebase User not find in Authentication"))
+            }
+
 
             // awaitClose : Permet d'exécuter du code quand le flow n'est plus écouté
             awaitClose {
@@ -151,9 +146,7 @@ class UserFirestoreAPI : UserApi {
             // Avec le DTO, je contrôle le nom des champs de base de données
             val userToCreate = firebaseUserToUserDTO(userFirebase)
 
-
             // Utilisateur existant dans la base de données ?
-
             // Si l'utilisateur n'existe pas
             getUserData()?.addOnSuccessListener {
 
@@ -168,6 +161,7 @@ class UserFirestoreAPI : UserApi {
 
     }
 
+    // Renvoie un UserDTO à partir d'un FirebaseUser
     private fun firebaseUserToUserDTO(userFirebase: FirebaseUser): FirebaseUserDTO {
 
         val uid = userFirebase.uid                      // Récupération de l'ID créé lors de l'authenfication Firebase
@@ -200,6 +194,7 @@ class UserFirestoreAPI : UserApi {
 
     }
 
+    // ID de l'utilisateur courant
     private fun getCurrentUserUID(): String? {
         return this.getCurrentFirebaseUser()?.uid
     }

@@ -25,7 +25,7 @@ import java.util.Calendar
 class EventRepositoryTest {
 
 
-    private lateinit var cutEventRepository : EventRepository //Class Under Test
+    private lateinit var cutEventRepository : EventRepository // Class Under Test
 
     // Paramètre du repository
     private lateinit var mockAPI: EventApi

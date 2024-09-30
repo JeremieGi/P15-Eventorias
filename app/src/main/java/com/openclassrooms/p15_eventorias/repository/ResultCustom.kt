@@ -1,7 +1,7 @@
 package com.openclassrooms.p15_eventorias.repository
 
 /**
- * Custom class to manage the different result
+ * Classe permettant de gérer le chargement, l'erreur et le succès de chargement d'un objet générique T
  */
 sealed class ResultCustom<out T> {
 

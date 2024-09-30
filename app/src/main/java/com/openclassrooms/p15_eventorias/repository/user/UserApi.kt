@@ -10,9 +10,14 @@ import kotlinx.coroutines.flow.Flow
 interface UserApi {
 
     // Méthodes synchrones
+
+    // Donne l'ID de l'utilisateur courant
     fun getCurrentUserID() : String
+
+    // Donne l'URL de l'avatar de l'utilisateur courant
     fun getCurrentUserAvatar() : String
 
+    // Modification du paramètrages des notifications
     fun setNotificationEnabled(bNotificationEnabled: Boolean)
 
     /**
@@ -25,6 +30,8 @@ interface UserApi {
      */
     fun insertCurrentUser()
 
-
+    /**
+     * Déconnecte un utilisateur
+     */
     fun signOut(context : Context) : Task<Void>
 }

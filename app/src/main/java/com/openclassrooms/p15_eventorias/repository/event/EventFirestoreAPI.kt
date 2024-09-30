@@ -21,6 +21,7 @@ class EventFirestoreAPI : EventApi {
 
     companion object {
 
+        // Nom d ela collection en base de données
         private const val COLLECTION_EVENTS: String = "events"
 
     }
@@ -28,10 +29,10 @@ class EventFirestoreAPI : EventApi {
     // Get the Collection Reference
     private fun getEventsCollection(): CollectionReference {
         // collection() permet de récupérer la référence d'une collection dont le chemin est renseignée en paramètre de la méthode.
-        // ici, on récupère tous les events
         return FirebaseFirestore.getInstance().collection(COLLECTION_EVENTS)
     }
 
+    // Charge tous les évènements
     override fun loadAllEvents(
         sFilterTitleP: String,
         bOrderByDatetimeP: Boolean?
@@ -75,6 +76,7 @@ class EventFirestoreAPI : EventApi {
         }
     }
 
+    // Requête la liste des évènements dans Firebase
     private fun requestListEvent(
         //sFilterTitleP: String,
         bOrderByDatetimeP: Boolean?
@@ -98,6 +100,7 @@ class EventFirestoreAPI : EventApi {
 
     }
 
+    // Ajoute un évènement
     override fun addEvent(event: Event): Flow<ResultCustomAddEvent<Event>> {
 
         // Cette méthode crée un Flow qui est basé sur des callbacks, ce qui est idéal pour intégrer des API asynchrones comme Firestore.
@@ -118,6 +121,7 @@ class EventFirestoreAPI : EventApi {
 
     }
 
+    // Upload l'image de l'evènement sur le cloud firestore et sauve l'évènement avec un lien vers ce fichier
     private fun uploadImageAndSaveEvent(
         eventP : Event,
         sURLP : String) = callbackFlow {
@@ -202,6 +206,7 @@ class EventFirestoreAPI : EventApi {
 
     }
 
+    // Charge un évènement par son ID dans firebase
     override fun loadEventByID(idEvent: String): Flow<ResultCustom<Event>> {
 
         val queryEventByID = requestEventByID(idEvent)
@@ -240,6 +245,7 @@ class EventFirestoreAPI : EventApi {
 
     }
 
+    // Recherche un évènement par son ID dans firebase
     private fun requestEventByID(idEvent: String): Query {
 
         return this.getEventsCollection()

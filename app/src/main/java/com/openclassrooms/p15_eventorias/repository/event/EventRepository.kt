@@ -23,7 +23,7 @@ class EventRepository @Inject constructor(
 ){
 
     /**
-     * Liste d'évènement qui sera écouté
+     * Liste d'évènement qui sera écouté par les viewModels
      */
     private var _flowEvents = MutableSharedFlow<ResultCustom<List<Event>>>() //eventApi.loadAllEvents() //loadAllEvents() //  //=
     val flowEvents : SharedFlow<ResultCustom<List<Event>>>
