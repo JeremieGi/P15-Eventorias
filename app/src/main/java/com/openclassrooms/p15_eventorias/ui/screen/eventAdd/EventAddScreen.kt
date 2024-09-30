@@ -82,7 +82,7 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Objects
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun EventAddScreen(
     modifier: Modifier = Modifier,
@@ -91,6 +91,57 @@ fun EventAddScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+
+    // Gestion du résultat de l'ajout
+    val currentUIState = uiState // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
+
+
+    EventAddStateComposable(
+        modifier = modifier,
+        uiStateP = currentUIState,
+        addEventP = {
+            viewModel.addEvent()
+        },
+        onActionP = viewModel::onAction,
+        onBackClick = onBackClick,
+        getFormErrorP = viewModel::getFormError
+    )
+
+
+
+
+    val context = LocalContext.current
+    val ioScope = CoroutineScope(Dispatchers.IO)
+
+    // DisposableEffect(Unit) => Exécuté uniquement lors de la création et de la suppression du composable
+    DisposableEffect(Unit) {
+
+        // lorsque le Composable est détruit
+        onDispose {
+            ioScope.launch {   // Scope IO pour ne pas bloquer le thread UI
+                // si la coroutine est en cours d'exécution
+                // lorsqu'elle est annulée car le Composable est supprimé,
+                // elle continuera à s'exécuter en arrière-plan jusqu'à ce qu'elle soit terminée.
+                context.clearCachePhoto()   // Nettoyage du répertoire dedié au stockage des photos
+            }
+        }
+    }
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EventAddStateComposable(
+    modifier: Modifier = Modifier,
+    uiStateP: EventAddUIState,
+    addEventP: () -> Unit,
+    onBackClick: () -> Unit,
+    onActionP: (FormDataAddEvent) -> Unit,
+    getFormErrorP: () -> FormErrorAddEvent?
+) {
+
 
     Scaffold(
         modifier = modifier,
@@ -117,124 +168,76 @@ fun EventAddScreen(
         }
     ) { contentPadding ->
 
-        // Gestion du résultat de l'ajout
-        val currentUIState = uiState // Utilisation d'un variable car sinon erreur : "Smart cast to 'EventAddUIState.Error' is impossible, because 'uiStateAddEventResult' is a property that has open or custom getter", => Kotlin ne peut pas garantir que la valeur de la propriété n'a pas changé entre les 2 appels
 
+        when (val uiStateAddEvent = uiStateP.addEventResult) {
 
-        EventAddStateComposable(
-            modifier = Modifier
-                .padding(contentPadding),
-            uiStateP = currentUIState,
-            addEventP = {
-                viewModel.addEvent()
-            },
-            onActionP = viewModel::onAction,
-            onBackClick = onBackClick,
-            getFormErrorP = viewModel::getFormError
-        )
-
-    }
-
-
-    val context = LocalContext.current
-    val ioScope = CoroutineScope(Dispatchers.IO)
-
-    // DisposableEffect(Unit) => Exécuté uniquement lors de la création et de la suppression du composable
-    DisposableEffect(Unit) {
-
-        // lorsque le Composable est détruit
-        onDispose {
-            ioScope.launch {   // Scope IO pour ne pas bloquer le thread UI
-                // si la coroutine est en cours d'exécution
-                // lorsqu'elle est annulée car le Composable est supprimé,
-                // elle continuera à s'exécuter en arrière-plan jusqu'à ce qu'elle soit terminée.
-                context.clearCachePhoto()   // Nettoyage du répertoire dedié au stockage des photos
-            }
-        }
-    }
-
-
-}
-
-@Composable
-fun EventAddStateComposable(
-    modifier: Modifier = Modifier,
-    uiStateP: EventAddUIState,
-    addEventP: () -> Unit,
-    onBackClick: () -> Unit,
-    onActionP: (FormDataAddEvent) -> Unit,
-    getFormErrorP: () -> FormErrorAddEvent?
-) {
-
-
-
-    when (val uiStateAddEvent = uiStateP.addEventResult){
-
-        // Erreur
-        is EventAddResultUIState.AddError -> {
-            val sError = uiStateAddEvent.sError ?: stringResource(R.string.unknown_error)
-            ErrorComposable(
-                modifier = modifier,
-                sErrorMessage = sError,
-                onClickRetryP = addEventP
-            )
-        }
-
-        // Ajout en cours
-        EventAddResultUIState.AddIsLoading -> {
-            LoadingComposable(modifier = modifier)
-        }
-
-        EventAddResultUIState.AddSuccess -> {
-            onBackClick() // Retour à la liste d'évènement
-        }
-
-        // Formulaire de saisie
-        null -> {
-
-            Column(
-                modifier = modifier
-                    .padding(
-                        horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
-                        vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
-                    )
-
-            ){
-
-                // Le formulaire prend la totalité de la hauteur dispo
-                InputFormComposable(
-                    modifier = Modifier.weight(1f), // Toute la hauteur
-                    uiStateP = uiStateP,
-                    onActionP = onActionP
+            // Erreur
+            is EventAddResultUIState.AddError -> {
+                val sError = uiStateAddEvent.sError ?: stringResource(R.string.unknown_error)
+                ErrorComposable(
+                    modifier = modifier.padding(contentPadding),
+                    sErrorMessage = sError,
+                    onClickRetryP = addEventP
                 )
+            }
 
-                Spacer(modifier = Modifier.height(16.dp))
+            // Ajout en cours
+            EventAddResultUIState.AddIsLoading -> {
+                LoadingComposable(modifier = modifier.padding(contentPadding))
+            }
 
+            EventAddResultUIState.AddSuccess -> {
+                onBackClick() // Retour à la liste d'évènement
+            }
 
-                Button(
-                    modifier = Modifier
-                        .navigationBarsPadding() // Ajoute un padding en fonction de la barre de navigation système pour éviter qu'elle masque le bouton
-                        .fillMaxWidth(),
-                    onClick = {
-                        addEventP()
-                    },
-                    // Bouton inactif au lancement
-                    enabled = (getFormErrorP()==null) ,
-                    colors = MyButtonStyle.buttonColors()  // Couleurs de grisage factorisées dans le Theme
+            // Formulaire de saisie
+            null -> {
 
-                ){
-                    Text(
-                        text = stringResource(id = R.string.validate),
+                Column(
+                    modifier = modifier
+                        .padding(contentPadding)
+                        .padding(
+                            horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
+                            vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
+                        )
+
+                ) {
+
+                    // Le formulaire prend la totalité de la hauteur dispo
+                    InputFormComposable(
+                        modifier = Modifier.weight(1f), // Toute la hauteur
+                        uiStateP = uiStateP,
+                        onActionP = onActionP
                     )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    Button(
+                        modifier = Modifier
+                            .navigationBarsPadding() // Ajoute un padding en fonction de la barre de navigation système pour éviter qu'elle masque le bouton
+                            .fillMaxWidth(),
+                        onClick = {
+                            addEventP()
+                        },
+                        // Bouton inactif au lancement
+                        enabled = (getFormErrorP() == null),
+                        colors = MyButtonStyle.buttonColors()  // Couleurs de grisage factorisées dans le Theme
+
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.validate),
+                        )
+                    }
+
                 }
 
             }
 
+
         }
 
-
     }
-
 }
 
 @Composable

@@ -422,7 +422,10 @@ fun EventItemListComposable(
 
 
 
-@Preview("Events list success")
+@Preview(
+    name ="Events list success",
+    showBackground = true
+)
 @Composable
 fun EventListComposableSuccessPreview() {
 
