@@ -190,7 +190,8 @@ fun EventAddStateComposable(
 
             EventAddResultUIState.AddSuccess -> {
 
-                // TODO Denis : Voir pourquoi on rentre ici 2 fois au succès de l'ajout
+                // on rentre ici 2 fois au succès de l'ajout à cause du DisposableEffect qui crée un appel supplémentaire
+                // donc je proptège onBackClick() pour ne l'exécuter qu'une seule fois
                 var isBack by remember { mutableStateOf(false) }
                 if (!isBack){
                     onBackClick() // Retour à la liste d'évènement
