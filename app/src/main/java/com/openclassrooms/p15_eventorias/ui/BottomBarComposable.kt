@@ -26,6 +26,9 @@ import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorCardAndInput
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorTitleWhite
 import com.openclassrooms.p15_eventorias.ui.ui.theme.P15EventoriasTheme
 
+/**
+ * Composable pour afficher la BottomBar
+ */
 @Composable
 fun BottomBarComposable(
     sActiveScreenP : String,
