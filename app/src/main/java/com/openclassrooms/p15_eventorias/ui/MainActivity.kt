@@ -94,7 +94,12 @@ fun NavGraph(
                         navController.navigate(Screen.EventAdd.route)
                     },
                     onClickProfileP = {
-                        navController.navigate(Screen.UserProfile.route)
+                        navController.navigate(Screen.UserProfile.route){
+                            // permet de ne pas ouvrir un nouvel écran (pour ne pas surcharger la pile)
+                            popUpTo(navController.graph.startDestinationId)  { saveState = true }
+                            launchSingleTop = true      // reselecting the same item
+                            restoreState = true         // Restore state when reselecting a previously selected item
+                        }
                     }
                 )
 
@@ -124,7 +129,14 @@ fun NavGraph(
         composable(route = Screen.UserProfile.route) {
             UserProfileScreen(
                 onBackClick = { navController.navigateUp() },
-                onClickEventsP = { navController.navigate(Screen.EventsList.route) }
+                onClickEventsP = {
+                    navController.navigate(Screen.EventsList.route){
+                        // permet de ne pas ouvrir un nouvel écran (pour ne pas surcharger la pile)
+                        popUpTo(navController.graph.startDestinationId)  { saveState = true }
+                        launchSingleTop = true      // reselecting the same item
+                        restoreState = true         // Restore state when reselecting a previously selected item
+                    }
+                }
             )
         }
 

@@ -83,12 +83,6 @@ fun EventsListScreen(
     // la recomposition a lieu pour les composables utilisant la valeur uiState.
     val uiStateList by viewModel.uiState.collectAsState()
 
-    // Recharger les évents quand l'écran est visible
-    LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
-        //viewModel.loadAllEvents(sFilterTitleP = searchText.text, bOrderByDatetime = bSortAsc)
-        viewModel.loadAllEvents(sFilterTitleP = "", bOrderByDatetime = null)
-    }
-
 
     EventListStateComposable(
         uiStateListP = uiStateList,
@@ -129,6 +123,10 @@ fun EventListStateComposable(
     // Créer un FocusRequester
     val focusRequester = remember { FocusRequester() }
 
+    // Recharger les évents quand l'écran est visible
+    LaunchedEffect(Unit) { // Pour déclencher l'effet secondaire une seule fois au cours du cycle de vie de ce composable
+        loadAllEventsP(searchText.text, bSortAsc)
+    }
 
     Scaffold(
 
