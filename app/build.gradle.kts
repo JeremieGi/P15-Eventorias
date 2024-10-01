@@ -9,6 +9,7 @@ plugins {
 
     id("com.google.gms.google-services")
     id("jacoco")
+
 }
 
 tasks.withType<Test> {
