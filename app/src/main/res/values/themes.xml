@@ -41,7 +41,7 @@
 
         <!-- On API 21+ you can use android:statusBarColor -->
         <!-- Barre système en haut -->
-        <item name="colorPrimaryDark">@color/backgroundLogin</item>
+        <item name="colorPrimaryDark">@color/backgroundLoginLight</item>
 
 
     </style>

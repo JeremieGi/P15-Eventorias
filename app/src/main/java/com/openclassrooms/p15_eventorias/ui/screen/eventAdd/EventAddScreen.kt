@@ -44,7 +44,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -187,7 +189,13 @@ fun EventAddStateComposable(
             }
 
             EventAddResultUIState.AddSuccess -> {
-                onBackClick() // Retour à la liste d'évènement
+
+                // TODO Denis : Voir pourquoi on rentre ici 2 fois au succès de l'ajout
+                var isBack by remember { mutableStateOf(false) }
+                if (!isBack){
+                    onBackClick() // Retour à la liste d'évènement
+                    isBack = true
+                }
             }
 
             // Formulaire de saisie
