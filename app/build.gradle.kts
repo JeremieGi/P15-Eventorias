@@ -26,7 +26,24 @@ if (localPropertiesFile.exists()) {
 
 val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(keystorePropertiesFile.inputStream())
+}
+
+// val key: String = keystoreProperties.getProperty("maclé") ?: ""
+
 android {
+    signingConfigs {
+        create("release") {
+            storeFile =
+                file(keystoreProperties.getProperty("storeFile"))
+            storePassword = keystoreProperties.getProperty("storePassword")
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword =  keystoreProperties.getProperty("keyPassword")
+        }
+    }
     namespace = "com.openclassrooms.p15_eventorias"
     compileSdk = 34
 
@@ -60,6 +77,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             enableAndroidTestCoverage = true
