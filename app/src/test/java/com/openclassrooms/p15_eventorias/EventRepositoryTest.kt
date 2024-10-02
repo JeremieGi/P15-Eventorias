@@ -14,7 +14,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -73,12 +72,15 @@ class EventRepositoryTest {
         }
 
         // Test réel de la fonction
-        run {
+        val jobLoadAllEvents = launch {
             cutEventRepository.loadAllEvents("",true)
         }
 
+
+
         // Attend que toutes les couroutines en attente s'executent
-        advanceUntilIdle()
+        //advanceUntilIdle()
+        jobLoadAllEvents.join()
 
         // coVerify : s'assure que les fonctions des mocks ont été appelées
         coVerify {
@@ -94,6 +96,7 @@ class EventRepositoryTest {
 
         // Cancel the collection job
         job.cancel()
+        jobLoadAllEvents.cancel()
     }
 
 
@@ -130,12 +133,15 @@ class EventRepositoryTest {
         }
 
         //Test réel de la fonction
-        run {
+        val jobLoadAllEvents = launch{
             cutEventRepository.loadAllEvents("",true)
         }
 
+
+
         // Attend que toutes les couroutines en attente s'executent
-        advanceUntilIdle()
+        //advanceUntilIdle()
+        jobLoadAllEvents.join()
 
         // coVerify : s'assure que les fonctions des mocks ont été appelées
         coVerify {
@@ -151,6 +157,7 @@ class EventRepositoryTest {
 
         // Cancel the collection job
         job.cancel()
+        jobLoadAllEvents.cancel()
     }
 
     /**

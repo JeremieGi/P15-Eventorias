@@ -77,6 +77,12 @@ jobs:
       #- name: Set up Android SDK
       #  uses: react-native-community/setup-android@v1.1.0  # Vérifiez la dernière version
 
+      # KVM permet à l'émulateur de s'exécuter plus rapidement et de manière plus efficace en utilisant la virtualisation matérielle. Cela réduit considérablement le temps nécessaire pour lancer et exécuter des tests.
+      - name: Enable KVM
+        run: |
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+            sudo udevadm control --reload-rules
+            sudo udevadm trigger --name-match=kvm
 
       # https://github.com/marketplace/actions/android-emulator-runner
       - name: Android Emulator Runner
