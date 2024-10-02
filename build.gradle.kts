@@ -25,5 +25,10 @@ sonar {
         property("sonar.projectKey", "JeremieGi_P15-Eventorias")
         property("sonar.organization", "jeremieg")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.tests", "src/test/java, src/androidTest/java")
+        property("sonar.language", "kotlin")
+        property("sonar.sources", "src/main/java, src/main/kotlin")
+        property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
+        property("sonar.coverage.jacoco.xmlReportPaths","build/reports/coverage/androidTest/debug/connected/report.xml")
     }
 }
