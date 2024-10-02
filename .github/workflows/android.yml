@@ -66,10 +66,11 @@ jobs:
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload unit test reports
+        if: failure() # Pour uploader uniquement si les tests échouent
         uses: actions/upload-artifact@v4
         with:
             name: unit-test-reports
-            path: app/build/reports/tests/testReleaseUnitTest/index.html
+            path: app/build/reports/tests/testReleaseUnitTest/
 
       # Run instrumented test
       - name: Run instrumented tests
@@ -78,9 +79,10 @@ jobs:
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload instrumented test reports
+        if: failure() # Pour uploader uniquement si les tests échouent
         uses: actions/upload-artifact@v4
         with:
             name: instrumented-test-reports
-            path: app/build/reports/androidTests/connected/index.html
+            path: app/build/reports/androidTests/connected/release/
 
 

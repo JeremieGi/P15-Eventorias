@@ -5,13 +5,22 @@ import com.openclassrooms.p15_eventorias.utils.longToFormatedString
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
+import java.util.TimeZone
 
 /**
  * Tests des fonctions utilitaires de Date
  */
 
 class UtilsDateTest {
+
+    @Before
+    fun defineTestTimeZone(){
+        // Définir explicitement le fuseau horaire pour le test
+        // Car sinon le test peut-être rouge dans l'environnment GitHub Action (CI)
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+    }
 
     @Test
     fun testLongToFormattedString_withZeroTimestamp() {
@@ -31,7 +40,7 @@ class UtilsDateTest {
 
     @Test
     fun testLongToFormattedString_withHourPattern() {
-        val timestamp = 1640995200000L // Correspond à 01/01/2022 01:00:00
+        val timestamp = 1640998800000L // Correspond à 01/01/2022 01:00:00
         val expectedFormat = "01:00"
 
         val result = longToFormatedString(timestamp, "HH:mm")
