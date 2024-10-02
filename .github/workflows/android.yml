@@ -62,3 +62,23 @@ jobs:
         # Run Unit test
       - name: Run unit tests
         run: ./gradlew test
+
+      # Permet de déposer un fichier dans le compte-rendu du gitHub Action
+      - name: Upload unit test reports
+        uses: actions/upload-artifact@v2
+        with:
+            name: unit-test-reports
+            path: app/build/reports/tests/testReleaseUnitTest/index.html
+
+      # Run instrumented test
+      - name: Run instrumented tests
+        run: ./gradlew connectedAndroidTest
+
+      # Permet de déposer un fichier dans le compte-rendu du gitHub Action
+      - name: Upload instrumented test reports
+        uses: actions/upload-artifact@v2
+        with:
+            name: instrumented-test-reports
+            path: app/build/reports/androidTests/connected/index.html
+
+
