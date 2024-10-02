@@ -48,7 +48,11 @@ else{
     val encodedbase64content = System.getenv("KEYSTORE_BASE64")
     val decodedKeystore = Base64.getDecoder().decode(encodedbase64content)
 
+
     val keystoreFileTemp = layout.buildDirectory.dir("temp_keystore.jks").get().asFile
+
+    // pour que le répertoire parent existe (sinon erreur "No such file or directory")
+    keystoreFileTemp.parentFile.mkdirs()
 
     // Créer un fichier temporaire pour stocker le keystore décodé
     keystoreFileTemp.writeBytes(decodedKeystore)
