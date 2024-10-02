@@ -49,10 +49,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Decode keystore
-        run: |
-            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$HOME/keystore.jks"
-
       - name: Load Google Service file
         run:
           echo "${{ secrets.KEY_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
