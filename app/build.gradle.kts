@@ -63,6 +63,8 @@ else{
 // Le fichier google-services.json est exclu de Git
 // Son contenu est dans un secret GitHub KEY_GOOGLE_SERVICES_JSON_CONTENT (non encodé en Base)
 // Il faut donc recréer ce fichier en envirronement GitHub
+// Vu que je n'ai pas besoin de son contenu dans l'appli (comme par exemple la cléd'APi Google),
+// Sa création est faite dans android.yml
 
 //// Créer le fichier google-services.json à partir du secret
 //val googleServicesJson : String? = System.getenv("GOOGLE_SERVICES_JSON") // Déclaration explicite du type pouré viter le warning : Declaration has type inferred from a platform call, which can lead to unchecked nullability issues. Specify type explicitly as nullable or non-nullable.
