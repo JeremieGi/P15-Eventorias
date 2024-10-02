@@ -29,8 +29,21 @@ val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("keystore.properties")
+// Si le fichier keystore existe (= build en local)
 if (keystorePropertiesFile.exists()) {
+    // Chargement du fichier keystore.properties (non présent sur gitHub)
     keystoreProperties.load(keystorePropertiesFile.inputStream())
+}
+else{
+    // Charger depuis les secrets GitHub (Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables)
+    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_PATH")
+        ?: System.getProperty("storeFile") // Si défini comme paramètre dans Gradle
+    keystoreProperties["storePassword"] = System.getenv("KEYSTORE_PASSWORD")
+        ?: System.getProperty("storePassword")
+    keystoreProperties["keyAlias"] = System.getenv("KEY_ALIAS")
+        ?: System.getProperty("keyAlias")
+    keystoreProperties["keyPassword"] = System.getenv("KEY_PASSWORD")
+        ?: System.getProperty("keyPassword")
 }
 
 // val key: String = keystoreProperties.getProperty("maclé") ?: ""

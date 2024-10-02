@@ -17,8 +17,17 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
+
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
+    env:
+      # Secrets pour la signature
+      # Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -33,9 +42,13 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Decode keystore
+        run: |
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$HOME/keystore.jks"
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build the project and sign APK
+        run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
         
