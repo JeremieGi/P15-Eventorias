@@ -83,18 +83,18 @@ jobs:
             path: app/build/reports/tests/testReleaseUnitTest/
 
 
-      - name: Set up Android SDK
-        uses: reactions/setup-android-sdk@v1
+      #- name: Set up Android SDK
+      #  uses: react-native-community/setup-android@v1.1.0  # Vérifiez la dernière version
 
-      - name: Start Emulator
+      - name: Create AVD
         run: |
-          echo "Starting emulator"
-          $ANDROID_HOME/emulator/emulator -avd "Medium Phone API 33" -no-window -no-audio &
+            echo "no" | avdmanager create avd -n "MediumPhone" -k "system-images;android-33;google_apis;x86" --force
 
-      - name: Wait for emulator to boot
+      - name: Start and wait Emulator
         run: |
-              $ANDROID_HOME/platform-tools/adb wait-for-device
-              $ANDROID_HOME/platform-tools/adb shell input keyevent 82 & # unlock screen
+            emulator -avd MediumPhone -no-window -no-audio -no-boot-anim &
+            adb wait-for-device
+            adb shell input keyevent 82  # Déverrouiller l'écran
 
       # Run instrumented test
       - name: Run instrumented tests
