@@ -21,15 +21,6 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    services:
-      emulator:
-        image: androidsdk/android-33
-        options: >-
-          --network=host
-        ports:
-          - 5554:5554
-          - 5555:5555
-
     env:
       # Déclaration des variables d'environnement
 
@@ -92,7 +83,7 @@ jobs:
         uses: ReactiveCircus/android-emulator-runner@v2.32.0
         with:
           api-level: 33                                 # Niveau de l'API à utiliser
-          arch: x86                                     # Architecture de l'AVD (x86 ou x86_64)
+          arch: x86_64                                  # Architecture de l'AVD (x86 ou x86_64)
           script: ./gradlew connectedDebugAndroidTest   # Commande pour exécuter les tests instrumentés
 
 
