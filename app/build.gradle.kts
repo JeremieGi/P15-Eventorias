@@ -25,6 +25,7 @@ if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.inputStream())
 }
 
+// En build sur GitHub Action, les variables d'envirronnement sont créés dans le script yaml
 val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: System.getenv("MAPS_API_KEY")
 
 val keystoreProperties = Properties()

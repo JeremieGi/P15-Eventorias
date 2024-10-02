@@ -22,11 +22,14 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      # Déclaration des variables d'environnement
       # Secrets pour la signature
       # Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      # API Map google
+      MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
