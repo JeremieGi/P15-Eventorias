@@ -21,6 +21,15 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    services:
+      emulator:
+        image: androidsdk/android-33
+        options: >-
+          --network=host
+        ports:
+          - 5554:5554
+          - 5555:5555
+
     env:
       # Déclaration des variables d'environnement
 
@@ -66,11 +75,26 @@ jobs:
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload unit test reports
-        if: failure() # Pour uploader uniquement si les tests échouent
+        #if: failure() # Pour uploader uniquement si les tests échouent
+        if: always() # always run even if the tests fail
         uses: actions/upload-artifact@v4
         with:
             name: unit-test-reports
             path: app/build/reports/tests/testReleaseUnitTest/
+
+
+      - name: Set up Android SDK
+        uses: reactions/setup-android-sdk@v1
+
+      - name: Start Emulator
+        run: |
+          echo "Starting emulator"
+          $ANDROID_HOME/emulator/emulator -avd "Medium Phone API 33" -no-window -no-audio &
+
+      - name: Wait for emulator to boot
+        run: |
+              $ANDROID_HOME/platform-tools/adb wait-for-device
+              $ANDROID_HOME/platform-tools/adb shell input keyevent 82 & # unlock screen
 
       # Run instrumented test
       - name: Run instrumented tests
@@ -79,7 +103,8 @@ jobs:
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload instrumented test reports
-        if: failure() # Pour uploader uniquement si les tests échouent
+        #if: failure() # Pour uploader uniquement si les tests échouent
+        if: always() # always run even if the tests fail
         uses: actions/upload-artifact@v4
         with:
             name: instrumented-test-reports
