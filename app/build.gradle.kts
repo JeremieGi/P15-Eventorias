@@ -25,7 +25,7 @@ if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.inputStream())
 }
 
-val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
+val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: System.getenv("MAPS_API_KEY")
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -35,6 +35,7 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
 else{
+    // Build depuis GitHub Action
     // Charger depuis les secrets GitHub (Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables)
     keystoreProperties["storeFile"] = System.getenv("KEYSTORE_PATH")
         ?: System.getProperty("storeFile") // Si défini comme paramètre dans Gradle
@@ -134,12 +135,16 @@ val jacocoTestReport by tasks.registering(JacocoReport::class) {
         html.required.set(true)
     }
 
-    val debugTree = fileTree("${buildDir}/tmp/kotlin-classes/debug")
+    //val debugTree = fileTree("${buildDir}/tmp/kotlin-classes/debug") => DEPRECATED
+    val debugTree = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug"))
     val mainSrc = androidExtension.sourceSets.getByName("main").java.srcDirs
 
     classDirectories.setFrom(debugTree)
     sourceDirectories.setFrom(files(mainSrc))
-    executionData.setFrom(fileTree(buildDir) {
+//    executionData.setFrom(fileTree(buildDir) { => DEPRECATED
+//        include("**/*.exec", "**/*.ec")
+//    })
+    executionData.setFrom(fileTree(layout.buildDirectory) {
         include("**/*.exec", "**/*.ec")
     })
 }
