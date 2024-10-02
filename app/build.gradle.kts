@@ -26,7 +26,7 @@ if (localPropertiesFile.exists()) {
     localProperties.load(localPropertiesFile.inputStream())
 }
 
-// En build sur GitHub Action, les variables d'envirronnement sont créés dans le script yaml
+// En build sur GitHub Action, les variables d'environnement sont créés dans le script yaml
 val apiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: System.getenv("MAPS_API_KEY")
 
 val keystoreProperties = Properties()
@@ -39,6 +39,7 @@ if (keystorePropertiesFile.exists()) {
 else{
     // Build depuis GitHub Action
     // Charger depuis les secrets GitHub (Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables)
+    // Le .yaml crée les variables d'environnement KEYSTORE_PASSWORD / KEY_ALIAS /....
 
     keystoreProperties["storePassword"] = System.getenv("KEYSTORE_PASSWORD")
     keystoreProperties["keyAlias"] = System.getenv("KEY_ALIAS")
@@ -47,7 +48,6 @@ else{
     // le storeFile est stocké dans les secrets mais encodé en base 64, il faut donc le décoder
     val encodedbase64content = System.getenv("KEYSTORE_BASE64")
     val decodedKeystore = Base64.getDecoder().decode(encodedbase64content)
-
     val keystoreFileTemp = layout.buildDirectory.dir("temp_keystore.jks").get().asFile
 
     // pour que le répertoire parent existe (sinon erreur "No such file or directory")
@@ -56,15 +56,16 @@ else{
     // Créer un fichier temporaire pour stocker le keystore décodé
     keystoreFileTemp.writeBytes(decodedKeystore)
 
+    // Je fais çà dans le gradle car j'ai besoin du chemin du fichier ici (sinon j'aurai pu le faire uniquement dans le yaml comme google-services.json)
     keystoreProperties["storeFile"] = keystoreFileTemp.absolutePath
 
 }
 
 // Le fichier google-services.json est exclu de Git
-// Son contenu est dans un secret GitHub KEY_GOOGLE_SERVICES_JSON_CONTENT (non encodé en Base)
-// Il faut donc recréer ce fichier en envirronement GitHub
-// Vu que je n'ai pas besoin de son contenu dans l'appli (comme par exemple la cléd'APi Google),
-// Sa création est faite dans android.yml
+// Son contenu est dans un secret GitHub KEY_GOOGLE_SERVICES_JSON_BASE64 (encodé en Base64)
+// Il faut donc recréer ce fichier en environnement GitHub
+// Vu que je n'ai pas besoin de son contenu dans l'appli (contrairement par exemple à la clé d'APi Google),
+// Sa création est faite directement dans android.yml
 
 //// Créer le fichier google-services.json à partir du secret
 //val googleServicesJson : String? = System.getenv("GOOGLE_SERVICES_JSON") // Déclaration explicite du type pouré viter le warning : Declaration has type inferred from a platform call, which can lead to unchecked nullability issues. Specify type explicitly as nullable or non-nullable.

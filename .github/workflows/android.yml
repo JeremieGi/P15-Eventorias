@@ -23,22 +23,21 @@ jobs:
 
     env:
       # Déclaration des variables d'environnement
-      # Secrets pour la signature
-      # Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables
+
+      # Secrets pour la signature : Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+
       # API Map google
       MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
-      # json Firebase
+      # json Firebase => pas besoin de variable d'environnement, il faut juste créer le fichier sur l'environnement CI
       # KEY_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.KEY_GOOGLE_SERVICES_JSON_BASE64 }}
 
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Différentes étapes
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       # Clone le depot
       - uses: actions/checkout@v4
 
@@ -49,6 +48,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      # Télécharge le fichier google-services.json (présent dans les secrets GitHub Action)
       - name: Load Google Service file
         run:
           echo "${{ secrets.KEY_GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
@@ -58,4 +58,7 @@ jobs:
 
       - name: Build the project and sign APK
         run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
-        
+
+        # Run Unit test
+      - name: Run unit tests
+        run: ./gradlew test
