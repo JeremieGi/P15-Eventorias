@@ -85,12 +85,13 @@ jobs:
             sudo udevadm trigger --name-match=kvm
 
       # https://github.com/marketplace/actions/android-emulator-runner
-      - name: Android Emulator Runner
+      - name: Android Emulator Runner and launch instrumented test
         uses: ReactiveCircus/android-emulator-runner@v2.32.0
         with:
           api-level: 33                                 # Niveau de l'API à utiliser
           arch: x86_64                                  # Architecture de l'AVD (x86 ou x86_64)
-          script: ./gradlew connectedDebugAndroidTest   # Commande pour exécuter les tests instrumentés
+          script: ./gradlew connectedCheck   # Commande pour exécuter les tests instrumentés
+          #script: ./gradlew connectedDebugAndroidTest   # Commande pour exécuter les tests instrumentés
 
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
@@ -100,6 +101,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
             name: instrumented-test-reports
-            path: app/build/reports/androidTests/connected/release/
+            path: app/build/reports/androidTests/connected/debug/
 
 
