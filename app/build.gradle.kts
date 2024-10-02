@@ -68,7 +68,7 @@ else{
 val googleServicesJson : String? = System.getenv("GOOGLE_SERVICES_JSON") // Déclaration explicite du type pouré viter le warning : Declaration has type inferred from a platform call, which can lead to unchecked nullability issues. Specify type explicitly as nullable or non-nullable.
 if (googleServicesJson != null) {
     // Chemin du fichier google-services.json dans le répertoire app
-    val googleServicesFile = file("${projectDir}/app/google-services.json")
+    val googleServicesFile = file("${projectDir}/google-services.json")
 
     // Écrire le contenu du secret dans le fichier
     googleServicesFile.writeText(googleServicesJson)
