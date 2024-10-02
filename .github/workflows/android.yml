@@ -86,20 +86,15 @@ jobs:
       #- name: Set up Android SDK
       #  uses: react-native-community/setup-android@v1.1.0  # Vérifiez la dernière version
 
-      - name: Create AVD
-        run: |
-            echo "no" | avdmanager create avd -n "MediumPhone" -k "system-images;android-33;google_apis;x86" --force
 
-      - name: Start and wait Emulator
-        run: |
-            emulator -avd MediumPhone -no-window -no-audio -no-boot-anim &
-            adb wait-for-device
-            adb shell input keyevent 82  # Déverrouiller l'écran
+      # https://github.com/marketplace/actions/android-emulator-runner
+      - name: Android Emulator Runner
+        uses: ReactiveCircus/android-emulator-runner@v2.32.0
+        with:
+          api-level: 33                                 # Niveau de l'API à utiliser
+          arch: x86                                     # Architecture de l'AVD (x86 ou x86_64)
+          script: ./gradlew connectedDebugAndroidTest   # Commande pour exécuter les tests instrumentés
 
-      # Run instrumented test
-      - name: Run instrumented tests
-        run: ./gradlew connectedAndroidTest
-        continue-on-error: true  # Permet de continuer même si les tests échouent
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload instrumented test reports
