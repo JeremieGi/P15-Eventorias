@@ -32,6 +32,9 @@ jobs:
       # API Map google
       MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
+      # json Firebase
+      KEY_GOOGLE_SERVICES_JSON_CONTENT: ${{ secrets.KEY_GOOGLE_SERVICES_JSON_CONTENT }}
+
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
