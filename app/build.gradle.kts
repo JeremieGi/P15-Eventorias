@@ -45,7 +45,7 @@ else{
     keystoreProperties["keyPassword"] = System.getenv("KEY_PASSWORD")
 
     // le storeFile est stocké dans les secrets mais encodé en base 64, il faut donc le décoder
-    val encodedbase64content = System.getenv("KEYSTORE_PATH")
+    val encodedbase64content = System.getenv("KEYSTORE_BASE64")
     val decodedKeystore = Base64.getDecoder().decode(encodedbase64content)
 
     val keystoreFileTemp = layout.buildDirectory.dir("temp_keystore.jks").get().asFile
