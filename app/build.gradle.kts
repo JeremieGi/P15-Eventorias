@@ -1,5 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import java.util.Properties
+import java.util.Base64
 
 plugins {
     alias(libs.plugins.android.application)
@@ -38,14 +39,22 @@ if (keystorePropertiesFile.exists()) {
 else{
     // Build depuis GitHub Action
     // Charger depuis les secrets GitHub (Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables)
-    keystoreProperties["storeFile"] = System.getenv("KEYSTORE_PATH")
-        ?: System.getProperty("storeFile") // Si défini comme paramètre dans Gradle
+
     keystoreProperties["storePassword"] = System.getenv("KEYSTORE_PASSWORD")
-        ?: System.getProperty("storePassword")
     keystoreProperties["keyAlias"] = System.getenv("KEY_ALIAS")
-        ?: System.getProperty("keyAlias")
     keystoreProperties["keyPassword"] = System.getenv("KEY_PASSWORD")
-        ?: System.getProperty("keyPassword")
+
+    // le storeFile est stocké dans les secrets mais encodé en base 64, il faut donc le décoder
+    val encodedbase64content = System.getenv("KEYSTORE_PATH")
+    val decodedKeystore = Base64.getDecoder().decode(encodedbase64content)
+
+    val keystoreFileTemp = layout.buildDirectory.dir("temp_keystore.jks").get().asFile
+
+    // Créer un fichier temporaire pour stocker le keystore décodé
+    keystoreFileTemp.writeBytes(decodedKeystore)
+
+    keystoreProperties["storeFile"] = keystoreFileTemp.absolutePath
+
 }
 
 // val key: String = keystoreProperties.getProperty("maclé") ?: ""
