@@ -1,5 +1,5 @@
 # Build / Passage des tests unitaires / des tests instrumentés / SonarQube Scan
-name: CI pipeline
+name: Continuous Integration pipeline - tests
 
 # Controls when the workflow will run
 on:
@@ -58,10 +58,9 @@ jobs:
       #- name: Build the project and sign APK
       #  run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
 
-      - name: Build and analyze with Sonar
-        run: ./gradlew build sonar
-        env:
-            SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }}
+      - name: Build
+        run: ./gradlew build
+
 
         # Run Unit test
       - name: Run unit tests
@@ -104,7 +103,7 @@ jobs:
           script: |
             adb wait-for-device               # Attendre que l'émulateur soit prêt
             adb shell input keyevent 82       # Simuler un appui sur le bouton 'home' pour "réveiller" l'émulateur
-            ./gradlew connectedCheck          # Lancer les tests
+            ./gradlew connectedDebugAndroidTest jacocoTestReport # Lancer les tests avec rapport de couverture
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload instrumented test reports
@@ -116,6 +115,12 @@ jobs:
             path: app/build/reports/androidTests/connected/debug/
 
 
+      - name: Upload JaCoCo report - Code coverage
+        uses: actions/upload-artifact@v4
+        with:
+            name: jacoco-report
+            path: build/reports/jacoco/test/jacocoTestReport.xml
+
       # https://github.com/marketplace/actions/sonarqube-quality-gate-check
       # Les quality gates permettent de vérifier la qualité du code selon plusieurs critères (duplication de code, couverture...)
         #- name: SonarQube Scan
@@ -126,3 +131,7 @@ jobs:
           #    SONAR_HOST_URL: "https://sonarcloud.io"       # URL du serveur SonarCloud
 
 
+      - name: Run Sonar analysis
+        run: ./gradlew sonar
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Assurez-vous que le token est ajouté dans les secrets de votre repository

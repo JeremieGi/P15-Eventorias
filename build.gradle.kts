@@ -30,5 +30,6 @@ sonar {
         property("sonar.sources", "src/main/java, src/main/kotlin")
         property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
         property("sonar.coverage.jacoco.xmlReportPaths","build/reports/coverage/androidTest/debug/connected/report.xml")
+        //property("sonar.jacoco.reportPaths","build/reports/coverage/androidTest/debug/connected/report.xml")
     }
 }

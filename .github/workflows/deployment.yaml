@@ -1,5 +1,5 @@
 # Build + Génération APK et déploiement dans Firebase
-name: CD Pipeline
+name: Continuous Deployment Pipeline - APK to Firebase
 
 on:
   push:
