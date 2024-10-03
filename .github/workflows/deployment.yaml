@@ -1,3 +1,4 @@
+# Build + Génération APK et déploiement dans Firebase
 name: CD Pipeline
 
 on:
