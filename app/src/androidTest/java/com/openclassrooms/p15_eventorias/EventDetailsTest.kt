@@ -47,6 +47,11 @@ class EventDetailsTest {
 
         val fakeListEvent = EventFakeAPI.initFakeEvents()
 
+        // Attend tant que la liste d'évènement n'est pas chargée complétement
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
+        }
+
         // Clic sur le 1er élément
         composeTestRule.onNodeWithText(fakeListEvent[0].sTitle)
             .assertIsDisplayed()
