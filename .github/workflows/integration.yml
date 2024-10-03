@@ -1,4 +1,4 @@
-
+# Build / Passage des tests unitaires / des tests instrumentés / SonarQube Scan
 name: CI pipeline
 
 # Controls when the workflow will run
