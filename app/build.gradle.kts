@@ -77,6 +77,9 @@ else{
 //    googleServicesFile.writeText(googleServicesJson)
 //}
 
+
+
+
 android {
     signingConfigs {
         create("release") {
@@ -147,6 +150,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 val androidExtension = extensions.getByType<BaseExtension>()

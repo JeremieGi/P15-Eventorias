@@ -54,6 +54,5 @@ jobs:
           groups: testers                         # Le groupe "testers" définis dans Firebase
           file: app/build/outputs/apk/release/app-release.apk  # Chemin vers l'APK
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
-          #serviceAccountJson: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
         env:
           ACTIONS_STEP_DEBUG: true # Active le débogage

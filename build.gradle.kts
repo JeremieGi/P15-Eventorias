@@ -1,3 +1,5 @@
+import java.util.Properties
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -20,6 +22,14 @@ buildscript {
     }
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+val sonarToken: String = localProperties.getProperty("TOKEN_SONAR_CLOUD") ?: System.getenv("TOKEN_SONAR_CLOUD")
+
 sonar {
     properties {
         property("sonar.projectKey", "JeremieGi_P15-Eventorias")
@@ -30,6 +40,10 @@ sonar {
         property("sonar.sources", "src/main/java, src/main/kotlin")
         property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
         property("sonar.coverage.jacoco.xmlReportPaths","build/reports/coverage/androidTest/debug/connected/report.xml")
-        property("sonar.token","bb4aff93f500f1a06597d91e14cb5b216b24696d") // TODO JG : A mettre dans un local.propertie
+        property("sonar.token",sonarToken)
+
+        // Forcer l'échec en cas de fichier manquant
+        property("sonar.qualitygate.wait", "true") // Vérifie que les conditions de qualité sont respectées
+        property("sonar.scanner.forceFailure", "true") // Fait échouer l'analyse en cas d'erreur
     }
 }
