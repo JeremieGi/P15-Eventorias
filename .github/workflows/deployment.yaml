@@ -1,5 +1,5 @@
 # Build + Génération APK et déploiement dans Firebase
-name: Continuous Deployment Pipeline - APK to Firebase
+name: Continuous Deployment - APK to Firebase
 
 on:
   push:
@@ -51,7 +51,9 @@ jobs:
         uses: wzieba/Firebase-Distribution-Github-Action@v1.5.1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}   # ID de l'application Firebase
-          groups: testers  # Les groupes de testeurs définis dans Firebase
+          groups: testers                         # Le groupe "testers" définis dans Firebase
           file: app/build/outputs/apk/release/app-release.apk  # Chemin vers l'APK
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
           #serviceAccountJson: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
+        env:
+          ACTIONS_STEP_DEBUG: true # Active le débogage
