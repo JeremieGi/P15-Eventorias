@@ -58,8 +58,8 @@ jobs:
       #- name: Build the project and sign APK
       #  run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
 
-      - name: Build and analyze with SonarQube
-        run: ./gradlew build sonarqube
+      - name: Build and analyze with Sonar
+        run: ./gradlew build sonar
         env:
             SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }}
 
