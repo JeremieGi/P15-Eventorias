@@ -30,6 +30,6 @@ sonar {
         property("sonar.sources", "src/main/java, src/main/kotlin")
         property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
         property("sonar.coverage.jacoco.xmlReportPaths","build/reports/coverage/androidTest/debug/connected/report.xml")
-        //property("sonar.jacoco.reportPaths","build/reports/coverage/androidTest/debug/connected/report.xml")
+        property("sonar.token","bb4aff93f500f1a06597d91e14cb5b216b24696d") // TODO JG : A mettre dans un local.propertie
     }
 }
