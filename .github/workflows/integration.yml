@@ -55,8 +55,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build the project and sign APK
-        run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
+      #- name: Build the project and sign APK
+      #  run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
+
+      - name: Build and analyze with SonarQube
+        run: ./gradlew build sonarqube
+        env:
+            SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }}
 
         # Run Unit test
       - name: Run unit tests
@@ -113,9 +118,11 @@ jobs:
 
       # https://github.com/marketplace/actions/sonarqube-quality-gate-check
       # Les quality gates permettent de vérifier la qualité du code selon plusieurs critères (duplication de code, couverture...)
-      - name: SonarQube Scan
-        if: always() # always run even if the tests fail
-        uses: SonarSource/sonarqube-scan-action@v3.0.0
-        env:
-          SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }} # Récupération sécurisée du token
-          SONAR_HOST_URL: "https://sonarcloud.io"       # URL du serveur SonarCloud
+        #- name: SonarQube Scan
+        #  if: always() # always run even if the tests fail
+        #  uses: SonarSource/sonarqube-scan-action@v3.0.0
+          #  env:
+          #    SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }} # Récupération sécurisée du token
+          #    SONAR_HOST_URL: "https://sonarcloud.io"       # URL du serveur SonarCloud
+
+
