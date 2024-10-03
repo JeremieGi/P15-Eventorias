@@ -43,7 +43,7 @@ class EventDetailsTest {
     /**
      * Clique sur le 1er élément et vérifie les données dans l'écran ouvert
      */
-    @Ignore // TODO Denis / JG : Test ne passe pas dans GitHub Action (Intégration continue)
+    @Ignore // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
     @Test
     fun detailsfirstevent() = runTest {
 
