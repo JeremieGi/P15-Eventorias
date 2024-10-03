@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -174,6 +175,7 @@ fun EventItemSuccessComposable(
 
     Column(
         modifier = modifier
+            .testTag("tagEventLoad") // Permet de savoir que l'évènement est chargé pour le test instrumenté
             .padding(
                 horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                 vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp

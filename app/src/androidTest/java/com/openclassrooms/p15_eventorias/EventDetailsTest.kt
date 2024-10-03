@@ -1,7 +1,10 @@
 package com.openclassrooms.p15_eventorias
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -9,6 +12,7 @@ import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,7 +43,7 @@ class EventDetailsTest {
      * Clique sur le 1er élément et vérifie les données dans l'écran ouvert
      */
     @Test
-    fun detailsfirstevent() /*= runTest*/ {
+    fun detailsfirstevent() = runTest {
 
         val fakeListEvent = EventFakeAPI.initFakeEvents()
 
@@ -48,8 +52,14 @@ class EventDetailsTest {
             .assertIsDisplayed()
             .performClick()
 
-        //composeTestRule.awaitIdle()
-        composeTestRule.waitForIdle() // Tentative de stabilisation du test dans GitHub Action
+        composeTestRule.awaitIdle()
+        //composeTestRule.waitForIdle() // Tentative de stabilisation du test dans GitHub Action
+
+        // Attend tant que l'évènement n'est pas chargée complétement (sinon problème dans GitHub Action)
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
+        }
+
 
         // Détection de la description de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sDescription)

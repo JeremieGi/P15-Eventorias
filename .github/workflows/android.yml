@@ -90,9 +90,13 @@ jobs:
         with:
           api-level: 33                                 # Niveau de l'API à utiliser
           arch: x86_64                                  # Architecture de l'AVD (x86 ou x86_64)
-          script: ./gradlew connectedCheck   # Commande pour exécuter les tests instrumentés
+          emulator-boot-timeout: 300                    # Augmenter le délai d'attente à 300 secondes (5 minutes)
+          #script: ./gradlew connectedCheck   # Commande pour exécuter les tests instrumentés
           #script: ./gradlew connectedDebugAndroidTest   # Commande pour exécuter les tests instrumentés
-
+          script: |
+            adb wait-for-device               # Attendre que l'émulateur soit prêt
+            adb shell input keyevent 82       # Simuler un appui sur le bouton 'home' pour "réveiller" l'émulateur
+            ./gradlew connectedCheck          # Lancer les tests
 
       # Permet de déposer un fichier dans le compte-rendu du gitHub Action
       - name: Upload instrumented test reports
@@ -104,3 +108,8 @@ jobs:
             path: app/build/reports/androidTests/connected/debug/
 
 
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v3.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }} # Récupération sécurisée du token
+          SONAR_HOST_URL: "https://sonarcloud.io"       # URL du serveur SonarCloud
