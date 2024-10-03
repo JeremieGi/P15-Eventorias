@@ -46,11 +46,12 @@ jobs:
       - name: Build the project and sign APK
         run: ./gradlew assembleRelease -PstoreFile=$HOME/keystore.jks -PstorePassword=${{ secrets.KEYSTORE_PASSWORD }} -PkeyAlias=${{ secrets.KEY_ALIAS }} -PkeyPassword=${{ secrets.KEY_PASSWORD }}
 
-      # Télécharge sur Firebase App Distribution
+      # Télécharge sur Firebase App Distribution https://github.com/marketplace/actions/firebase-app-distribution
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.5.1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}   # ID de l'application Firebase
           groups: testers  # Les groupes de testeurs définis dans Firebase
           file: app/build/outputs/apk/release/app-release.apk  # Chemin vers l'APK
-          serviceAccountJson: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
+          #serviceAccountJson: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}  # Clé JSON du compte de service
