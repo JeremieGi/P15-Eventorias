@@ -91,6 +91,10 @@ jobs:
           api-level: 33                                 # Niveau de l'API à utiliser
           arch: x86_64                                  # Architecture de l'AVD (x86 ou x86_64)
           emulator-boot-timeout: 300                    # Augmenter le délai d'attente à 300 secondes (5 minutes)
+          disable-animations: true
+          enable-hw-keyboard: true
+          gpu: swiftshader_indirect  # Utiliser swiftshader pour le rendu logiciel
+
           #script: ./gradlew connectedCheck   # Commande pour exécuter les tests instrumentés
           #script: ./gradlew connectedDebugAndroidTest   # Commande pour exécuter les tests instrumentés
           script: |
@@ -108,6 +112,8 @@ jobs:
             path: app/build/reports/androidTests/connected/debug/
 
 
+      # https://github.com/marketplace/actions/sonarqube-quality-gate-check
+      # Les quality gates permettent de vérifier la qualité du code selon plusieurs critères (duplication de code, couverture...)
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v3.0.0
         env:

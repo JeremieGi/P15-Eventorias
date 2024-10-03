@@ -55,9 +55,10 @@ class EventDetailsTest {
         composeTestRule.awaitIdle()
         //composeTestRule.waitForIdle() // Tentative de stabilisation du test dans GitHub Action
 
-        // Attend tant que l'évènement n'est pas chargée complétement (sinon problème dans GitHub Action)
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
+        // Attend tant que l'évènement n'est pas chargé complétement (sinon problème dans GitHub Action)
+        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
+            //composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
+            composeTestRule.onNodeWithText(fakeListEvent[0].sDescription).isDisplayed()
         }
 
 
