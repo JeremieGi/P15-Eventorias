@@ -9,7 +9,6 @@ import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +39,7 @@ class EventDetailsTest {
      * Clique sur le 1er élément et vérifie les données dans l'écran ouvert
      */
     @Test
-    fun detailsfirstevent() = runTest {
+    fun detailsfirstevent() /*= runTest*/ {
 
         val fakeListEvent = EventFakeAPI.initFakeEvents()
 
@@ -49,7 +48,8 @@ class EventDetailsTest {
             .assertIsDisplayed()
             .performClick()
 
-        composeTestRule.awaitIdle()
+        //composeTestRule.awaitIdle()
+        composeTestRule.waitForIdle() // Tentative de stabilisation du test dans GitHub Action
 
         // Détection de la description de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sDescription)
