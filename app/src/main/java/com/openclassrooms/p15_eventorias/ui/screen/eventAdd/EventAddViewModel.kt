@@ -29,7 +29,7 @@ class EventAddViewModel @Inject constructor (
 
     init{
 
-        // TODO Denis : Obligé de faire çà pour affecter une URL au composable Image dans les tests instrumentés...
+        // Obligé de faire çà pour affecter une URL au composable Image dans les tests instrumentés...
         if (TestEnvironment.isTesting) {
 
             val fakeListEvent = EventFakeAPI.initFakeEvents()

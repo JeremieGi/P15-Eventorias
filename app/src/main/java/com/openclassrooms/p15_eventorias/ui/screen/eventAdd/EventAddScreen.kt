@@ -736,7 +736,7 @@ fun getDateErrorMessage(sErrorDate: String): String {
 
 }
 
-// TODO Denis : Rendering sandbox error sur ce preview
+// Erreur dans les previews : Rendering sandbox error sur ce preview ???
 @Preview("Event Add Form")
 @Composable
 fun EventListComposablePreview() {

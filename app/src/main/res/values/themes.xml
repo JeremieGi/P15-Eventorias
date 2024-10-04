@@ -22,20 +22,19 @@
     </style>
 
 
-
     <style name="FirebaseLoginTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
-        <!-- TODO Denis : Je n'ai pas réussi à modifier les styles des champs de saisie comme indiquer dans les maquettes -->
 
         <!-- Couleur des boutons -->
         <item name="colorPrimary">@color/primaryLogin</item>
 
+        <!-- Je n'ai pas réussi à modifier les styles des champs de saisie comme indiquer dans les maquettes -->
         <!-- Couleur de fond des champs de saisie pas prise en compte -->
         <item name="android:editTextBackground">@color/cardAndInput</item>
+        <!-- <item name="editTextStyle">@style/CustomTextInput</item> -->
         <!-- donc je change la couleur de fond -->
         <item name="android:background">@color/backgroundLoginLight</item>
 
-        <!-- Centrer les éléments - Marche pas pour la 1ere page -->
+        <!-- Centrer les éléments - Marche pas non plus -->
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
 

@@ -1,6 +1,8 @@
 # Build / Passage des tests unitaires / des tests instrumentés / SonarQube Scan
 name: Continuous Integration - tests
 
+# TODO Denis P16 => Warning : The following actions use a deprecated Node.js version and will be forced to run on node20: actions/setup-java@v3"
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
@@ -121,7 +123,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
             name: jacoco-report
-            path: build/reports/coverage/androidTest/debug/connected/report.xml
+            path: app/build/reports/coverage/androidTest/debug/connected/report.xml
 
       # https://github.com/marketplace/actions/sonarqube-quality-gate-check
       # Les quality gates permettent de vérifier la qualité du code selon plusieurs critères (duplication de code, couverture...)

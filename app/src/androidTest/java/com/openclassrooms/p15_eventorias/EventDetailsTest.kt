@@ -1,10 +1,8 @@
 package com.openclassrooms.p15_eventorias
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,7 +12,6 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +40,7 @@ class EventDetailsTest {
     /**
      * Clique sur le 1er élément et vérifie les données dans l'écran ouvert
      */
-    @Ignore // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
+    //@Ignore
     @Test
     fun detailsfirstevent() = runTest {
 
@@ -62,16 +59,15 @@ class EventDetailsTest {
         composeTestRule.awaitIdle()
         //composeTestRule.waitForIdle() // Tentative de stabilisation du test dans GitHub Action
 
-        // Attend tant que l'évènement n'est pas chargé complétement (sinon problème dans GitHub Action)
-        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
-            //composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
-            composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
-        }
+//        // Attend tant que l'évènement n'est pas chargé complétement (sinon problème dans GitHub Action)
+//        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
+//            //composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
+//            composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
+//        }
 
-
-//        // Détection de la description de l'évènement
-//        composeTestRule.onNodeWithText(fakeListEvent[0].sDescription)
-//            .assertIsDisplayed()
+        // Détection de la description de l'évènement
+        composeTestRule.onNodeWithText(fakeListEvent[0].sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
+            .assertIsDisplayed()
 
         // Détection de l'adresse de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sAddress)

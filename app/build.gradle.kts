@@ -155,8 +155,6 @@ android {
 
 val androidExtension = extensions.getByType<BaseExtension>()
 
-// TODO Denis : Tu saurais exclure les classes Hilt du rapport de couverture + lecture du compte-rendu
-// + pour le rendu, il est demandé un rapport de test. J'ai mis test unitaire / instrumenté / couverture
 val jacocoTestReport by tasks.registering(JacocoReport::class) {
     dependsOn("testDebugUnitTest", "createDebugCoverageReport")
     group = "Reporting"
@@ -176,8 +174,16 @@ val jacocoTestReport by tasks.registering(JacocoReport::class) {
 //    executionData.setFrom(fileTree(buildDir) { => DEPRECATED
 //        include("**/*.exec", "**/*.ec")
 //    })
+
+    // exclusion des classes Hilt du rapport de couverture => marche pas
+    val fileFilter = mutableSetOf(
+        "**dagger**",
+        "**hilt**"
+    )
+
     executionData.setFrom(fileTree(layout.buildDirectory) {
         include("**/*.exec", "**/*.ec")
+        exclude(fileFilter)
     })
 }
 
