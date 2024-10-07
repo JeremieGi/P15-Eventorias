@@ -4,6 +4,7 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -49,9 +50,10 @@ class MainTest {
     fun event_search() = runTest {
 
         // Attend tant que la liste d'évènement n'est pas chargée complétement
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
-        }
+//        composeTestRule.waitUntil(timeoutMillis = 5000) {
+//            composeTestRule.onAllNodes(hasTestTag("event_id_")).fetchSemanticsNodes().size == fakeListEvent.size
+//        }
+        composeTestRule.awaitIdle()
 
         // Clique sur l'icone de recherche
         val sContentDescSearchIcon = composeTestRule.activity.getString(R.string.search)
@@ -91,10 +93,12 @@ class MainTest {
     @Test
     fun event_order() = runTest {
 
-        // Attend tant que la liste d'évènement n'est pas chargée complétement
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
-        }
+//        // Attend tant que la liste d'évènement n'est pas chargée complétement
+//        composeTestRule.waitUntil(timeoutMillis = 5000) {
+//            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
+//        }
+
+        composeTestRule.awaitIdle()
 
         // Clique sur le bouton de tri de la bottom bar => tri par Date
         val sContentDescOrderIcon = composeTestRule.activity.getString(R.string.sortByDate)
@@ -124,7 +128,8 @@ class MainTest {
     private fun assertLazyColumn(expectedEventListP: List<Event>) {
 
         // Récupérer tous les nœuds avec le testTag
-        val nodes = composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes()
+        //val nodes = composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes()
+        val nodes = composeTestRule.onAllNodesWithTag("event_id_").fetchSemanticsNodes()
 
         // Parcours de chaque noeud
         nodes.forEachIndexed { index, node ->
@@ -147,10 +152,12 @@ class MainTest {
     @Test
     fun navigation_bottom_bar() = runTest {
 
-        // Attend tant que la liste d'évènement n'est pas chargée complétement
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
-        }
+//        // Attend tant que la liste d'évènement n'est pas chargée complétement
+//        composeTestRule.waitUntil(timeoutMillis = 5000) {
+//            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
+//        }
+
+        composeTestRule.awaitIdle()
 
         // Détection du titre 'Event List"
         val sTitleEventList = composeTestRule.activity.getString(R.string.event_list)

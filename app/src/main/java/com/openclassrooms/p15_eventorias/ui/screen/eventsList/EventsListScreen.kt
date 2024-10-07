@@ -357,7 +357,7 @@ fun EventItemListComposable(
 
     Card(
         modifier = modifier
-            .testTag("event_item") // Permet de compter le nombre de ligne dans le test instrumenté
+            .testTag("event_id_${eventP.id}") // Permet d'identifier une ligne dans le test instrumenté
             .fillMaxWidth()
             .height(80.dp)
             .clickable()
@@ -373,7 +373,7 @@ fun EventItemListComposable(
         // 3 lignes
         Row(
             //modifier = Modifier
-                //.testTag("event_id_${eventP.id}"), // Permet d'identifier une ligne dans le test instrumenté
+            //    .testTag("event_id_${eventP.id}"), // Permet d'identifier une ligne dans le test instrumenté
             // Eléments de l'item centrés verticallement
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -399,7 +399,7 @@ fun EventItemListComposable(
                 modifier = Modifier.weight(4f), // 40% de la largeur
             ) {
                 Text(
-                    //modifier = Modifier.padding(end= 10.dp),
+                    modifier = Modifier.testTag("event_item"), // Permet de compter le nombre de ligne dans le test instrumenté,
                     text = eventP.sTitle,
                     style = MaterialTheme.typography.titleMedium
                 )

@@ -1,8 +1,10 @@
 package com.openclassrooms.p15_eventorias
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -47,23 +49,29 @@ class EventDetailsTest {
         val fakeListEvent = EventFakeAPI.initFakeEvents()
 
         // Attend tant que la liste d'évènement n'est pas chargée complétement
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
-        }
+//        composeTestRule.waitUntil(timeoutMillis = 5000) {
+//            composeTestRule.onAllNodesWithTag("event_id_").fetchSemanticsNodes().size == fakeListEvent.size
+//        }
 
         // Clic sur le 1er élément
-        composeTestRule.onNodeWithText(fakeListEvent[0].sTitle)
+//        composeTestRule.onNodeWithText(fakeListEvent[0].sTitle)
+//            .assertIsDisplayed()
+//            .performClick()
+
+        composeTestRule.awaitIdle()
+
+        composeTestRule.onNodeWithTag("event_id_${fakeListEvent[0].id}")
             .assertIsDisplayed()
             .performClick()
 
         composeTestRule.awaitIdle()
         //composeTestRule.waitForIdle() // Tentative de stabilisation du test dans GitHub Action
 
-//        // Attend tant que l'évènement n'est pas chargé complétement (sinon problème dans GitHub Action)
-//        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
-//            //composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
-//            composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
-//        }
+        // Attend tant que l'évènement n'est pas chargé complétement (sinon problème dans GitHub Action)
+        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
+            //composeTestRule.onNodeWithTag("tagEventLoad").isDisplayed()
+            composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
+        }
 
         // Détection de la description de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)

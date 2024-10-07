@@ -138,4 +138,4 @@ jobs:
       - name: Run Sonar analysis
         run: ./gradlew sonar
         env:
-            SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }} # Assurez-vous que le token est ajouté dans les secrets de votre repository
+            SONAR_TOKEN: ${{ secrets.TOKEN_SONAR_CLOUD }}
