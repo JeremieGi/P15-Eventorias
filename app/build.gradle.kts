@@ -150,6 +150,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    }
 
 }
 
@@ -256,5 +259,14 @@ dependencies {
 
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    androidTestImplementation(libs.androidx.orchestrator)
+    androidTestUtil(libs.androidx.orchestrator)
+
+    // Test unitaire des viewModels
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.core)
+//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 
 }

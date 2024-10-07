@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EventAddViewModel @Inject constructor (
     private val eventRepository: EventRepository,
-    private val userRepository: UserRepository // Paramètre car utilisé uniquement dans le constructeur
+    private val userRepository: UserRepository
 ): ViewModel() {
 
 

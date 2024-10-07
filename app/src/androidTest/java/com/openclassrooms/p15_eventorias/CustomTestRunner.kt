@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
 import dagger.hilt.android.testing.HiltTestApplication
 
+// TODO Denis JG : Faire en sorte que le lancement de jacoco ne désinstalle pas l'appli
+
+
 // https://medium.com/jetpack-composers/writing-instrumented-tests-using-hilt-and-jetpack-compose-in-mvvm-30d4e3fe0318
 // Article pour faire un test instrumenté en utilisant Hilt pour injecter des Fake APIs
 

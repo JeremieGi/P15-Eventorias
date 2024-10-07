@@ -11,7 +11,6 @@ import com.openclassrooms.p15_eventorias.repository.event.EventRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
@@ -20,7 +19,7 @@ import org.junit.Test
 import kotlinx.coroutines.test.runTest
 import java.util.Calendar
 
-@OptIn(ExperimentalCoroutinesApi::class)
+
 class EventRepositoryTest {
 
 
