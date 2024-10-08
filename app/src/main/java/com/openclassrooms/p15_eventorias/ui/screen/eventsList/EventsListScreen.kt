@@ -63,6 +63,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.BottomBarComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
+import com.openclassrooms.p15_eventorias.ui.TestTags
 import com.openclassrooms.p15_eventorias.ui.URLImageAvatarComposable
 import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
@@ -138,7 +139,7 @@ fun EventListStateComposable(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .testTag("TagSearchField") // Pour détecter le champ dans les tests instrumentés
+                                .testTag(TestTags.APPBAR_SEARCH_FIELD) // Pour détecter le champ dans les tests instrumentés
                                 .semantics {
                                     this.contentDescription =
                                         context.getString(R.string.search_event_by_title)
@@ -321,6 +322,7 @@ fun EventListComposable(
 
     LazyColumn (
         modifier = modifier
+            .testTag(TestTags.LAZY_COLUMN_EVENTS)
             .fillMaxSize()
             .padding(
                 horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
@@ -357,7 +359,7 @@ fun EventItemListComposable(
 
     Card(
         modifier = modifier
-            .testTag("event_id_${eventP.id}") // Permet d'identifier une ligne dans le test instrumenté
+            .testTag("${TestTags.EVENT_ID_PREFIX}${eventP.id}") // Permet d'identifier une ligne dans le test instrumenté
             .fillMaxWidth()
             .height(80.dp)
             .clickable()
@@ -372,8 +374,6 @@ fun EventItemListComposable(
 
         // 3 lignes
         Row(
-            //modifier = Modifier
-            //    .testTag("event_id_${eventP.id}"), // Permet d'identifier une ligne dans le test instrumenté
             // Eléments de l'item centrés verticallement
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -399,7 +399,6 @@ fun EventItemListComposable(
                 modifier = Modifier.weight(4f), // 40% de la largeur
             ) {
                 Text(
-                    modifier = Modifier.testTag("event_item"), // Permet de compter le nombre de ligne dans le test instrumenté,
                     text = eventP.sTitle,
                     style = MaterialTheme.typography.titleMedium
                 )

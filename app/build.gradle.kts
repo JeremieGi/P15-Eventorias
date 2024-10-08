@@ -101,8 +101,8 @@ android {
         applicationId = "com.openclassrooms.p15_eventorias"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2     // Version de l'APK
+        versionName = "2.0"
 
         //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "com.openclassrooms.p15_eventorias.CustomTestRunner"

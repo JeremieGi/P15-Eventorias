@@ -51,7 +51,7 @@ fun BottomBarComposable(
             // Colonne pour Afficher un Text sous un IconButton
             Column{
                 IconButton(
-                    modifier = Modifier.testTag("iconEvent"),
+                    modifier = Modifier.testTag(TestTags.BOTTOM_BAR_ICON_EVENT),
                     onClick = {
                         onClickEventsP()
                     },
@@ -80,7 +80,7 @@ fun BottomBarComposable(
             // Colonne pour Afficher un Text sous un IconButton
             Column{
                 IconButton(
-                    modifier = Modifier.testTag("iconProfile"),
+                    modifier = Modifier.testTag(TestTags.BOTTOM_BAR_ICON_PROFILE),
                     onClick = {
                         onClickProfileP()
                     },

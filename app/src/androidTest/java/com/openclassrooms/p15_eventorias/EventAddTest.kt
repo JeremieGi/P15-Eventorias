@@ -2,17 +2,16 @@ package com.openclassrooms.p15_eventorias
 
 
 import android.widget.DatePicker
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -22,9 +21,9 @@ import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
+import com.openclassrooms.p15_eventorias.ui.TestTags
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -73,29 +72,19 @@ class EventAddTest {
         composeTestRule.onNodeWithText(sTitleEventList)
             .assertIsDisplayed()
 
-//        // Vérification du nombre d'éléments
+        // Vérification du nombre d'éléments
         val fakeListEvent = EventFakeAPI.initFakeEvents()
 
-        // TODO Denis / JG : Voir pourquoi çà plante ici
-//        assertLazyColumn(fakeListEvent)
-//        //composeTestRule.onAllNodesWithTag("event_item")
-//         // composeTestRule.onAllNodes(hasTestTag("event_id_"))
-//        composeTestRule.onAllNodes(hasTestTag("event_id_"))
-//            .assertCountEquals(fakeListEvent.size)
-
-//        // Attend tant que la liste d'évènement n'est pas chargée complétement
-//        composeTestRule.waitUntil(timeoutMillis = 5000) {
-//            // un élément de plus
-//            //composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size+1
-//            composeTestRule.onAllNodesWithTag("event_id_").fetchSemanticsNodes().size == fakeListEvent.size
-//        }
+        composeTestRule.onNodeWithTag(TestTags.LAZY_COLUMN_EVENTS)
+            .onChildren()
+            .assertCountEquals(fakeListEvent.size)
+            //.printToLog("lazyColumnEvents") // printToLog permet d'afficher les informations d'accessibilité d'un SemanticsNode (ou de plusieurs nœuds) dans les logs. Cela peut être très utile pour déboguer les tests Compose, car cela te permet de voir les attributs sémantiques (par exemple, texte, état d'affichage, clicabilité, etc.) associés à un élément de l'interface utilisateur.
 
         // Clique sur le bouton '+'
         val sContentDescButton = composeTestRule.activity.getString(R.string.addEvent)
         composeTestRule.onNodeWithContentDescription(sContentDescButton).performClick()
 
         composeTestRule.awaitIdle()
-
 
         // Détection du titre de la fenêtre d'ouverture
         val sTitleAdd = composeTestRule.activity.getString(R.string.event_creation)
@@ -126,24 +115,6 @@ class EventAddTest {
 
         // Photo => déjà présente en mode test
 
- //       val myViewModel = composeTestRule.activity.viewModels<EventAddViewModel>().value
- //       val test = myViewModel.getFormError()
-
-//        val context = InstrumentationRegistry.getInstrumentation().targetContext
-//        val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.baseline_face_24)
-//
-//        composeTestRule.onNodeWithTag("imgEvent")
-//            .perform {
-//                imageView.setImageBitmap(bitmap)
-//            }
-//
-//        composeTestRule.onAllNodesWithContentDescription()
-//        onView(with(R.id.image_view))
-//            .perform {
-//                imageView.setImageBitmap(bitmap)
-//            }
-
-
         // Clique sur le bouton 'Validate'
         val sValidateButton = composeTestRule.activity.getString(R.string.validate)
         composeTestRule.onNodeWithText(sValidateButton).performClick()
@@ -151,20 +122,20 @@ class EventAddTest {
         composeTestRule.awaitIdle()
 
         // Retour à la liste d'évènements
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onNodeWithText(sTitleEventList).isDisplayed()
+        }
 
         // Vérifier l'ajout dans la liste d'évènement
 
-        // TODO Denis / JG : Voir pourquoi çà plante ici
-//        // Attend tant que la liste d'évènement n'est pas chargée complétement
-//        composeTestRule.waitUntil(timeoutMillis = 5000) {
-//            // un élément de plus
-//            //composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size+1
-//            composeTestRule.onAllNodesWithTag("event_id_").fetchSemanticsNodes().size == fakeListEvent.size+1
-//        }
+        // un élément de plus
+        composeTestRule.onNodeWithTag(TestTags.LAZY_COLUMN_EVENTS)
+            .onChildren()
+            .assertCountEquals(fakeListEvent.size+1)
 
         // L'évènement doit apparaitre
         composeTestRule.onNodeWithText(sTitleVal)
-            .assertIsDisplayed()
+            .assertIsDisplayed() // TODO Denis : Pas possible de rendre les erreurs plus explicites dans les comptes-rendus ?
 
     }
 

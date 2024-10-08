@@ -4,7 +4,6 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -16,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.openclassrooms.p15_eventorias.model.Event
 import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.MainActivity
+import com.openclassrooms.p15_eventorias.ui.TestTags
 import org.junit.Rule
 import org.junit.runner.RunWith
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -50,9 +50,6 @@ class MainTest {
     fun event_search() = runTest {
 
         // Attend tant que la liste d'évènement n'est pas chargée complétement
-//        composeTestRule.waitUntil(timeoutMillis = 5000) {
-//            composeTestRule.onAllNodes(hasTestTag("event_id_")).fetchSemanticsNodes().size == fakeListEvent.size
-//        }
         composeTestRule.awaitIdle()
 
         // Clique sur l'icone de recherche
@@ -64,7 +61,7 @@ class MainTest {
 
         // Cherche "Event 1"
         val event0 = fakeListEvent[0]
-        composeTestRule.onNodeWithTag("TagSearchField")
+        composeTestRule.onNodeWithTag(TestTags.APPBAR_SEARCH_FIELD)
             .performTextInput(event0.sTitle)
 
         composeTestRule.awaitIdle()
@@ -74,7 +71,7 @@ class MainTest {
         assertLazyColumn(expectedOneEventList)
 
         // remise à vide du champ
-        composeTestRule.onNodeWithTag("TagSearchField")
+        composeTestRule.onNodeWithTag(TestTags.APPBAR_SEARCH_FIELD)
             .performTextClearance()
 
 
@@ -92,11 +89,6 @@ class MainTest {
      */
     @Test
     fun event_order() = runTest {
-
-//        // Attend tant que la liste d'évènement n'est pas chargée complétement
-//        composeTestRule.waitUntil(timeoutMillis = 5000) {
-//            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
-//        }
 
         composeTestRule.awaitIdle()
 
@@ -152,11 +144,6 @@ class MainTest {
     @Test
     fun navigation_bottom_bar() = runTest {
 
-//        // Attend tant que la liste d'évènement n'est pas chargée complétement
-//        composeTestRule.waitUntil(timeoutMillis = 5000) {
-//            composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes().size == fakeListEvent.size
-//        }
-
         composeTestRule.awaitIdle()
 
         // Détection du titre 'Event List"
@@ -165,7 +152,7 @@ class MainTest {
             .assertIsDisplayed()
 
         // Clique sur le bouton 'Events' de la bottom bar
-        composeTestRule.onNodeWithTag("iconEvent")
+        composeTestRule.onNodeWithTag(TestTags.BOTTOM_BAR_ICON_EVENT)
             .performClick()
 
         // Attente des redessins
@@ -176,7 +163,7 @@ class MainTest {
 
         // Clique sur le bouton 'Profile'
         composeTestRule
-            .onNodeWithTag("iconProfile").performClick()
+            .onNodeWithTag(TestTags.BOTTOM_BAR_ICON_PROFILE).performClick()
 
         composeTestRule.awaitIdle()
 
@@ -186,7 +173,7 @@ class MainTest {
 
         // Clique sur le bouton 'Profile'
         composeTestRule
-            .onNodeWithTag("iconProfile").performClick()
+            .onNodeWithTag(TestTags.BOTTOM_BAR_ICON_PROFILE).performClick()
 
         composeTestRule.awaitIdle()
 
@@ -194,7 +181,7 @@ class MainTest {
         composeTestRule.onNodeWithText(sTitleUserProfile).assertExists()
 
         // Clique sur le bouton 'Events' de la bottom bar
-        composeTestRule.onNodeWithTag("iconEvent")
+        composeTestRule.onNodeWithTag(TestTags.BOTTOM_BAR_ICON_EVENT)
             .performClick()
 
         composeTestRule.awaitIdle()

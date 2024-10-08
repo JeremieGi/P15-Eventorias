@@ -48,6 +48,7 @@ import com.openclassrooms.p15_eventorias.repository.event.EventFakeAPI
 import com.openclassrooms.p15_eventorias.ui.ErrorComposable
 import com.openclassrooms.p15_eventorias.ui.LoadingComposable
 import com.openclassrooms.p15_eventorias.ui.Screen
+import com.openclassrooms.p15_eventorias.ui.TestTags
 import com.openclassrooms.p15_eventorias.ui.URLImageAvatarComposable
 import com.openclassrooms.p15_eventorias.ui.URLImageEventComposable
 import com.openclassrooms.p15_eventorias.ui.ui.theme.ColorBackground
@@ -175,7 +176,7 @@ fun EventItemSuccessComposable(
 
     Column(
         modifier = modifier
-            .testTag("tagEventLoad") // Permet de savoir que l'évènement est chargé pour le test instrumenté
+            .testTag(TestTags.EVENT_ITEM) // Permet de savoir que l'évènement est chargé pour le test instrumenté
             .padding(
                 horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                 vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp
