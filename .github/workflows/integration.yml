@@ -37,6 +37,7 @@ jobs:
       # json Firebase => pas besoin de variable d'environnement, il faut juste créer le fichier sur l'environnement CI
       # KEY_GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.KEY_GOOGLE_SERVICES_JSON_BASE64 }}
 
+      # Pour envoi des données vers Sonar Cloud
       TOKEN_SONAR_CLOUD: ${{ secrets.TOKEN_SONAR_CLOUD }}
 
     # Différentes étapes

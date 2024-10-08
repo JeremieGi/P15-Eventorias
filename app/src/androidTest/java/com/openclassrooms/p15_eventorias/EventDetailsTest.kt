@@ -48,6 +48,7 @@ class EventDetailsTest {
     fun detailsfirstevent() = runTest {
 
         val fakeListEvent = EventFakeAPI.initFakeEvents()
+        val event2 = fakeListEvent[1]
 
         // Attend que la liste d'évènement soit chargée complétement
         composeTestRule.onNodeWithTag(TestTags.LAZY_COLUMN_EVENTS)
@@ -56,7 +57,7 @@ class EventDetailsTest {
 
         composeTestRule.awaitIdle()
 
-        composeTestRule.onNodeWithTag("${TestTags.EVENT_ID_PREFIX}${fakeListEvent[0].id}")
+        composeTestRule.onNodeWithTag("${TestTags.EVENT_ID_PREFIX}${event2.id}")
             .assertIsDisplayed()
             .performClick()
 
@@ -69,31 +70,21 @@ class EventDetailsTest {
             //composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
         }
 
-
-
-
-
-
-
-
-
-
         composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
-            composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
+            composeTestRule.onNodeWithText(event2.sTitle).isDisplayed()
         }
 
-
+        // Titre affiché dans l'app bar
+        composeTestRule.onNodeWithText(event2.sTitle)
+            .assertIsDisplayed()
 
         // Détection de l'adresse de l'évènement
-        composeTestRule.onNodeWithText(fakeListEvent[0].sAddress)
+        composeTestRule.onNodeWithText(event2.sAddress)
             .assertIsDisplayed()
 
-        // Titre affiché dans l'app bar
-        composeTestRule.onNodeWithText(fakeListEvent[0].sTitle)
-            .assertIsDisplayed()
 
         // Détection de la description de l'évènement
-        composeTestRule.onNodeWithText(fakeListEvent[0].sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
+        composeTestRule.onNodeWithText(event2.sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
             .assertIsDisplayed()
 
     }

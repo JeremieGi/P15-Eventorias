@@ -22,6 +22,9 @@ jobs:
       # API Map google
       MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
+      # Pour envoi des données vers Sonar Cloud
+      TOKEN_SONAR_CLOUD: ${{ secrets.TOKEN_SONAR_CLOUD }}
+
     steps:
       # Clone le depot
       - name: Checkout code
