@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # TODO Denis : Déclaration des variables d'environnement (la factorisation paraît compliquée pour les yaml)
 
       # Secrets pour la signature : Déclarer dans GitHub -> mon repo -> Settings -> Actions secrets and variables
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
