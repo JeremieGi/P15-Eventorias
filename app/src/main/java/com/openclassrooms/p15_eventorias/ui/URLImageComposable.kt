@@ -25,10 +25,7 @@ fun URLImageAvatarComposable(
     // SubcomposeAsyncImage => permet d'afficher un composant pour le chargement et pour l'erreur
     // Doc : https://coil-kt.github.io/coil/compose/
     SubcomposeAsyncImage(
-        modifier = modifier
-            //.size(50.dp)
-            //.clip(CircleShape)
-            /*.aspectRatio(1f)*/,
+        modifier = modifier,
         model = ImageRequest.Builder(LocalContext.current)
             .data(sURLP)
             .build(),
