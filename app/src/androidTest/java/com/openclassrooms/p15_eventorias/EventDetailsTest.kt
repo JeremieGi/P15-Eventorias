@@ -69,9 +69,20 @@ class EventDetailsTest {
             //composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
         }
 
-        // Détection de la description de l'évènement
-        composeTestRule.onNodeWithText(fakeListEvent[0].sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
-            .assertIsDisplayed()
+
+
+
+
+
+
+
+
+
+        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
+            composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
+        }
+
+
 
         // Détection de l'adresse de l'évènement
         composeTestRule.onNodeWithText(fakeListEvent[0].sAddress)
@@ -79,6 +90,10 @@ class EventDetailsTest {
 
         // Titre affiché dans l'app bar
         composeTestRule.onNodeWithText(fakeListEvent[0].sTitle)
+            .assertIsDisplayed()
+
+        // Détection de la description de l'évènement
+        composeTestRule.onNodeWithText(fakeListEvent[0].sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
             .assertIsDisplayed()
 
     }
