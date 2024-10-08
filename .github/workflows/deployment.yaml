@@ -27,11 +27,11 @@ jobs:
     steps:
       # Clone le depot
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Installe Java 11 (requis pour Android et SonarQube).
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'adopt'
