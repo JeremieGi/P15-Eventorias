@@ -70,21 +70,19 @@ class EventDetailsTest {
             //composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
         }
 
-        composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
-            composeTestRule.onNodeWithText(event2.sTitle).isDisplayed()
-        }
-
         // Titre affiché dans l'app bar
         composeTestRule.onNodeWithText(event2.sTitle)
             .assertIsDisplayed()
+
+        // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue) : Adresse et description => Assert failed: The component is not displayed!
+        // J'ai pensé aux contenus avec accents mais ce n'est pas çà
 
         // Détection de l'adresse de l'évènement
         composeTestRule.onNodeWithText(event2.sAddress)
             .assertIsDisplayed()
 
-
         // Détection de la description de l'évènement
-        composeTestRule.onNodeWithText(event2.sDescription) // TODO Denis / JG P16 : Test ne passe pas dans GitHub Action (Intégration continue)
+        composeTestRule.onNodeWithText(event2.sDescription)
             .assertIsDisplayed()
 
     }
