@@ -26,7 +26,7 @@ class EventFakeAPI : EventApi {
 
                 Event("1","Event1","Description de l'évent 1",1629858873000 /* 25/08/2021 */, "https://xsgames.co/randomusers/assets/avatars/male/71.jpg", "Place de la Comédie, 34000 Montpellier", coordMontpellier, sPhotoUser1),
 
-                Event("2","Event2","Description de l'évent 2",1451638679000 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "84 Avenue des Champs Elysées, 75008 Paris, France", coordParis, sPhotoUser2),
+                Event("2","Event2","Description de l'event 2",1451638679000 /* 01/01/2016 */, "https://storage.canalblog.com/05/71/1016201/88287252_o.png", "84 Avenue des Champs Elysees, 75008 Paris, France", coordParis, sPhotoUser2),
 
                 Event("3","Event3","sans avatar créateur",1483228800000 /* 01/01/2017 */, "", "", null, ""),
                 )
