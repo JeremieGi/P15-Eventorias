@@ -99,7 +99,7 @@ jobs:
           api-level: 33                                 # Niveau de l'API à utiliser
           arch: x86_64                                  # Architecture de l'AVD (x86 ou x86_64)
           emulator-boot-timeout: 300                    # Augmenter le délai d'attente à 300 secondes (5 minutes)
-          disable-animations: false
+          disable-animations: true
           enable-hw-keyboard: false
           # gpu: swiftshader_indirect  # Utiliser swiftshader pour le rendu logiciel
 
