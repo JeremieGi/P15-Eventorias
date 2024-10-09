@@ -23,7 +23,14 @@
 - Pattern : MVVM
 - Tests : Unitaires et instrumentés
 - CI / CD : GitHub Actions pour lancer les tests à chaque push et déployer l'application à chaque tag.
+- Accessibilité : Validation d'Accessibility Scanner + tests manuels avec TalkBack
+- UI : portrait, paysage, téléphone et tablette
 
 ## Impressions d'écran
 
-![Capture d'écran de l'application](screenshots/Screenshot_List.png)
+<div style="display: flex; justify-content: space-between;">
+	<img src="screenshots/Screenshot_List.png" alt="Liste des évènements" width="300"/>
+	<img src="screenshots/Screenshot_Item.png" alt="Affichage d'un évènement" width="300"/>
+	<img src="screenshots/Screenshot_Add.png" alt="Ajout d'un évènement" width="300"/>
+</div>	
+
