@@ -24,3 +24,6 @@
 - Tests : Unitaires et instrumentés
 - CI / CD : GitHub Actions pour lancer les tests à chaque push et déployer l'application à chaque tag.
 
+## Impressions d'écran
+
+![Capture d'écran de l'application](screenshots/Screenshot_List.png)
