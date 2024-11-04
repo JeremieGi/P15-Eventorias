@@ -25,18 +25,18 @@ class EventRepositoryTest {
 
     private lateinit var cutEventRepository : EventRepository // Class Under Test
 
-    // Paramètre du repository
+    // Paramètres du repository
     private lateinit var mockAPI: EventApi
     private lateinit var mockInjectedContext : InjectedContext
 
-    // Elements appelés par les méthodes testées
+    // Contexte du test (mocké)
     private lateinit var mockContext: Context
 
     /**
      * Création des mocks
      */
     @Before
-    fun createRepositoryWithMockedDao() {
+    fun createRepositoryWithMockedParameters() {
         mockAPI = mockk()
         mockInjectedContext = mockk()
         mockContext = mockk()
@@ -280,7 +280,7 @@ class EventRepositoryTest {
         } returns mockContext
 
 
-        val mockEvent = mockk<Event>(relaxed = true)
+        val mockEvent = mockk<Event>(relaxed = true) // L’option relaxed = true est utilisée pour éviter de devoir simuler toutes les méthodes non utilisées.
         val calendar = Calendar.getInstance() // Obtenir l'instance de Calendar pour la date actuelle
         calendar.add(Calendar.DAY_OF_YEAR, 1) // Ajouter un jour
         coEvery { mockEvent.id } returns "idTest"

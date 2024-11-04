@@ -36,6 +36,7 @@ fun BottomBarComposable(
     onClickProfileP : () -> Unit
 ) {
 
+    // TODO JG : Ici, il aurait été mieux d'utiliser le composant existant NavigationBar + NavigationBarItem
 
     // Box utile pour centrer horizontalement le contenu
     Box(

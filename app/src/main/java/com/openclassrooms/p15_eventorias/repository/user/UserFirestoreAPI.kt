@@ -184,9 +184,9 @@ class UserFirestoreAPI : UserApi {
      */
     private fun getUserData(): Task<DocumentSnapshot>? {
 
-        val uidCurrentUser : String? = this.getCurrentUserUID()
+        val uidCurrentUser : String = this.getCurrentUserID()
 
-        return if (uidCurrentUser != null) {
+        return if (uidCurrentUser.isNotEmpty()) {
             getUsersCollection().document(uidCurrentUser).get() // Renvoie l'utilisateur
         } else {
             null
@@ -194,10 +194,6 @@ class UserFirestoreAPI : UserApi {
 
     }
 
-    // ID de l'utilisateur courant
-    private fun getCurrentUserUID(): String? {
-        return this.getCurrentFirebaseUser()?.uid
-    }
 
     /**
      * Log out current user

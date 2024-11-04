@@ -104,7 +104,7 @@ android {
         versionCode = 2     // Version de l'APK
         versionName = "2.0"
 
-        //testInstrumentationRunnerArguments["noUninstall"] = "true" => marche pas  // TODO Denis JG : Retour soutenannce - Faire en sorte que le lancement de jacoco ne désinstalle pas l'appli
+        //testInstrumentationRunnerArguments["noUninstall"] = "true" => marche pas
         //testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "com.openclassrooms.p15_eventorias.CustomTestRunner"
         vectorDrawables {

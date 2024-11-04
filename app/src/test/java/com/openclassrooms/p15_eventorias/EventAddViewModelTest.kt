@@ -19,8 +19,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-// TODO Denis JG : Retour soutenance : Tests unitaires sur les viewModel
-
 class EventAddViewModelTest {
 
     // Utilisation de MockK pour le mock du repository
@@ -37,7 +35,7 @@ class EventAddViewModelTest {
     @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
-        Dispatchers.setMain(Dispatchers.Unconfined) // Utile pour définir un dispatcher en mode teest
+        Dispatchers.setMain(Dispatchers.Unconfined) // Utile pour définir un dispatcher en mode test
         MockKAnnotations.init(this)
         cutViewModel = EventAddViewModel(eventRepository,userRepository)
     }

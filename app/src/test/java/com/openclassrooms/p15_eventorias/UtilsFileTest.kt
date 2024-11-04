@@ -37,7 +37,7 @@ class UtilsFileTest {
     fun testCreateImageFile_createsFileSuccessfully() {
 
         // Simuler la création réussie du fichier temporaire
-        val mockFile = mockk<File>(relaxed = true)
+        val mockFile = mockk<File>(relaxed = true) // L’option relaxed = true est utilisée pour éviter de devoir simuler toutes les méthodes non utilisées.
         every {
             File.createTempFile(any(), any(), any())
         } returns mockFile

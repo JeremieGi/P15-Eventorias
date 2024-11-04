@@ -278,8 +278,6 @@ fun UserProfileComposable(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        var sErrorSignOut by rememberSaveable { mutableStateOf("") }
-
         Button(onClick = {
 
             onClickSignOutP(context)
@@ -297,8 +295,6 @@ fun UserProfileComposable(
                     // Erreur lors de la déconnexion
 
                     val errorMessage = exception.localizedMessage ?: context.getString(R.string.unknown_error)
-
-                    sErrorSignOut = errorMessage
 
                     Toast
                         .makeText(context, errorMessage, Toast.LENGTH_SHORT)

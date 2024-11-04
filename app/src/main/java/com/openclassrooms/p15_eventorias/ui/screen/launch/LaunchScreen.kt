@@ -135,7 +135,11 @@ fun launchAuthUI(signInLauncher: ManagedActivityResultLauncher<Intent, FirebaseA
 
     // Si l’utilisateur n’est pas connecté, redirige vers l’écran de création de compte / connexion
 
-    // Pour avoir l'écran de login, il faut paramétrer dans Firebase, Authentication, Settings, User actions, => décocher Email enumerattion protection
+    //  Note importante :
+    // Par sécurité, par défaut, Firebase ne permet pas la reconnexion avec un login existant (pour ne pas exposer les mails de ces utilisateurs)
+    // Si on veut avoir ce comportement il faut aller dans la console Firebase -> Authentication -> Settings -> User Actions -> décocher "Email enueration protection
+
+    // Pour avoir l'écran de login, il faut paramétrer dans Firebase, Authentication, Settings, User actions, => décocher Email enumeration protection
 
     // Ici : Authenfication mail / mot de passe + Google
     val providers = arrayListOf(

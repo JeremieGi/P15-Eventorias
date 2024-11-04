@@ -22,5 +22,6 @@
     <color name="cardAndInput">#FF49454F</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="purple_200">#FFBB86FC</color>
 
 </resources>

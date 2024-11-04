@@ -135,7 +135,7 @@ class EventAddTest {
 
         // L'évènement doit apparaitre
         composeTestRule.onNodeWithText(sTitleVal)
-            .assertIsDisplayed() // TODO Denis : Pas possible de rendre les erreurs plus explicites dans les comptes-rendus ?
+            .assertIsDisplayed() // Pas possible de rendre les erreurs plus explicites dans les comptes-rendus ?
 
     }
 
