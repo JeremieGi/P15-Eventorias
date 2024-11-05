@@ -176,7 +176,7 @@ fun EventItemSuccessComposable(
 
     Column(
         modifier = modifier
-            .testTag(TestTags.EVENT_ITEM) // Permet de savoir que l'évènement est chargé pour le test instrumenté
+            .testTag(TestTags.EVENT_ITEM_LOAD) // Permet de parcourir les items dans le test instrumenté
             .padding(
                 horizontal = Screen.CTE_PADDING_HORIZONTAL_APPLI.dp,
                 vertical = Screen.CTE_PADDING_VERTICAL_APPLI.dp

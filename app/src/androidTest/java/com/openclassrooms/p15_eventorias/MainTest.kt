@@ -121,7 +121,9 @@ class MainTest {
 
         // Récupérer tous les nœuds avec le testTag
         //val nodes = composeTestRule.onAllNodesWithTag("event_item").fetchSemanticsNodes()
-        val nodes = composeTestRule.onAllNodesWithTag("event_id_").fetchSemanticsNodes()
+        val nodes = composeTestRule.onAllNodesWithTag(TestTags.EVENT_ITEM_LAZY).fetchSemanticsNodes()
+
+        var nSize = 0
 
         // Parcours de chaque noeud
         nodes.forEachIndexed { index, node ->
@@ -136,6 +138,12 @@ class MainTest {
             assert(sSemanticText.contains(expectedTitle)) {
                 "Cet événement devrait être $expectedTitle et c'est $sSemanticText"
             }
+
+            nSize++
+        }
+
+        assert(nSize==expectedEventListP.size) {
+            "Expected size = ${expectedEventListP.size} and real size = $nSize"
         }
 
     }

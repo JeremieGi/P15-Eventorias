@@ -22,10 +22,10 @@
       <SelectionState runConfigName="Tests in 'com.openclassrooms.p15_eventorias'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="add_classic()">
+      <SelectionState runConfigName="addEventLimit()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="addEventLimit()">
+      <SelectionState runConfigName="event_order()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

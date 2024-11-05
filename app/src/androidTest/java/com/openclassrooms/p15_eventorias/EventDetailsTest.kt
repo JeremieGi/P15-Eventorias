@@ -1,12 +1,11 @@
 package com.openclassrooms.p15_eventorias
 
-import androidx.compose.ui.res.stringResource
+
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -59,7 +58,8 @@ class EventDetailsTest {
 
         composeTestRule.awaitIdle()
 
-        composeTestRule.onNodeWithTag("${TestTags.EVENT_ID_PREFIX}${event2.id}")
+        //composeTestRule.onNodeWithTag("${TestTags.EVENT_ID_PREFIX}${event2.id}")
+        composeTestRule.onNodeWithText(event2.sTitle)
             .assertIsDisplayed()
             .performClick()
 
@@ -68,7 +68,7 @@ class EventDetailsTest {
 
         // Attend tant que l'évènement n'est pas chargé complétement (sinon problème dans GitHub Action)
         composeTestRule.waitUntil(timeoutMillis = 10000) { // 10000ms => 100s => 1m30
-            composeTestRule.onNodeWithTag(TestTags.EVENT_ITEM).isDisplayed()
+            composeTestRule.onNodeWithTag(TestTags.EVENT_ITEM_LOAD).isDisplayed()
             //composeTestRule.onNodeWithText(fakeListEvent[0].sTitle).isDisplayed()
         }
 

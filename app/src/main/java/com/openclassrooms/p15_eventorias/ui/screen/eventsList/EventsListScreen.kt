@@ -359,7 +359,8 @@ fun EventItemListComposable(
 
     Card(
         modifier = modifier
-            .testTag("${TestTags.EVENT_ID_PREFIX}${eventP.id}") // Permet d'identifier une ligne dans le test instrumenté
+            //.testTag("${TestTags.EVENT_ID_PREFIX}${eventP.id}") // Permet d'identifier une ligne dans le test instrumenté
+            .testTag(TestTags.EVENT_ITEM_LAZY)
             .fillMaxWidth()
             .height(80.dp)
             .clickable()
