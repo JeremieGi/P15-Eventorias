@@ -357,7 +357,7 @@ fun SwitchNotificationComposable(
                     }
                 },
             checked = varIsChecked,
-            onCheckedChange = { it ->
+            onCheckedChange = {
 
                 // On est en train d'activer les notification
                 val bActivation = !varIsChecked
